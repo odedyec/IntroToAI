@@ -1,4 +1,7 @@
 
+import os
+
+
 SET_NUM_OF_VERTICES = 0
 SET_EDGE_WEIGHT = 1
 SET_VERTIX_INFO = 2
@@ -29,13 +32,14 @@ def print_as_matrix(mat, title):
 
 class Edge:
     def __init__(self):
-        self.weight = 0
+        self.weight = -1
         self.is_safe = False
         self.num_of_people = 0
 
 
 class HurricaneSimulator:
-    def __init__(self, init_state, config_file=None):
+    def __init__(self, K=0, init_state=0, config_file=None):
+        self.K = K
         self.graph = []
         self.num_of_vertices = 0
         self.deadline = 0
@@ -45,23 +49,36 @@ class HurricaneSimulator:
         self.load_from_file(config_file)
         self.add_people_to_vehicle()
         self.num_of_actions = 0
+        self.people_saved = 0
+        self.last_action_cost = 0
 
     def no_op(self):
         self.num_of_actions += 1
+        self.last_action_cost = 1
         self.time += 1
 
     def add_people_to_vehicle(self):
         self.people_in_vehicle += self.graph[self.state][self.state].num_of_people
         self.graph[self.state][self.state].num_of_people = 0
 
-    def time_cost(self, new_state, K):
-        return self.graph[self.state][new_state].weight * (1 + K * self.people_in_vehicle)
+    def time_cost(self, new_state):
+        return self.graph[self.state][new_state].weight * (1 + self.K * self.people_in_vehicle)
 
-    def traverse(self, new_state, K):
+    def traverse(self, new_state):
+        cost = self.time_cost(new_state)
+        if cost < 0:
+            print("No road from ", self.state, "to", new_state, ". \nAction ignored")
+            return
         self.num_of_actions += 1
-        self.time += self.time_cost(new_state, K)
+        self.last_action_cost = cost
+        self.time += self.last_action_cost
         self.state = new_state
+        """ Don't update if deadline passed """
+        if self.time > self.deadline:
+            return
+        """ Update graph info """
         if self.graph[new_state][new_state].is_safe:
+            self.people_saved += self.people_in_vehicle
             self.people_in_vehicle = 0
         else:
             self.add_people_to_vehicle()
@@ -135,11 +152,38 @@ class HurricaneSimulator:
         print_as_matrix(self.get_weights(), "weights")
 
     def print_all(self):
+
+        # a = os.system('clear')
+        # if a == 256:
+        #     print("Did you forget to set environment as terminal?\n\nGo to Run->Edit Configurations...->Emulate terminal in output console\n\n\n")
         self.print_people()
         self.print_shelter()
         self.print_weights()
         print("\nDeadline in: ", self.deadline)
+        print("Current time: ", self.time)
+        print("Lsat action took: ", self.last_action_cost)
+        print("Current state ", self.state)
+        print('Number of people in vehicle: ', self.people_in_vehicle)
+        print("Num of actions is :", self.num_of_actions)
+        print("Saved  people: ", self.people_saved)
+
+    def ok(self):
+        if self.time < self.deadline:
+            return True
+        return False
+
+    def apply_action(self, action):
+        if action == -1 or self.state == action:
+            self.no_op()
+        elif action < 0 or action >= self.num_of_vertices:
+            print('Bad action selected. Enter a number between 0 and ', self.num_of_vertices-1)
+            return
+        else:
+            self.traverse(action)
 
 
 if __name__ == '__main__':
     hs = HurricaneSimulator(0)
+    hs.print_all()
+    hs.print_all()
+

@@ -1,0 +1,195 @@
+
+<!-- saved from url=(0052)https://www.cs.bgu.ac.il/~shimony/AI2019/AIass1.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>AI Assignment 1</title>
+<link rev="made" href="mailto:webmaster@cs.bgu.ac.il">
+
+</head>
+
+<body>
+	<center>
+	<h1>Introduction to Artificial Intelligence </h1>
+	<h3>Assignment 1</h3>
+	</center>
+<hr>
+	<h2>Environment simulator and agents for the Hurricane Evacuation Problem</h2>
+<p>
+In this first exercise you are asked to implement an environment
+simulator that runs a path optimization problem.
+Then, you will implement some agents that live in the environment
+and evaluate their performance.
+
+</p><p>
+We are given a weighted graph,
+and the goal is (starting at a given vertex) to visit as many as possible out of a set of vertices, 
+and reach a given goal vertex before a given deadline. 
+However, unlike standard shortest path problems in graphs,
+which have easy known efficient solution methods (e.g. the Dijkstra algorithm), here the
+problem is that there are more than 2 vertices to visit, their order
+is not given, and even the number of visited vertices is not known in advance.
+This is a problem encountered in many real-world settings, such as when
+you are trying to evacuate people who are stuck at home with no transportation before
+the hurricane arrives.
+
+</p><h3>Hurricane Evacuation problem environment</h3>
+
+<p>
+The environment consists of a weighted unidrected graph. Each vertex may contain
+a number of people to be evacuated, or a hurricane shelter.
+An agent (evacuation vehicle) at a vertex automatically picks up all the people at this vertex just before starting the
+next move, unless the vertex contains a hurricane shelter, in which case everybody in the vehicle
+is dropped off at the shelter (goal). It is also possible for edges (roads) to be blocked, in this assignment
+we assume complete knowledge so w.l.o.g. all edges are initially unblocked.
+
+</p><p>
+An agent can only do  <b>no-op</b> (taking  1 time unit) or <b>traverse</b> actions.
+The time for traverse  actions is equal to: w(1+Kp), where w is the edge weight,
+p is the number of people in the vehicle, and K is a known global non-negative "slow-down" constant,
+determining how much the vehicle is slowed due to load.
+The action always succeeds, unless the time limit is breached.
+</p><p>
+The simulator should keep track of time, the number of
+actions done by each agent, and the total number of people successfully evacuated.
+
+</p><h3>Implementation part I: simulator + simple agents</h3>
+ 
+<p>
+Initially you will implement the environment simulator, and several simple
+(non-AI) agents. The environment simulator should start up by reading
+the graph from a file, as well as the contents of vertices and global constants,
+in a format of your choice. We suggest
+using a simple adjancency list in an ASCII file, that initially specifies
+the number of vertices. For example (comments beginning
+with a semicolon):
+
+</p><pre>#V 4    ; number of vertices n in graph (from 1 to n)
+
+#E 1 2 W1                 ; Edge from vertex 1 to vertex 2, weight 1
+#E 3 4 W1                 ; Edge from vertex 3 to vertex 4, weight 1
+#E 2 3 W1                 ; Edge from vertex 2 to vertex 3, weight 1
+#E 1 3 W4                 ; Edge from vertex 1 to vertex 3, weight 4
+#E 2 4 W5                 ; Edge from vertex 2 to vertex 4, weight 5
+#V 2 P 1                  ; Vertex 2 initially contains 1 person to be rescued
+#V 1 S                    ; Vertex 1 contains a hurricane shelter (a "goal vertex" - there may be more than one)
+#V 4 P 2                  ; Vertex 4 initially contains 2 persons to be rescued
+#D 10                     ; Deadline is at time 10
+</pre>
+
+<p>
+The simulator should query the user about the number of agents and
+what agent program to use for each of them, from a list defined below.
+Global constants and initialization parameters for each agent 
+(initial position) are also to be queried from the user.
+
+</p><p>
+After the above initialization, the simulator should run each agent in turn,
+performing the actions retured by the agents, and update the world
+accordingly. Additionally, the simulator should be capable of displaying the
+state of the world after each step, with the appropriate 
+state of the agents and their score. 
+A simple screen display in ASCII is sufficient (no bonuses
+for fancy graphics - this is not the point in this course!).
+
+</p><p>
+Each agent program (a function) works as follows. 
+The agent is called by the simulator, together with
+a set of observations. The agent returns a move to be carried out in the 
+current world state. The agent is allowed to keep an internal state
+(for example, a computed optimal path, or anything else desired) if needed.
+In this assignment, the agents can observe the entire state of the world.
+
+</p><p>
+You should implement the following agents:
+
+</p><ol>
+<li> A <b>human</b> agent, i.e. print the state, read the next move from the user, and
+return it to the simulator. This is used for debugging and evaluating the program.
+</li><li> A <b> greedy</b> agent, that works as follows: the agent should
+compute the shortest currently unblocked path to the next vertex with people to be rescued,
+or to a shelter if it is carrying people, and try to follow it.
+If there is no such path, do <b>no-op</b>.
+</li><li> A <b> vandal</b>  agent, that blocks roads. 
+The vandal works as follows: it does V no-ops, and then blocks the lowest-cost edge adjacent to
+its current vertex (takes 1 time unit). Then it traverses a lowest-cost remaining edge, and this is repeated.
+Prefer the lowest-numbered node in case of ties.
+If there is no edge to block or traverse, do <b>no-op</b>.
+</li></ol>
+
+<p>
+At this stage, you should run the environment with <b>three</b> agents
+participating in each run: one greedy agent, one vandal agent, and one
+other agent that can be chosen by the user.
+Your program should display and record the scores. In particular,
+you should run the greedy agent with various initial configurations.
+Also, test your environment with several agents in the
+same run, to see that it works correctly. You would be advised
+to do a good job here w.r.t. program extensibility, modularity, etc.
+much of this code may be used for some of the following
+assignments as well.
+
+</p><h3>Implementation part II: search agents</h3>
+
+<p>
+<b>Now</b>, after chapter 4, you will be implementing
+intelligent agents (this is part 2 of the assignment)
+that need to act in this environment. Each agent
+should assume that it is acting alone, regardless of whether it is true.
+You will be implementing a "search" agent as defined below.
+All the algorithms will use a <b>heuristic evaluation function</b> 
+of your choice. 
+
+</p><ol>
+<li> A greedy search agent,
+ that picks the move with best immediate heuristic value.
+</li><li> An agent using A* search, with the same heuristic.
+</li><li> An agent using a simplified version of real-time A*.
+</li></ol>
+
+<p>
+The performance measure will be composed of two parts: S, the agent's score,
+and T, the number of search expansion
+steps performed by the search algorithm. The performance of an agent will be:
+
+</p><pre>   P = f * S + T
+</pre>
+
+<p>
+Clearly, a better agent will have P as <b>small</b> as possible. The parameter f
+is a weight constant. You should compare the performance of the three
+agents (each acting alone) for the following values
+of f: 1, 100, 10000.
+Note that the higher the f parameter, the more important it is to expend
+computational resources in order to get a better score!
+
+</p><p>
+<b>Bonus version</b>: construct a search agent as above, but in addition
+allow one vandal agent also acting in the environment.
+Your search agent needs to take this into account.
+Observe that although this seems to be a multi-agent problem,
+the fact that vandal is perfectly predictable makes this in essence a single agent search problem.
+
+</p><p>
+<b>Addtional bonus - theoretical</b>: What is the computational complexity of the
+Hurricane Evacuation Problem (single agent)? Can you prove that it is NP-hard? Or is it
+in P? If the latter, can you design an algorithm that solves the problem in polynomial time?
+
+</p><h2>Deliverables</h2>
+
+<p>
+The program and code sent to the grader, by e-mail or
+otherwise as specified by the grader, a printout of the code and results.
+A document stating the heuristic function you used and the rationale
+for selecting this function.
+Set up a time for frontal grading checking of the delivered assignment,
+in which both members of each team must demonstrate at least <b>some</b>
+familiarity with their program...
+
+</p><p>
+
+Due date for part 1 (recommended, not enforced): Wednesday, October 31.
+</p><p>
+For the complete assignment: Tuesday, November 13.
+
+
+
+</p></body><autoscroll></autoscroll></html>

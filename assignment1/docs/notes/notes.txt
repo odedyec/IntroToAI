@@ -1,0 +1,45 @@
+State rep
+=========
+
+States may be described as:
+|V| x 2^|V_with_people| x p_in_vehicle x Time_left
+
+
+
+
+Init = {V1, t, t, 0, 0}
+
+
+
+GOALS
+======
+best_goal: {X, 0, 0, 0, x<=T}
+
+X = don't care
+
+Other goals:
+
+General goal state: {x, x, x, x, >=T}
+
+
+
+
+Operator
+========
+
+{V, P1, P2, P, T},
+
+No-op
+{V, P1, P2, P, T}
+
+
+
+Cost
+=====
+
+Person save = big_num
+Cost = Last move person*big_num
+
+Heuristics
+==========
+H
