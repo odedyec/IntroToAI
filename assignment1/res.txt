@@ -1,0 +1,376 @@
+
+people
+------------------------
+   0   0   0   0
+   0   1   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  0
+Lsat action took:  0
+Current state  0
+Number of people in vehicle:  0
+Num of actions is : 0
+Saved  people:  0
+=================================
+
+
+
+
+
+people
+------------------------
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  1.0
+Lsat action took:  1.0
+Current state  1
+Number of people in vehicle:  1
+Num of actions is : 1
+Saved  people:  0
+=================================
+
+
+
+
+
+people
+------------------------
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  2.05
+Lsat action took:  1.05
+Current state  0
+Number of people in vehicle:  0
+Num of actions is : 2
+Saved  people:  1
+=================================
+
+
+
+
+
+people
+------------------------
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  3.05
+Lsat action took:  1
+Current state  0
+Number of people in vehicle:  0
+Num of actions is : 3
+Saved  people:  1
+=================================
+
+
+
+
+
+people
+------------------------
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  4.05
+Lsat action took:  1
+Current state  0
+Number of people in vehicle:  0
+Num of actions is : 4
+Saved  people:  1
+=================================
+
+
+
+
+
+people
+------------------------
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  5.05
+Lsat action took:  1
+Current state  0
+Number of people in vehicle:  0
+Num of actions is : 5
+Saved  people:  1
+=================================
+
+
+
+
+
+people
+------------------------
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  6.05
+Lsat action took:  1
+Current state  0
+Number of people in vehicle:  0
+Num of actions is : 6
+Saved  people:  1
+=================================
+
+
+
+
+
+people
+------------------------
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  7.05
+Lsat action took:  1
+Current state  0
+Number of people in vehicle:  0
+Num of actions is : 7
+Saved  people:  1
+=================================
+
+
+
+
+
+people
+------------------------
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  8.05
+Lsat action took:  1
+Current state  0
+Number of people in vehicle:  0
+Num of actions is : 8
+Saved  people:  1
+=================================
+
+
+
+
+
+people
+------------------------
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  9.05
+Lsat action took:  1
+Current state  0
+Number of people in vehicle:  0
+Num of actions is : 9
+Saved  people:  1
+=================================
+
+
+
+
+
+
+
+-------------------------
+#### Final result ####
+
+
+
+people
+------------------------
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   2
+
+shelter
+------------------------
+   1   0   0   0
+   0   0   0   0
+   0   0   0   0
+   0   0   0   0
+
+weights
+------------------------
+  -1   1   4  -1
+   1  -1   1   5
+   4   1  -1   1
+  -1   5   1  -1
+
+Deadline in:  10
+Current time:  10.05
+Lsat action took:  1
+Current state  0
+Number of people in vehicle:  0
+Num of actions is : 10
+Saved  people:  1

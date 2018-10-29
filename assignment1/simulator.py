@@ -152,7 +152,6 @@ class HurricaneSimulator:
         print_as_matrix(self.get_weights(), "weights")
 
     def print_all(self):
-
         # a = os.system('clear')
         # if a == 256:
         #     print("Did you forget to set environment as terminal?\n\nGo to Run->Edit Configurations...->Emulate terminal in output console\n\n\n")
