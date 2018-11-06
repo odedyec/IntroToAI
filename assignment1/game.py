@@ -4,7 +4,7 @@ from greedy_agent import Greedy
 
 
 """ Global variables """
-K = 0.05 # None  # Set to a value to stop asking for input
+K = 0.0 # None  # Set to a value to stop asking for input
 agents = [Greedy(0)]  # []  # Set an agent to stop asking for input
 
 
