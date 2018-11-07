@@ -1,11 +1,12 @@
 from simulator import HurricaneSimulator
 from human_agent import Human
 from greedy_agent import Greedy
+from vandal_agent import Vandal
 
 
 """ Global variables """
 K = 0.0 # None  # Set to a value to stop asking for input
-agents = [Greedy(0)]  # []  # Set an agent to stop asking for input
+agents = [Greedy(0), Vandal(2)]  # []  # Set an agent to stop asking for input
 
 
 def game():
@@ -16,7 +17,7 @@ def game():
         while sim.ok():
             sim.print_all()
             action = agent.choose_next_option(sim)
-            sim.apply_action(action)
+            sim.apply_action(action, agent.should_pick_and_drop)
             print("=================================\n\n\n\n")
         print("\n\n\n-------------------------\n#### Final result ####\n\n")
         sim.print_all()

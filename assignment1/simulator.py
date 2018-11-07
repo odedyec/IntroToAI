@@ -64,7 +64,7 @@ class HurricaneSimulator:
     def time_cost(self, new_state):
         return self.graph[self.state][new_state].weight * (1 + self.K * self.people_in_vehicle)
 
-    def traverse(self, new_state):
+    def traverse(self, new_state, should_pick_and_drop=True):
         cost = self.time_cost(new_state)
         if cost < 0:
             print("No road from ", self.state, "to", new_state, ". \nAction ignored")
@@ -76,12 +76,13 @@ class HurricaneSimulator:
         """ Don't update if deadline passed """
         if self.time > self.deadline:
             return
-        """ Update graph info """
-        if self.graph[new_state][new_state].is_safe:
-            self.people_saved += self.people_in_vehicle
-            self.people_in_vehicle = 0
-        else:
-            self.add_people_to_vehicle()
+        """ Update graph info, only if it is a regular agent """
+        if should_pick_and_drop:
+            if self.graph[new_state][new_state].is_safe:
+                self.people_saved += self.people_in_vehicle
+                self.people_in_vehicle = 0
+            else:
+                self.add_people_to_vehicle()
 
     def load_from_file(self, file_path=None):
         if file_path is None:
@@ -160,7 +161,7 @@ class HurricaneSimulator:
         self.print_weights()
         print("\nDeadline in: ", self.deadline)
         print("Current time: ", self.time)
-        print("Lsat action took: ", self.last_action_cost)
+        print("Last action took: ", self.last_action_cost)
         print("Current state ", self.state)
         print('Number of people in vehicle: ', self.people_in_vehicle)
         print("Num of actions is :", self.num_of_actions)
@@ -171,14 +172,14 @@ class HurricaneSimulator:
             return True
         return False
 
-    def apply_action(self, action):
+    def apply_action(self, action, should_pick_and_drop=True):
         if action == -1 or self.state == action:
             self.no_op()
         elif action < 0 or action >= self.num_of_vertices:
             print('Bad action selected. Enter a number between 0 and ', self.num_of_vertices-1)
             return
         else:
-            self.traverse(action)
+            self.traverse(action, should_pick_and_drop)
 
 
 if __name__ == '__main__':
