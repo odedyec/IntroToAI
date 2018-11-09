@@ -1,12 +1,11 @@
 from simulator import HurricaneSimulator
 from human_agent import Human
 from greedy_agent import Greedy
-from vandal_agent import Vandal
+# from vandal_agent import Vandal
 
 
 """ Global variables """
-K = 0.0 # None  # Set to a value to stop asking for input
-agents = [Greedy(0), Vandal(2)]  # []  # Set an agent to stop asking for input
+from config import *
 
 
 def game():
@@ -35,7 +34,7 @@ def query():
             if agent_type is '1':
                 agents.append(Human(agent_loc))
             elif agent_type is '2':
-                pass
+                agents.append(Greedy(agent_loc))
             elif agent_type is '3':
                 pass
 
