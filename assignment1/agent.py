@@ -5,9 +5,11 @@ class BaseAgent:
     def __init__(self, state):
         self.path = []
         self.state = state
+        self.full_state = None
         self.path.append(state)
         self.people_in_vehicle = 0
         self.should_pick_and_drop = True
+        self.steps_explored = 0
 
     def get_state(self):
         return self.state

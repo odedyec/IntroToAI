@@ -28,24 +28,26 @@ def dijkstra_shortest_path(grid, start, goal):
     closed_q = []
     q.append((start, 0, -1))
     path = []
+    depth = 0
     while len(q):
         i = find_min_in_queue(q)
         v = q.pop(i)
         path.append(v)
+        depth += 1
         if v[0] == goal:
             actual_path = []
             while v[2] != -1:
                 actual_path.insert(0, v)
                 v = find_predecessor_in_list(path, v[2])
             actual_path.insert(0, v)
-            return actual_path
+            return actual_path, depth
         closed_q.append(v[0])
         for i, edge in enumerate(grid[v[0]]):
             if i in closed_q:
                 continue
             if edge != -1:
                 q.append((i, edge + v[1], v[0]))
-    return [-1]
+    return [-1], depth
 
 
 
