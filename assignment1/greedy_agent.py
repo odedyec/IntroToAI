@@ -18,7 +18,7 @@ class Greedy(BaseAgent):
         for i in range(sim.num_of_vertices):
             if grid[i][i]:
                 path, depth_searched = dijkstra_shortest_path(weight_grid, sim.get_state(), i)
-                self.steps_explored += depth_searched
+                # self.steps_explored += depth_searched
                 if len(path) == 1:
                     """ Already at a shelter town """
                     l_cost.append((path[0][0], 0))
