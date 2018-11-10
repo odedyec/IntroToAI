@@ -6,6 +6,8 @@ from shortest_path import dijkstra_shortest_path
 import copy
 
 
+PEOPLE_UNSAVED_VALUE = 100
+
 class Node(object):
     def __init__(self, state=None, sim=None, g=0, h=0):
         self.children = list()
@@ -15,7 +17,7 @@ class Node(object):
         self.g_score = g  # Actual value (for A*)
 
 
-class SmartGreedy(BaseAgent):
+class SmartGreedy(Greedy):
     def get_all_possible_actions(self, sim=HurricaneSimulator()):
         """
         Find all possible actions from a specific node
@@ -27,18 +29,46 @@ class SmartGreedy(BaseAgent):
         actions = []
         for vertex, cost in enumerate(weights[sim.get_state()]):
             if cost != -1:
-                action = (vertex, cost, self.calculate_heuristic_for_action(vertex, sim))
+                action = (vertex, cost)
                 actions.append(action)
         return actions
 
-    def calculate_heuristic_for_action(self, vertex, sim=HurricaneSimulator()):
+    def calculate_heuristic_for_action(self, cost, sim=HurricaneSimulator()):
         """
         This function calculates the heuristic for a single.
         :param vertex: the vertex to which you wish to calculate the heuristic
         :param sim: the environment
         :return: a heuristic value
         """
-        return 0
+        number_of_people_in_towns = sim.get_number_of_people_in_towns()
+        people_unable_to_save = number_of_people_in_towns + sim.people_in_vehicle
+        cost_to_people = self.find_people(sim)  # Find costs for all vertices with people
+        cost_to_shelter = self.find_sheleter(sim)  # Find costs for all shelter vertices
+
+        if len(cost_to_shelter) == 0:
+            """ No shelter, we are all doomed :("""
+            return cost + people_unable_to_save * PEOPLE_UNSAVED_VALUE
+        """ Find closest shelter """
+        closest_shelter = inf
+        for shelter in cost_to_shelter:
+            if shelter[1] < closest_shelter:
+                closest_shelter = shelter[1]
+        if (1+ sim.K * sim.people_in_vehicle) * closest_shelter + sim.get_time() < sim.deadline:
+            """ People in vehicle can be saved """
+            people_unable_to_save -= sim.people_in_vehicle
+        else:
+            """ Unable to reach shelter """
+            return cost + people_unable_to_save * PEOPLE_UNSAVED_VALUE
+        """ Find people in towns """
+        time_elapsed = sim.get_time()
+        for people in cost_to_people:
+            time_elapsed += people[1] + \
+                            (1 +
+                             sim.K * (sim.graph[people[2]][people[2]].num_of_people + sim.people_in_vehicle)) \
+                            * (closest_shelter + people[1])
+            if time_elapsed < sim.deadline:
+                people_unable_to_save -= sim.graph[people[2]][people[2]].num_of_people
+        return cost + people_unable_to_save * PEOPLE_UNSAVED_VALUE
 
     def is_goal(self, full_state, sim=HurricaneSimulator()):
         """
@@ -73,7 +103,7 @@ class SmartGreedy(BaseAgent):
                 list_of_vertices_with_people.append(data)
         """ Create the full state """
         full_state = {'state': sim.get_state(), 'time_passed': sim.get_time(), 'list_of_vertices_with_people': list_of_vertices_with_people,
-                      'number_of_people_to_save': sum_of_people, 'number_of_people_in_vehicle': sim.people_in_vehicle}
+                      'number_of_people_to_save': sum_of_people+sim.people_in_vehicle, 'number_of_people_in_vehicle': sim.people_in_vehicle}
         return full_state
 
     def find_best_branch_to_explore(self, list_of_nodes=[Node()]):
@@ -107,7 +137,7 @@ class SmartGreedy(BaseAgent):
                 current_tree_node.children.append(Node(state=self.build_full_state(sim_emulation),
                                           sim=sim_emulation,
                                           g=action[1],
-                                          h=action[2]))
+                                          h=self.calculate_heuristic_for_action(action[1], sim_emulation)))
             """ Find best child """
             best_child = self.find_best_branch_to_explore(current_tree_node.children)
             ## TODO check if there are two children with the same values. Both should be explred.
@@ -116,6 +146,7 @@ class SmartGreedy(BaseAgent):
             current_tree_node = best_child
             self.steps_explored += 1
         final_action = self.find_best_branch_to_explore(tree.children)
-        return final_action.sim.get_state()
+        go_to_state = final_action.state['state'] if final_action is not None else -1
+        return go_to_state
 
 

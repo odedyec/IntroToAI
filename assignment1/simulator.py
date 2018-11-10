@@ -112,6 +112,13 @@ class HurricaneSimulator:
                 except:
                     print(line)
 
+    def get_number_of_people_in_towns(self):
+        people = self.get_people()
+        sum_of_people = 0
+        for i in range(self.num_of_vertices):
+            sum_of_people += people[i][i]
+        return sum_of_people
+
     def get_people(self):
         l = [[0 for i in range(self.num_of_vertices)] for j in range(self.num_of_vertices)]
         for i in range(self.num_of_vertices):

@@ -11,16 +11,19 @@ class Greedy(BaseAgent):
         This function performs the actual search in a grid, and calculates the cost to each vertex of interest
         :param grid: people or shelter grid
         :param sim: the environment
-        :return: list of tuples: (next vertex, cost to final destination)
+        :return: list of tuples: (next vertex, cost to final destination, final destination)
         """
         l_cost = []
         weight_grid = sim.get_weights()
         for i in range(sim.num_of_vertices):
             if grid[i][i]:
-                path, depth_searched = dijkstra_shortest_path(weight_grid, self.state, i)
+                path, depth_searched = dijkstra_shortest_path(weight_grid, sim.get_state(), i)
                 self.steps_explored += depth_searched
-                if path[-1][1] != -1:
-                    l_cost.append((path[1][0], path[-1][1]))  # set the cost for the entire path and the next step
+                if len(path) == 1:
+                    """ Already at a shelter town """
+                    l_cost.append((path[0][0], 0))
+                elif path[-1][1] != -1:
+                    l_cost.append((path[1][0], path[-1][1], path[-1][0]))  # set the cost for the entire path and the next step
         return l_cost
 
     def find_sheleter(self, sim=HurricaneSimulator()):

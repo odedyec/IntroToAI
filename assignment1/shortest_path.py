@@ -23,6 +23,7 @@ def dijkstra_shortest_path(grid, start, goal):
     :param start: the starting index
     :param goal:  the goal index
     :return: the shortest path from  the starting index to the goal. [-1] if does not exist
+    the path is a list of tuples. Each tuple is (vertex, cost, predecessor)
     """
     q = []
     closed_q = []
