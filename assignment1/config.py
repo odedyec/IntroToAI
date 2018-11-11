@@ -6,7 +6,8 @@ from a_star_agent import A_Star
 
 
 """ Global variables """
-K = 2  # Set to a value to stop asking for input
-agents = [A_Star(0)]  # Set an agent to stop asking for input
+K = 1  # Set to a value to stop asking for input
+#agents = [A_Star(0)]  # Set an agent to stop asking for input
+agents = [Greedy(0), A_Star(0)]  # Set an agent to stop asking for input
 DEBUG = True
 f_value = -10

@@ -9,12 +9,13 @@ import copy
 PEOPLE_UNSAVED_VALUE = 100
 
 class Node(object):
-    def __init__(self, state=None, sim=None, g=0, h=0):
+    def __init__(self, state=None, sim=None, g=0, h=0, p=None):
         self.children = list()
         self.state = state
         self.sim = sim
         self.h_score = h  # Heuristic value of node
         self.g_score = g  # Actual value (for A*)
+        self.parent = p
 
 
 class SmartGreedy(Greedy):
