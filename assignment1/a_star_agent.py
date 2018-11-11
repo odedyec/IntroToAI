@@ -83,24 +83,36 @@ class A_Star(SmartGreedy):
         best_state = self.build_full_state(sim)
         best_sim = copy.deepcopy(sim)
         tree = Node(state=best_state, sim=sim)
+        best_path = list()
+        nodes_not_expanded = [tree]
         current_tree_node = tree
 
         while not self.is_goal(best_state, best_sim):
+            """ Expand the current node """
+            nodes_not_expanded.remove(current_tree_node)
+
             """ Explore all options"""
             actions = self.get_all_possible_actions(best_sim)
             for action in actions:
                 sim_emulation = copy.deepcopy(best_sim)  # Not actually required for greedy search, but for A*
                 sim_emulation.apply_action(action[0])
-                current_tree_node.children.append(Node(state=self.build_full_state(sim_emulation), sim=sim_emulation,
+                nodes_not_expanded.append(Node(state=self.build_full_state(sim_emulation), sim=sim_emulation,
                                                        g=current_tree_node.g_score + action[1],
                                                        h=self.calculate_heuristic_for_action(action[1], sim_emulation)))
+                # add parent
             """ Find best child """
-            best_child = self.find_best_branch_to_explore(current_tree_node.children)
+            best_child = self.find_best_branch_to_explore(nodes_not_expanded)
             ## TODO check if there are two children with the same values. Both should be explred.
             best_state = best_child.state
             best_sim = best_child.sim
             current_tree_node = best_child
             self.steps_explored += 1
+
+        current_tree_node = best_child
+        while current_tree_node != tree:
+            best_path.insert(0, current_tree_node)
+
+
         final_action = self.find_best_branch_to_explore(tree.children)
         go_to_state = final_action.state['state'] if final_action is not None else -1
         return go_to_state
