@@ -14,6 +14,10 @@ import copy
 
 class A_Star(SmartGreedy):
 
+    def __init__(self, state):
+        super(A_Star, self).__init__(state)
+        self.max_expands = inf
+
     def find_best_branch_to_explore(self, list_of_nodes=[Node()]):
         """
         This function gets a tree of possible states to go to
@@ -43,8 +47,9 @@ class A_Star(SmartGreedy):
         best_path = list()
         nodes_not_expanded = [tree]
         current_tree_node = tree
+        expands_in_this_search = 0
 
-        while not self.is_goal(best_state, best_sim):
+        while not self.is_goal(best_state, best_sim) and self.max_expands > expands_in_this_search:
             """ Expand the current node """
             nodes_not_expanded.remove(current_tree_node)
 
@@ -65,6 +70,7 @@ class A_Star(SmartGreedy):
             best_sim = best_child.sim
             current_tree_node = best_child
             self.steps_explored += 1
+            expands_in_this_search += 1
 
         """ No possible way to expand """
         if best_child == tree:
@@ -75,7 +81,6 @@ class A_Star(SmartGreedy):
             best_path.insert(0, current_tree_node.state)
             current_tree_node = current_tree_node.parent
         self.path = best_path
-
         return self.path.pop(0)['state']
 
 
