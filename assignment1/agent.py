@@ -18,5 +18,13 @@ class BaseAgent:
         self.path.append(new_state)
         self.state = new_state
 
+    def check_if_path_ready(self, sim=HurricaneSimulator()):
+        if len(self.path) == 0:
+            return -1
+        next_op = self.path.pop()
+        if sim.graph[sim.get_state()][next_op].weight == -1:
+            return -1
+        return next_op
+
     def choose_next_option(self, sim=HurricaneSimulator()):
         raise NotImplementedError("")
