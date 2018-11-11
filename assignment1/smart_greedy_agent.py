@@ -123,6 +123,10 @@ class SmartGreedy(Greedy):
 
     def choose_next_option(self, sim=HurricaneSimulator()):
         self.set_state(sim.get_state())
+        """ Check precalculated path"""
+        if self.check_if_path_ready(sim) != -1:
+            return self.check_if_path_ready(sim)
+
         best_state = self.build_full_state(sim)
         best_sim = copy.deepcopy(sim)
         tree = Node(state=best_state, sim=sim)
@@ -138,13 +142,7 @@ class SmartGreedy(Greedy):
                                           sim=sim_emulation,
                                           g=action[1],
                                           h=self.calculate_heuristic_for_action(action[1], sim_emulation)))
-            """ Find best child """
-            best_child = self.find_best_branch_to_explore(current_tree_node.children)
-            ## TODO check if there are two children with the same values. Both should be explred.
-            best_state = best_child.state
-            best_sim = best_child.sim
-            current_tree_node = best_child
-            self.steps_explored += 1
+            break
         final_action = self.find_best_branch_to_explore(tree.children)
         go_to_state = final_action.state['state'] if final_action is not None else -1
         return go_to_state
