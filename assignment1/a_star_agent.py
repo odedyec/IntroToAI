@@ -1,11 +1,7 @@
-from greedy_agent import Greedy
-from agent import BaseAgent
 from simulator import HurricaneSimulator
 from numpy import inf
-from shortest_path import dijkstra_shortest_path
 from smart_greedy_agent import SmartGreedy
 from smart_greedy_agent import Node
-from agent import BaseAgent
 import copy
 
 
@@ -66,11 +62,10 @@ class A_Star(SmartGreedy):
 
             """ Find best child """
             best_child = self.find_best_branch_to_explore(nodes_not_expanded)
-            ## TODO check if there are two children with the same values. Both should be explred.
             best_state = best_child.state
             best_sim = best_child.sim
             current_tree_node = best_child
-            self.steps_explored += 1
+            self.expanded_nodes += 1
             expands_in_this_search += 1
 
         """ No possible way to expand """

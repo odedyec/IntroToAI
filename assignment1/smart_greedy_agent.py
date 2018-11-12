@@ -133,7 +133,7 @@ class SmartGreedy(Greedy):
 
         while not self.is_goal(best_state, best_sim):
             """ Explore all options"""
-            self.steps_explored += 1
+            self.expanded_nodes += 1
             actions = self.get_all_possible_actions(best_sim)
             for action in actions:
                 sim_emulation = copy.deepcopy(best_sim)  # Not actually required for greedy search, but for A*

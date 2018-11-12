@@ -26,7 +26,7 @@ class Greedy(BaseAgent):
                     l_cost.append((path[1][0], path[-1][1], path[-1][0]))  # set the cost for the entire path and the next step
         return l_cost
 
-    def find_sheleter(self, sim=HurricaneSimulator()):
+    def find_shelter(self, sim=HurricaneSimulator()):
         """
         This function finds the cost to all shelter nodes
         :param sim:  the environment
@@ -54,7 +54,7 @@ class Greedy(BaseAgent):
         self.set_state(sim.get_state())
 
         cost_to_people = self.find_people(sim)  # Find costs for all vertices with people
-        cost_to_shelter = self.find_sheleter(sim) if sim.people_in_vehicle else []  # Find costs for all shelter vertices
+        cost_to_shelter = self.find_shelter(sim) if sim.people_in_vehicle else []  # Find costs for all shelter vertices
 
         """ Find best op """
         best_op = (-1, inf)

@@ -23,9 +23,9 @@ def game():
             sim.apply_action(action, agent.should_pick_and_drop)
         print("\n\n\n-------------------------\n#### Final result ####\n\n")
         sim.print_all()
-        print("+++++ Agent explored %d steps +++++"%agent.steps_explored)
+        print("+++++ Agent expanded %d nodes +++++" % agent.steps_explored)
         P = sim.people_saved * f_value + agent.steps_explored
-        print("##### Agent performance is %d #####"%P)
+        print("##### Agent performance is %d #####" % P)
 
 
 def query():

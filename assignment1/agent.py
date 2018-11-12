@@ -9,7 +9,7 @@ class BaseAgent:
         # self.path.append(state)
         self.people_in_vehicle = 0
         self.should_pick_and_drop = True
-        self.steps_explored = 0
+        self.expanded_nodes = 0
 
     def get_state(self):
         return self.state
