@@ -21,7 +21,7 @@ class Greedy(BaseAgent):
                 # self.steps_explored += depth_searched
                 if len(path) == 1:
                     """ Already at a shelter town """
-                    l_cost.append((path[0][0], 0))
+                    l_cost.append((path[0][0], 0, path[0][0]))
                 elif path[-1][1] != -1:
                     l_cost.append((path[1][0], path[-1][1], path[-1][0]))  # set the cost for the entire path and the next step
         return l_cost

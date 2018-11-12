@@ -12,7 +12,7 @@ from config import *
 def game():
     query()
     for agent in agents:
-        sim = HurricaneSimulator(K)
+        sim = HurricaneSimulator(K, config_file=config_file)
         sim.state = agent.get_state()
         while sim.ok():
             if DEBUG:
@@ -46,7 +46,7 @@ def query():
                 agents.append(SmartGreedy(agent_loc))
             elif agent_type is '5':
                 pass
-                # agents.append(AStar(agent_loc))
+                agents.append(A_Star(agent_loc))
             elif agent_type is '6':
                 pass
                 # agents.append(RTAStar(agent_loc))

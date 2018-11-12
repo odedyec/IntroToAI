@@ -6,8 +6,8 @@ from a_star_agent import A_Star
 
 
 """ Global variables """
-K = 1  # Set to a value to stop asking for input
-#agents = [A_Star(0)]  # Set an agent to stop asking for input
-agents = [Greedy(0), A_Star(0)]  # Set an agent to stop asking for input
-DEBUG = True
+config_file='input_graph2.txt'
+K = None  # Set to a value to stop asking for input
+agents = []  # Set an agent to stop asking for input
+DEBUG = False
 f_value = -10

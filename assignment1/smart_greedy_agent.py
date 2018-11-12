@@ -135,6 +135,7 @@ class SmartGreedy(Greedy):
 
         while not self.is_goal(best_state, best_sim):
             """ Explore all options"""
+            self.steps_explored += 1
             actions = self.get_all_possible_actions(best_sim)
             for action in actions:
                 sim_emulation = copy.deepcopy(best_sim)  # Not actually required for greedy search, but for A*
@@ -143,7 +144,6 @@ class SmartGreedy(Greedy):
                                           sim=sim_emulation,
                                           g=action[1],
                                           h=self.calculate_heuristic_for_action(action[1], sim_emulation)))
-            self.steps_explored += 1
             break
         final_action = self.find_best_branch_to_explore(tree.children)
         go_to_state = final_action.state['state'] if final_action is not None else -1
