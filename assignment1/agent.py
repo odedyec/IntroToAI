@@ -6,7 +6,7 @@ class BaseAgent:
         self.path = []
         self.state = state
         self.full_state = None
-        self.path.append(state)
+        # self.path.append(state)
         self.people_in_vehicle = 0
         self.should_pick_and_drop = True
         self.steps_explored = 0
@@ -15,13 +15,13 @@ class BaseAgent:
         return self.state
 
     def set_state(self, new_state):
-        self.path.append(new_state)
+        # self.path.append(new_state)
         self.state = new_state
 
     def check_if_path_ready(self, sim=HurricaneSimulator()):
         if len(self.path) == 0:
             return -1
-        next_op = self.path.pop()
+        next_op = self.path.pop(0)['state']
         if sim.graph[sim.get_state()][next_op].weight == -1:
             return -1
         return next_op

@@ -37,8 +37,9 @@ class A_Star(SmartGreedy):
 
         self.set_state(sim.get_state())
 
-        if self.check_if_path_ready(sim) != -1:
-            return self.check_if_path_ready(sim)
+        precalculated_answer = self.check_if_path_ready(sim)
+        if precalculated_answer != -1:
+            return precalculated_answer
 
         best_state = self.build_full_state(sim)
         best_sim = copy.deepcopy(sim)
@@ -81,7 +82,8 @@ class A_Star(SmartGreedy):
             best_path.insert(0, current_tree_node.state)
             current_tree_node = current_tree_node.parent
         self.path = best_path
-        return self.path.pop(0)['state']
+        ans = self.path.pop(0)['state']
+        return ans
 
 
 

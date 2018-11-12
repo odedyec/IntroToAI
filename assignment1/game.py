@@ -3,6 +3,7 @@ from human_agent import Human
 from greedy_agent import Greedy
 from vandal_agent import Vandal
 from smart_greedy_agent import SmartGreedy
+from real_time_a_star_agent import Real_Time_A_Star
 
 
 """ Global variables """
@@ -49,7 +50,7 @@ def query():
                 agents.append(A_Star(agent_loc))
             elif agent_type is '6':
                 pass
-                # agents.append(RTAStar(agent_loc))
+                agents.append(Real_Time_A_Star(agent_loc))
 
 if __name__ == '__main__':
     game()

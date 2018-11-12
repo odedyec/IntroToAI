@@ -125,8 +125,6 @@ class SmartGreedy(Greedy):
     def choose_next_option(self, sim=HurricaneSimulator()):
         self.set_state(sim.get_state())
         """ Check precalculated path"""
-        if self.check_if_path_ready(sim) != -1:
-            return self.check_if_path_ready(sim)
 
         best_state = self.build_full_state(sim)
         best_sim = copy.deepcopy(sim)
