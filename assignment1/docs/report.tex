@@ -7,6 +7,7 @@
 \usepackage{subfig}
 \usepackage{rotating}
 \usepackage[left=2.2cm, right=2.2cm]{geometry}
+\usepackage{algpseudocode}
 \usepackage{algorithm}
 %\floatstyle{ruled}
 \usepackage{hyperref}
@@ -29,18 +30,18 @@
 %
 \begin{document}
 	
-\title{Introduction to AI - assignment 1}
-
-
-\author{Oded~Yechiel         \and
-	Matan~Rusanovsky
-}
-
-\date{13/11/18}
-
-\maketitle
-
-\section{Introduction}
+	\title{Introduction to AI - assignment 1}
+	
+	
+	\author{Oded~Yechiel         \and
+		Matan~Rusanovsky
+	}
+	
+	\date{13/11/18}
+	
+	\maketitle
+	
+	\section{Introduction}
 	In this assignment we had to provide a hurricane simulator and 6 agents to roam the simulator and rescue people. The rescue is performed by loading the people from towns to shelter towns.
 	
 	Roads are connecting towns and are weighted with values. The vehicle traverse time between towns is calculated using the following formula, 
@@ -50,10 +51,10 @@
 	where, $ W $ is the weight between the towns, $ K $ is a slowdown parameter that is multiplied by the number of people in the vehicle.
 	
 	\subsection{Agents}
-	The first three agents are Human agent, mainly for debugging purposes, a greedy agent, also for debugging purposes, and a Vandal agent, used to complicate the given problem.
+	The first three agents are Human agent, mainly for debugging purposes, a Greedy agent, also for debugging purposes, and a Vandal agent, used to complicate the given problem.
 	
 	The last three agents are Greedy agents, based on Heuristics which will be explained in the next section, an A* agent and a real-time A* agent, which are based on the same Heuristics.
-
+	
 	\subsection{Performance}
 	In order to assess the agents, each of the later agents will record the number of expansions they perform. 
 	The overall performance, $ P $ is calculated as,
@@ -68,63 +69,65 @@
 	
 	In this report we shall explain the Heuristics used in this assignment. Please refer to our git repository for simulations and results:
 	\url{https://github.com/odedyec/IntroToAI}
-
-
-
-\section{Heuristics}
-The chosen heuristics attempts to assess the number of people that there is no way to save. Since the performance is mainly based on the amount of people we save, each unsaved person is multiplied by a large value in the heuristic.
-
-It is possible to find the shortest path between two vertices in polynomial values. Since all the weights are bound to be positive, the Dijkstra shortest path algorithm provides a solution in $ O(V logV+E) $.
-
-The calculation of the Heuristics assumes starts by summing all of the people that are yet to be saved. Then by calculating the shortest path to the closest shelter will suggests if the people in the vehicle are bound to be saved, and if not all of the people are doomed. Then for each vertex with people a closest shelter vertex is found and assuming that this is the only vertex in the world, we test whether it is possible to save these people. This proves that the heuristic is admissible as it is must to be more optimistic than reality.
-The heuristics is summarized below:
-
-\begin{algorithm}
-	\caption{Heuristic calculation}
 	
-	\begin{algorithmic}[1]
-		\Procedure{h}{currentVertex, Simulator}
-		\State $ DoomedPeople \longleftarrow$ Sum of people in all vertices + $ PeopleInVehicle[Simulator] $
-		\State Find the ClosestShelter, $d_s$
-		\State $ t_{now} \longleftarrow CurrentTime[Simulator] $
-		\If { $ t_{now} + d_s > Deadline[Simulator] $ }
-		\State \Return $ DoomedPeople \times LARGE\_VALUE + Cost[currentVertex]$
-		\Else 
-		\State $ DoomedPeople \longleftarrow$ $ DoomedPeople - PeopleInVehicle[Simulator]$ 
-		\EndIf
-		\State $ V_p \longleftarrow$ Find path to all Vertices with people
-		\For {$v \in V_p $}
-		\State Find the ClosestShelter, $d_s$
-		\If {$ t_{now} + cost[v] + (1 + People[v] * K) * d_s < Deadline[Simulator] $}
+	
+	
+	\section{Heuristics}
+	The chosen heuristics attempts to assess the number of people that there is no way to save. Since the performance is mainly based on the amount of people we save, each unsaved person is multiplied by a large value in the heuristic.
+	
+	It is possible to find the shortest path between two vertices in polynomial values. Since all the weights are bound to be positive, the Dijkstra shortest path algorithm provides a solution in $ O(V logV+E) $.
+	
+	The calculation of the Heuristics assumes starts by summing all of the people that are yet to be saved. Then by calculating the shortest path to the closest shelter will suggests if the people in the vehicle are bound to be saved, and if not all of the people are doomed. Then for each vertex with people a closest shelter vertex is found and assuming that this is the only vertex in the world, we test whether it is possible to save these people. This proves (official proof in the following section) that the heuristic is admissible as it is must to be more optimistic than reality.
+	The heuristics is summarized below:
+	
+	\begin{algorithm}
+		\caption{Heuristic calculation}
+		
+		\begin{algorithmic}[1]
+			\Procedure{h}{currentVertex, Simulator}
+			\State $ DoomedPeople \longleftarrow$ Sum of people in all vertices + $ PeopleInVehicle[Simulator] $
+			\State Find the ClosestShelter, $d_s$
+			\State $ t_{now} \longleftarrow CurrentTime[Simulator] $
+			\If { $ t_{now} + d_s > Deadline[Simulator] $ }
+			\State \Return $ DoomedPeople \times LARGE\_VALUE + Cost[currentVertex]$
+			\Else 
+			\State $ DoomedPeople \longleftarrow$ $ DoomedPeople - PeopleInVehicle[Simulator]$ 
+			\EndIf
+			\State $ V_p \longleftarrow$ Find path to all Vertices with people
+			\For {$v \in V_p $}
+			\State Find the ClosestShelter, $d_s$
+			\If {$ t_{now} + cost[v] + (1 + People[v] * K) * d_s < Deadline[Simulator] $}
 			\State $ DoomedPeople \longleftarrow DoomedPeople - People[v]$
-		\EndIf
-		\EndFor
-		\State \Return $ DoomedPeople \times LARGE\_VALUE + cost[currentVertex]$
-		\EndProcedure
-	\end{algorithmic}
-\end{algorithm}
-
-\subsection{proof of admissibility}
-Assume a perfect heuristic function, $ h^* $ exists.
-
-Assume that there is only  a single vertex with people with cost, $ d_{p_1} $, and the closest shelter to that vertex is $ d_s $. In this case the heuristic suggested above provides a perfect heuristic of how many people will be saved, i.e.
-\begin{equation}
-h =  h^*
-\end{equation}
-
-Without loss of generality, now assume that there is an additional vertex of people with cost $ d_{p_2} $, and the closest shelter is also $ d_s $. The cost of reaching both vertices is obviously larger than reaching a single town, i.e., 
-\begin{equation}\label{key}
-d_{p_1}+d_s \leq d_{p_1}+d_{p_1 \leftarrow p_2}+d_s
-\end{equation}
-or,
-\begin{equation}\label{key}
-d_{p_2}+d_s \leq d_{p_1}+d_{p_2 \leftarrow p_1}+d_s
-\end{equation}
-
-Therefore, the calculated heuristic is more optimistic than the perfect heuristic, 
-\begin{equation}\label{key}
-h\leq h^*,
-\end{equation}
-for any of the cases.
-
+			\EndIf
+			\EndFor
+			\State \Return $ DoomedPeople \times LARGE\_VALUE + cost[currentVertex]$
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+	
+	\subsection{proof of admissibility}
+	Assume a perfect heuristic function, $ h^* $ exists.
+	
+	Assume that there is only a single vertex with people, with cost to get to, from some vertex $v$: $ D_{p_1}(v) $, and the closest shelter to that vertex is $ D_{s}(p_1) $. In this case the heuristic suggested above provides a perfect heuristic of how many people will be saved, i.e.
+	\begin{equation}
+	h =  h^*
+	\end{equation}
+	
+	Now assume that there are more vertices with people than a single one. We denote one of these vertices as ${p_2}$, and the cost to get to it from some vertex $v$ as $ D_{s}(p_2) $. Also, we denote the distance to the closest shelter from some vertex $v$ as: $D_{s}(v)$. From the triangle inequality, the cost of reaching both vertices and going to the closest shelter is obviously larger than reaching a single town and going to the closest shelter., i.e., 
+	\begin{equation}\label{key}
+	D_{p_1}(v)+D_{s}(p_1) \leq D_{p_1}(v) + D_{p_2}(p_1) + D_{s}(p_2)
+	\end{equation}
+	or,
+	\begin{equation}\label{key}
+	D_{p_2}(v)+D_{s}(p_2) \leq D_{p_1}(v) + D_{p_2}(p_1) + D_{s}(p_2)
+	\end{equation}
+	
+	The same arguments apply on paths with more than one additional vertex.
+	
+	Thus, the calculated heuristic is more optimistic than the optimal heuristic, 
+	\begin{equation}\label{key}
+	h\leq h^*,
+	\end{equation}
+	for any of the cases.
 \end{document}
+
