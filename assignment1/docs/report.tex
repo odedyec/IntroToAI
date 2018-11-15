@@ -74,21 +74,33 @@
 \section{Heuristics}
 The chosen heuristics attempts to assess the number of people that there is no way to save. Since the performance is mainly based on the amount of people we save, each unsaved person is multiplied by a large value in the heuristic.
 
-The calculation of the Heuristics can be computationally intense, since we need to find optimal roads to towns with people and to towns with shelter. Therefore, in order to keep these calculation to a minimum, we find shortest paths for each of the vertices that either have people, or shelter vertices. The closest shelter vertex is considered as the only shelter, for heuristic computation purposes. Then for each vertex with people the distance calculated is the shortest path to that vertex and back and to the shelter. The time to perform this distance is compared with the deadline to decide if it is possible to save those people. The heuristics is summarized below:
+It is possible to find the shortest path between two vertices in polynomial values. Since all the weights are bound to be positive, the Dijkstra shortest path algorithm provides a solution in $ O(V logV+E) $.
+
+The calculation of the Heuristics assumes starts by summing all of the people that are yet to be saved. Then by calculating the shortest path to the closest shelter will suggests if the people in the vehicle are bound to be saved, and if not all of the people are doomed. Then for each vertex with people a closest shelter vertex is found and assuming that this is the only vertex in the world, we test whether it is possible to save these people. This proves that the heuristic is admissible as it is must to be more optimistic than reality.
+The heuristics is summarized below:
 
 \begin{algorithm}
 	\caption{Heuristic calculation}
-	\begin{enumerate}
-		\item calculate the path to all shelters
-		\item find the closest shelter, $ d_s $
-		\item find paths to all vertices with people
-		\item $ time = Time[sim] $
-		\item for each distance, $ d $, to vertex with $ P $ people, do
-		\item $ time = time + d + (1 + K * P)*(d + d_s)$
-		\item if $ time < deadline $ return number of people currently unsaved
-		
-	\end{enumerate}
 	
+	\begin{algorithmic}[1]
+		\Procedure{h}{currentVertex, Simulator}
+		\State $ DoomedPeople \longleftarrow$ Sum of people in all vertices + $ PeopleInVehicle[Simulator] $
+		\State Find the ClosestShelter, $d_s$
+		\State $ t_{now} \longleftarrow CurrentTime[Simulator] $
+		\If { $ t_{now} + d_s > Deadline[Simulator] $ }
+		\State \Return $ DoomedPeople \times LARGE\_VALUE + Cost[currentVertex]$
+		\Else 
+		\State $ DoomedPeople \longleftarrow$ $ DoomedPeople - PeopleInVehicle[Simulator]$ 
+		\EndIf
+		\State $ V_p \longleftarrow$ Find path to all Vertices with people
+		\For {$v \in V_p $}
+		\State Find the ClosestShelter, $d_s$
+		\If {$ t_{now} + cost[v] + (1 + People[v] * K) * d_s < Deadline[Simulator] $}
+			\State $ DoomedPeople \longleftarrow DoomedPeople - People[v]$
+		\EndIf
+		\EndFor
+		\State \Return $ DoomedPeople \times LARGE\_VALUE + cost[currentVertex]$
+		\EndProcedure
+	\end{algorithmic}
 \end{algorithm}
-
 \end{document}
