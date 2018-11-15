@@ -6,7 +6,7 @@ from shortest_path import dijkstra_shortest_path
 
 class Greedy(BaseAgent):
 
-    def search_grid(self, grid, sim=HurricaneSimulator()):
+    def search_grid(self, grid, starting_index, sim=HurricaneSimulator()):
         """
         This function performs the actual search in a grid, and calculates the cost to each vertex of interest
         :param grid: people or shelter grid
@@ -17,23 +17,24 @@ class Greedy(BaseAgent):
         weight_grid = sim.get_weights()
         for i in range(sim.num_of_vertices):
             if grid[i][i]:
-                path, depth_searched = dijkstra_shortest_path(weight_grid, sim.get_state(), i)
+                path, depth_searched = dijkstra_shortest_path(weight_grid, starting_index, i)
                 # self.steps_explored += depth_searched
                 if len(path) == 1:
                     """ Already at a shelter town """
                     l_cost.append((path[0][0], 0, path[0][0]))
                 elif path[-1][1] != -1:
-                    l_cost.append((path[1][0], path[-1][1], path[-1][0]))  # set the cost for the entire path and the next step
+                    l_cost.append(
+                        (path[1][0], path[-1][1], path[-1][0]))  # set the cost for the entire path and the next step
         return l_cost
 
-    def find_shelter(self, sim=HurricaneSimulator()):
+    def find_sheleter(self, sim=HurricaneSimulator()):
         """
         This function finds the cost to all shelter nodes
         :param sim:  the environment
         :return: list of tuples: (next vertex, cost to final destination)
         """
         shelter_nodes = sim.get_shelter()
-        return self.search_grid(shelter_nodes, sim)
+        return self.search_grid(shelter_nodes, sim.get_state(), sim)
 
     def find_people(self, sim=HurricaneSimulator()):
         """
@@ -42,7 +43,7 @@ class Greedy(BaseAgent):
         :return: list of tuples: (next vertex, cost to final destination)
         """
         people_nodes = sim.get_people()
-        return self.search_grid(people_nodes, sim)
+        return self.search_grid(people_nodes, sim.get_state(), sim)
 
     def choose_next_option(self, sim=HurricaneSimulator()):
         """

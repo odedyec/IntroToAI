@@ -4,6 +4,7 @@ from simulator import HurricaneSimulator
 from numpy import inf
 from shortest_path import dijkstra_shortest_path
 import copy
+from utils import find_closest
 
 
 PEOPLE_UNSAVED_VALUE = 100
@@ -50,10 +51,7 @@ class SmartGreedy(Greedy):
             """ No shelter, we are all doomed :("""
             return cost + people_unable_to_save * PEOPLE_UNSAVED_VALUE
         """ Find closest shelter """
-        closest_shelter = inf
-        for shelter in cost_to_shelter:
-            if shelter[1] < closest_shelter:
-                closest_shelter = shelter[1]
+        closest_shelter = find_closest(cost_to_shelter)[1]
         if (1+ sim.K * sim.people_in_vehicle) * closest_shelter + sim.get_time() < sim.deadline:
             """ People in vehicle can be saved """
             people_unable_to_save -= sim.people_in_vehicle
@@ -61,13 +59,14 @@ class SmartGreedy(Greedy):
             """ Unable to reach shelter """
             return cost + people_unable_to_save * PEOPLE_UNSAVED_VALUE
         """ Find people in towns """
+        shelter_nodes = sim.get_shelter()
         time_elapsed = sim.get_time()
         for people in cost_to_people:
-            time_elapsed += people[1] + \
-                            (1 +
-                             sim.K * (sim.graph[people[2]][people[2]].num_of_people + sim.people_in_vehicle)) \
-                            * (closest_shelter + people[1])
-            if time_elapsed < sim.deadline:
+            path_to_shelter_for_person = find_closest(self.search_grid(shelter_nodes, people[2], sim))
+            time_elapsed_for_person = time_elapsed + people[1] + \
+                                      (1 + sim.K * sim.graph[people[2]][people[2]].num_of_people) \
+                                      * path_to_shelter_for_person[1]
+            if time_elapsed_for_person < sim.deadline:
                 people_unable_to_save -= sim.graph[people[2]][people[2]].num_of_people
         return cost + people_unable_to_save * PEOPLE_UNSAVED_VALUE
 
