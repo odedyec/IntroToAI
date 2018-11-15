@@ -103,4 +103,28 @@ The heuristics is summarized below:
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
+
+\subsection{proof of admissibility}
+Assume a perfect heuristic function, $ h^* $ exists.
+
+Assume that there is only  a single vertex with people with cost, $ d_{p_1} $, and the closest shelter to that vertex is $ d_s $. In this case the heuristic suggested above provides a perfect heuristic of how many people will be saved, i.e.
+\begin{equation}
+h =  h^*
+\end{equation}
+
+Without loss of generality, now assume that there is an additional vertex of people with cost $ d_{p_2} $, and the closest shelter is also $ d_s $. The cost of reaching both vertices is obviously larger than reaching a single town, i.e., 
+\begin{equation}\label{key}
+d_{p_1}+d_s \leq d_{p_1}+d_{p_1 \leftarrow p_2}+d_s
+\end{equation}
+or,
+\begin{equation}\label{key}
+d_{p_2}+d_s \leq d_{p_1}+d_{p_2 \leftarrow p_1}+d_s
+\end{equation}
+
+Therefore, the calculated heuristic is more optimistic than the perfect heuristic, 
+\begin{equation}\label{key}
+h\leq h^*,
+\end{equation}
+for any of the cases.
+
 \end{document}
