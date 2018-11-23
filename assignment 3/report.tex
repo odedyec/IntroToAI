@@ -13,9 +13,6 @@
 \usepackage{hyperref}
 \usepackage{algpseudocode}
 
-\usepackage{tikz}
-\usetikzlibrary{positioning,calc,shapes,shapes.geometric}
-\usepackage{pgf}
 
 \newfloat{algorithm}{tbp}{loa}
 \providecommand{\algorithmname}{Algorithm}
@@ -30,6 +27,8 @@
 \newfloat{algorithm}{tbp}{loa}
 \providecommand{\algorithmname}{Algorithm}
 \floatname{algorithm}{\protect\algorithmname}
+
+\newcommand{\nt}[1]{\neg #1}
 %
 % \usepackage{mathptmx}      % use Times fonts if available on your TeX system
 %
@@ -143,7 +142,92 @@
 	
 	
 	\section{Propositional logic}
+	For validity it will be shown that the sentence is always true.
 	
+	An example for satisfiability a true model and a false model will be given.
+	
+	For unsatisfiability it will be shown that the setence is always false.
+	
+	Number of models equals to: $ 2^n $, where n is the number of symbols.
+	
+	\subsection{$ (\nt{A} \land \nt{B} \land \nt{C} \land \nt{D} \land \nt{E} \land F) \lor (A \land B \land C \land D \land E)$}
+	\textit{True model} - A, B, C, D, F are true, therefore,
+	
+	$ True \lor False = True$
+	
+	\textit{False model} - A is true, B is false (the rest whatever), therefore,
+
+	$ False \lor False = False $
+	
+	\textbf{Satisfiable}.
+	\subsection{$ (\nt{A} \lor \nt{B} \lor \nt{C} \lor \nt{D} \lor \nt{E} \lor \nt{F}) \land (A \lor B \lor C \lor D \lor E \lor F)$}
+	\textit{False model} - A, B, C, D, F are true, therefore,
+	
+	$ True \land False = False$
+	
+	\textit{True model} - A is true, B is false (the rest whatever), therefore,
+	
+	$ True \land True = True $
+	
+	\textbf{Satisfiable}. Number of models is 64.
+	
+	\subsection{$ (A \lor B \land (D \lor \nt{A}) \land (E \lor A) \Rightarrow  (B \lor C \land (\nt{D} \lor E))) \land (A \land \nt{A})$}
+	
+	$ \alpha \equiv (A \lor B \land (D \lor \nt{A}) \land (E \lor A) \Rightarrow  (B \lor C \land (\nt{D} \lor E))) $
+	
+	
+	$ \alpha \land (A \land \nt{A}) \rightarrow \alpha \land False \rightarrow False $
+	
+	\textbf{Unsatisfiable}  Number of models is 64.
+	
+	\subsection{$ (A \land (A \Rightarrow B) \land (B \Rightarrow C)) \Rightarrow C $}
+
+	\begin{description}
+		\item [implication elimination]
+		$ \neg (A \land (\nt{A} \lor B) \land (\nt{B} \lor C)) \lor C  $
+		\item [Distributivity]
+		$ \neg ((A \land \nt{A}) \lor (A \land B)) \land (\nt{B} \lor C)) \lor C  $
+		
+		$ \neg (False \lor (A \land B)) \land (\nt{B} \lor C)) \lor C  $
+		\item [Associativity]
+		$ \neg (A \land (B \land (\nt{B} \lor C))) \lor C  $
+		\item [Distributivity]
+		$ \neg (A \land ((B \land \nt{B}) \lor (B \land C))) \lor C  $
+		
+		$ \neg (A \land ((False) \lor (B \land C))) \lor C  $
+
+		$ \neg (A \land (B \land C)) \lor C  $
+		\item[De Morgan]
+		$ \nt{A} \lor \nt{B} \lor \nt{C} \lor C \rightarrow True $
+	\end{description}
+
+		\textbf{Valid}.  Number of models is 8.
+
+	\subsection{$ \neg ((A \land (A \Rightarrow B) \land (B \Rightarrow C)) \Rightarrow C )$}
+	\begin{description}
+		\item[implication elimination] 	$ \neg (\neg(A \land (\nt{A} \lor B) \land (\nt{B} \land C)) \lor C )$
+		\item[Distributivity]  $ \neg (\neg((A \land \nt{A}) \lor (A \land B) \land (\nt{B} \land C)) \lor C )$
+		
+		$ \neg (\neg((A \land B) \land (\nt{B} \land C)) \lor C )$
+		\item[De Morgan] 		$ \neg (\nt{A} \lor \nt{B} \lor \nt{\nt{B}} \lor \nt{C} \lor C )$
+		\item[Double negation elimination] $ \neg (\nt{A} \lor \nt{B} \lor B \lor \nt{C} \lor C ) \rightarrow $
+		
+		$ \neg (\nt{A} \lor True \lor True ) \rightarrow$
+		
+		$ \neg (True) \rightarrow False$
+	\end{description}
+
+	\textbf{Unsatisfiable}.  Number of models is 8.
+	
+	\subsection{$ (A\Rightarrow \nt{A}) \lor (\nt{A} \Rightarrow A) $}
+		\begin{description}
+		\item[implication elimination] $ (\nt{A} \lor \nt{A}) \lor (A \lor A) \rightarrow $
+		
+		$ \nt{A} \lor A \rightarrow True$
+		
+	\end{description}
+
+	\textbf{Valid}.  Number of models is 2.
 	
 	
 	\section{FOL and situation calculus}
@@ -151,516 +235,7 @@
 	
 	
 	
-%	\section{Game trees - 10$\%$}
-%	\begin{tikzpicture}
-%	
-%	\node[draw,scale=0,label=left:A] (a_label) at (0,7) {};
-%	\node[draw,scale=0,label=left:CHANCE] (c_label) at (0,6) {};
-%	\node[draw,scale=0,label=left:B] (b_label) at (0,5) {};
-%	\node[draw,scale=0,label=left:C] (c_label) at (0,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3] (a) at (7,7) {};
-%	
-%	\node[draw,circle,scale=0.7] (ch1) at (1.5,6) {};
-%	\node[draw,circle,scale=0.7] (ch2) at (4,6) {};
-%	\node[draw,circle,scale=0.7] (ch3) at (7,6) {};
-%	\node[draw,circle,scale=0.7] (ch4) at (10,6) {};
-%	\node[draw,circle,scale=0.7] (ch5) at (14,6) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3] (b1) at (1,5) {};
-%	\node[draw,fill=black,circle,scale=0.3] (b2) at (2,5) {};
-%	\node[draw,fill=black,circle,scale=0.3] (b3) at (4,5) {};
-%	\node[draw,fill=black,circle,scale=0.3] (b4) at (7,5) {};
-%	\node[draw,fill=black,circle,scale=0.3] (b5) at (10,5) {};
-%	\node[draw,fill=black,circle,scale=0.3] (b6) at (14,5) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3] (c1) at (1,4) {};
-%	\node[draw,fill=black,circle,scale=0.3] (c2) at (2,4) {};
-%	\node[draw,fill=black,circle,scale=0.3] (c3) at (3,4) {};
-%	\node[draw,fill=black,circle,scale=0.3] (c4) at (5.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3] (c5) at (7,4) {};
-%	\node[draw,fill=black,circle,scale=0.3] (c6) at (9,4) {};
-%	\node[draw,fill=black,circle,scale=0.3] (c7) at (11.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3] (c8) at (14,4) {};
-%	
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (u1) at (0,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (u2) at (1.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-9-9)] (u3) at (2.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u4) at (3.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u5) at (4.8,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-2-2)] (u6) at (6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(8-1-1)] (u7) at (7.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-9-9)] (u8) at (8.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u9) at (9.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u10) at (11.5,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-4)] (u12) at (13.3,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-5)] (u13) at (14.6,3) {};
-%	
-%	\draw [->]
-%	(a) edge[anchor=south] node {b} (ch1) 
-%	(a) edge[anchor=north] node {a} (ch2) 
-%	(a) edge[anchor=west] node {e} (ch3) 
-%	(a) edge[anchor=north] node {c} (ch4) 
-%	(a) edge[anchor=south] node {d} (ch5) 
-%	
-%	(ch1) edge[anchor=east] node {0.5} (b1) 
-%	(ch1) edge[anchor=west] node {0.5} (b2) 
-%	(ch2) edge[anchor=west] node {1} (b3) 
-%	(ch3) edge[anchor=west] node {1} (b4) 
-%	(ch4) edge[anchor=west] node {1} (b5) 
-%	(ch5) edge[anchor=west] node {1} (b6) 
-%	
-%	(b1) edge (c1) 
-%	(b2) edge (c2) 
-%	(b3) edge (c3) 
-%	(b3) edge (c4) 
-%	(b4) edge (c5) 
-%	(b5) edge (c6) 
-%	(b5) edge (c7) 
-%	(b6) edge (c8) 
-%	
-%	(c1) edge (u1) 
-%	(c2) edge (u2) 
-%	(c3) edge (u3) 
-%	(c3) edge (u4) 
-%	(c4) edge (u5) 
-%	(c4) edge (u6) 
-%	(c5) edge (u7) 
-%	(c6) edge (u8) 
-%	(c6) edge (u9) 
-%	(c7) edge (u10) 
-%	(c8) edge (u12) 
-%	(c8) edge (u13) 
-%	;
-%	
-%	\end{tikzpicture}
-%	
-%	\subsection{Each agent out for itself, and they cannot communicate}
-%	
-%	\begin{tikzpicture}
-%	
-%	\node[draw,scale=0,label=left:A] (a_label) at (0,7) {};
-%	\node[draw,scale=0,label=left:CHANCE] (c_label) at (0,6) {};
-%	\node[draw,scale=0,label=left:B] (b_label) at (0,5) {};
-%	\node[draw,scale=0,label=left:C] (c_label) at (0,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(9-2-2)] (a) at (7,7) {};
-%	
-%	\node[draw,circle,scale=0.7,label=above:(8.5-1-1)] (ch1) at (1.5,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(9-2-2)] (ch2) at (4,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(8-1-1)] (ch3) at (7,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(1-2-1)] (ch4) at (10,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(1-1-5)] (ch5) at (14,6) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (b1) at (1,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (b2) at (2,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(9-2-2)] (b3) at (4,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(8-1-1)] (b4) at (7,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-2-1)] (b5) at (10,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-5)] (b6) at (14,5) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (c1) at (1,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (c2) at (2,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-10)] (c3) at (3,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(9-2-2)] (c4) at (5.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(8-1-1)] (c5) at (7,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-10)] (c6) at (9,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(1-2-1)] (c7) at (11.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-5)] (c8) at (14,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (u1) at (0,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (u2) at (1.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-9-9)] (u3) at (2.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u4) at (3.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u5) at (4.8,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-2-2)] (u6) at (6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(8-1-1)] (u7) at (7.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-9-9)] (u8) at (8.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u9) at (9.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u10) at (11.5,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-4)] (u12) at (13.3,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-5)] (u13) at (14.6,3) {};
-%	
-%	\draw [->]
-%	(a) edge[anchor=south] node {b} (ch1) 
-%	(a) edge[anchor=north,line width=1pt, red] node {a} (ch2) 
-%	(a) edge[anchor=west] node {e} (ch3) 
-%	(a) edge[anchor=north] node {c} (ch4) 
-%	(a) edge[anchor=south] node {d} (ch5) 
-%	
-%	(ch1) edge[anchor=east] node {0.5} (b1) 
-%	(ch1) edge[anchor=west] node {0.5} (b2) 
-%	(ch2) edge[anchor=west] node {1} (b3) 
-%	(ch3) edge[anchor=west] node {1} (b4) 
-%	(ch4) edge[anchor=west] node {1} (b5) 
-%	(ch5) edge[anchor=west] node {1} (b6) 
-%	
-%	(b1) edge (c1) 
-%	(b2) edge (c2) 
-%	(b3) edge (c3) 
-%	(b3) edge (c4) 
-%	(b4) edge (c5) 
-%	(b5) edge (c6) 
-%	(b5) edge (c7) 
-%	(b6) edge (c8) 
-%	
-%	(c1) edge (u1) 
-%	(c2) edge (u2) 
-%	(c3) edge (u3) 
-%	(c3) edge (u4) 
-%	(c4) edge (u5) 
-%	(c4) edge (u6) 
-%	(c5) edge (u7) 
-%	(c6) edge (u8) 
-%	(c6) edge (u9) 
-%	(c7) edge (u10) 
-%	(c8) edge (u12) 
-%	(c8) edge (u13) 
-%	;
-%	
-%	\end{tikzpicture}
-%	
-%	\subsection{Paranoid assumption: B and C are against A}
-%	
-%	\begin{tikzpicture}
-%	
-%	\node[draw,scale=0,label=left:A] (a_label) at (0,7) {};
-%	\node[draw,scale=0,label=left:CHANCE] (c_label) at (0,6) {};
-%	\node[draw,scale=0,label=left:B] (b_label) at (0,5) {};
-%	\node[draw,scale=0,label=left:C] (c_label) at (0,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(8.5-1-1)] (a) at (7,7) {};
-%	
-%	\node[draw,circle,scale=0.7,label=above:(8.5-1-1)] (ch1) at (1.5,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(1-2-1)] (ch2) at (4,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(8-1-1)] (ch3) at (7,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(1-2-1)] (ch4) at (10,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(1-1-5)] (ch5) at (14,6) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (b1) at (1,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (b2) at (2,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-2-1)] (b3) at (4,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(8-1-1)] (b4) at (7,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-2-1)] (b5) at (10,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-5)] (b6) at (14,5) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (c1) at (1,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (c2) at (2,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-10)] (c3) at (3,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(1-2-1)] (c4) at (5.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(8-1-1)] (c5) at (7,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-10)] (c6) at (9,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(1-2-1)] (c7) at (11.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-5)] (c8) at (14,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (u1) at (0,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (u2) at (1.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-9-9)] (u3) at (2.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u4) at (3.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u5) at (4.8,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-2-2)] (u6) at (6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(8-1-1)] (u7) at (7.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-9-9)] (u8) at (8.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u9) at (9.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u10) at (11.5,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-4)] (u12) at (13.3,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-5)] (u13) at (14.6,3) {};
-%	
-%	\draw [->]
-%	(a) edge[anchor=south,line width=1pt, red] node {b} (ch1) 
-%	(a) edge[anchor=north] node {a} (ch2) 
-%	(a) edge[anchor=west] node {e} (ch3) 
-%	(a) edge[anchor=north] node {c} (ch4) 
-%	(a) edge[anchor=south] node {d} (ch5) 
-%	
-%	(ch1) edge[anchor=east] node {0.5} (b1) 
-%	(ch1) edge[anchor=west] node {0.5} (b2) 
-%	(ch2) edge[anchor=west] node {1} (b3) 
-%	(ch3) edge[anchor=west] node {1} (b4) 
-%	(ch4) edge[anchor=west] node {1} (b5) 
-%	(ch5) edge[anchor=west] node {1} (b6) 
-%	
-%	(b1) edge (c1) 
-%	(b2) edge (c2) 
-%	(b3) edge (c3) 
-%	(b3) edge (c4) 
-%	(b4) edge (c5) 
-%	(b5) edge (c6) 
-%	(b5) edge (c7) 
-%	(b6) edge (c8) 
-%	
-%	(c1) edge (u1) 
-%	(c2) edge (u2) 
-%	(c3) edge (u3) 
-%	(c3) edge (u4) 
-%	(c4) edge (u5) 
-%	(c4) edge (u6) 
-%	(c5) edge (u7) 
-%	(c6) edge (u8) 
-%	(c6) edge (u9) 
-%	(c7) edge (u10) 
-%	(c8) edge (u12) 
-%	(c8) edge (u13) 
-%	;
-%	
-%	\end{tikzpicture}
-%	
-%	\subsection{B and C may agree on a deal if it is beneficial to both of them}
-%	
-%	\begin{tikzpicture}
-%	
-%	\node[draw,scale=0,label=left:A] (a_label) at (0,7) {};
-%	\node[draw,scale=0,label=left:CHANCE] (c_label) at (0,6) {};
-%	\node[draw,scale=0,label=left:B] (b_label) at (0,5) {};
-%	\node[draw,scale=0,label=left:C] (c_label) at (0,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(9-9-9)] (a) at (7,7) {};
-%	
-%	\node[draw,circle,scale=0.7,label=above:(8.5-1-1)] (ch1) at (1.5,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(1-9-9)] (ch2) at (4,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(8-1-1)] (ch3) at (7,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(9-9-9)] (ch4) at (10,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(1-1-5)] (ch5) at (14,6) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (b1) at (1,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (b2) at (2,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-9-9)] (b3) at (4,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(8-1-1)] (b4) at (7,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(9-9-9)] (b5) at (10,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-5)] (b6) at (14,5) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (c1) at (1,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (c2) at (2,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-9-9)] (c3) at (3,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(9-2-2)] (c4) at (5.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(8-1-1)] (c5) at (7,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(9-9-9)] (c6) at (9,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(1-2-1)] (c7) at (11.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-5)] (c8) at (14,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (u1) at (0,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (u2) at (1.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-9-9)] (u3) at (2.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u4) at (3.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u5) at (4.8,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-2-2)] (u6) at (6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(8-1-1)] (u7) at (7.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-9-9)] (u8) at (8.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u9) at (9.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u10) at (11.5,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-4)] (u12) at (13.3,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-5)] (u13) at (14.6,3) {};
-%	
-%	\draw [->]
-%	(a) edge[anchor=south] node {b} (ch1) 
-%	(a) edge[anchor=north] node {a} (ch2) 
-%	(a) edge[anchor=west] node {e} (ch3) 
-%	(a) edge[anchor=north,line width=1pt, red] node {c} (ch4) 
-%	(a) edge[anchor=south] node {d} (ch5) 
-%	
-%	(ch1) edge[anchor=east] node {0.5} (b1) 
-%	(ch1) edge[anchor=west] node {0.5} (b2) 
-%	(ch2) edge[anchor=west] node {1} (b3) 
-%	(ch3) edge[anchor=west] node {1} (b4) 
-%	(ch4) edge[anchor=west] node {1} (b5) 
-%	(ch5) edge[anchor=west] node {1} (b6) 
-%	
-%	(b1) edge (c1) 
-%	(b2) edge (c2) 
-%	(b3) edge (c3) 
-%	(b3) edge (c4) 
-%	(b4) edge (c5) 
-%	(b5) edge (c6) 
-%	(b5) edge (c7) 
-%	(b6) edge (c8) 
-%	
-%	(c1) edge (u1) 
-%	(c2) edge (u2) 
-%	(c3) edge (u3) 
-%	(c3) edge (u4) 
-%	(c4) edge (u5) 
-%	(c4) edge (u6) 
-%	(c5) edge (u7) 
-%	(c6) edge (u8) 
-%	(c6) edge (u9) 
-%	(c7) edge (u10) 
-%	(c8) edge (u12) 
-%	(c8) edge (u13) 
-%	;
-%	
-%	\end{tikzpicture}
-%	
-%	\subsection{A and C are partners aiming to maximize the sum of their scores}
-%	
-%	\begin{tikzpicture}
-%	
-%	\node[draw,scale=0,label=left:A] (a_label) at (0,7) {};
-%	\node[draw,scale=0,label=left:CHANCE] (c_label) at (0,6) {};
-%	\node[draw,scale=0,label=left:B] (b_label) at (0,5) {};
-%	\node[draw,scale=0,label=left:C] (c_label) at (0,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(10-1-4)] (a) at (7,7) {};
-%	
-%	\node[draw,circle,scale=0.7,label=above:(8.5-1-1)] (ch1) at (1.5,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(9-2-2)] (ch2) at (4,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(8-1-1)] (ch3) at (7,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(9-9-9)] (ch4) at (10,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(10-1-4)] (ch5) at (14,6) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (b1) at (1,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (b2) at (2,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(9-2-2)] (b3) at (4,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(8-1-1)] (b4) at (7,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(9-9-9)] (b5) at (10,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(10-1-4)] (b6) at (14,5) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (c1) at (1,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (c2) at (2,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-10)] (c3) at (3,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(9-2-2)] (c4) at (5.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(8-1-1)] (c5) at (7,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(9-9-9)] (c6) at (9,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(1-2-1)] (c7) at (11.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(10-1-4)] (c8) at (14,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (u1) at (0,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (u2) at (1.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-9-9)] (u3) at (2.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u4) at (3.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u5) at (4.8,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-2-2)] (u6) at (6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(8-1-1)] (u7) at (7.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-9-9)] (u8) at (8.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u9) at (9.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u10) at (11.5,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-4)] (u12) at (13.3,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-5)] (u13) at (14.6,3) {};
-%	
-%	\draw [->]
-%	(a) edge[anchor=south] node {b} (ch1) 
-%	(a) edge[anchor=north] node {a} (ch2) 
-%	(a) edge[anchor=west] node {e} (ch3) 
-%	(a) edge[anchor=north] node {c} (ch4) 
-%	(a) edge[anchor=south,line width=1pt, red] node {d} (ch5) 
-%	
-%	(ch1) edge[anchor=east] node {0.5} (b1) 
-%	(ch1) edge[anchor=west] node {0.5} (b2) 
-%	(ch2) edge[anchor=west] node {1} (b3) 
-%	(ch3) edge[anchor=west] node {1} (b4) 
-%	(ch4) edge[anchor=west] node {1} (b5) 
-%	(ch5) edge[anchor=west] node {1} (b6) 
-%	
-%	(b1) edge (c1) 
-%	(b2) edge (c2) 
-%	(b3) edge (c3) 
-%	(b3) edge (c4) 
-%	(b4) edge (c5) 
-%	(b5) edge (c6) 
-%	(b5) edge (c7) 
-%	(b6) edge (c8) 
-%	
-%	(c1) edge (u1) 
-%	(c2) edge (u2) 
-%	(c3) edge (u3) 
-%	(c3) edge (u4) 
-%	(c4) edge (u5) 
-%	(c4) edge (u6) 
-%	(c5) edge (u7) 
-%	(c6) edge (u8) 
-%	(c6) edge (u9) 
-%	(c7) edge (u10) 
-%	(c8) edge (u12) 
-%	(c8) edge (u13) 
-%	;
-%	
-%	\end{tikzpicture}
-%	
-%	\subsection{A is a firm believer in Murphy's laws: "mother nature is a b*!=h", and wants to
-%		play absolutely safe.}
-%	
-%	\begin{tikzpicture}
-%	
-%	\node[draw,scale=0,label=left:A] (a_label) at (0,7) {};
-%	\node[draw,scale=0,label=left:CHANCE] (c_label) at (0,6) {};
-%	\node[draw,scale=0,label=left:B] (b_label) at (0,5) {};
-%	\node[draw,scale=0,label=left:C] (c_label) at (0,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(8-1-1)] (a) at (7,7) {};
-%	
-%	\node[draw,circle,scale=0.7,label=above:(7-1-1)] (ch1) at (1.5,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(1-1-9)] (ch2) at (4,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(8-1-1)] (ch3) at (7,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(1-1-10)] (ch4) at (10,6) {};
-%	\node[draw,circle,scale=0.7,label=right:(1-1-5)] (ch5) at (14,6) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (b1) at (1,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (b2) at (2,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-9)] (b3) at (4,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(8-1-1)] (b4) at (7,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-10)] (b5) at (10,5) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-5)] (b6) at (14,5) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (c1) at (1,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (c2) at (2,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-9)] (c3) at (3,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(1-2-1)] (c4) at (5.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(8-1-1)] (c5) at (7,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-10)] (c6) at (9,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=above:(1-2-1)] (c7) at (11.5,4) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=right:(1-1-5)] (c8) at (14,4) {};
-%	
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-1)] (u1) at (0,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(7-1-1)] (u2) at (1.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-9-9)] (u3) at (2.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u4) at (3.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u5) at (4.8,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-2-2)] (u6) at (6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(8-1-1)] (u7) at (7.2,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(9-9-9)] (u8) at (8.4,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-10)] (u9) at (9.6,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-2-1)] (u10) at (11.5,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(10-1-4)] (u12) at (13.3,3) {};
-%	\node[draw,fill=black,circle,scale=0.3,label=below:(1-1-5)] (u13) at (14.6,3) {};
-%	
-%	\draw [->]
-%	(a) edge[anchor=south] node {b} (ch1) 
-%	(a) edge[anchor=north] node {a} (ch2) 
-%	(a) edge[anchor=west,line width=1pt, red] node {e} (ch3) 
-%	(a) edge[anchor=north] node {c} (ch4) 
-%	(a) edge[anchor=south] node {d} (ch5) 
-%	
-%	(ch1) edge[anchor=east] node {0.5} (b1) 
-%	(ch1) edge[anchor=west] node {0.5} (b2) 
-%	(ch2) edge[anchor=west] node {1} (b3) 
-%	(ch3) edge[anchor=west] node {1} (b4) 
-%	(ch4) edge[anchor=west] node {1} (b5) 
-%	(ch5) edge[anchor=west] node {1} (b6) 
-%	
-%	(b1) edge (c1) 
-%	(b2) edge (c2) 
-%	(b3) edge (c3) 
-%	(b3) edge (c4) 
-%	(b4) edge (c5) 
-%	(b5) edge (c6) 
-%	(b5) edge (c7) 
-%	(b6) edge (c8) 
-%	
-%	(c1) edge (u1) 
-%	(c2) edge (u2) 
-%	(c3) edge (u3) 
-%	(c3) edge (u4) 
-%	(c4) edge (u5) 
-%	(c4) edge (u6) 
-%	(c5) edge (u7) 
-%	(c6) edge (u8) 
-%	(c6) edge (u9) 
-%	(c7) edge (u10) 
-%	(c8) edge (u12) 
-%	(c8) edge (u13) 
-%	;
-%	
-%	\end{tikzpicture}
+
 	
 
 \end{document}
