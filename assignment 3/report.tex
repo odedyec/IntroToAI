@@ -230,10 +230,71 @@
 	\textbf{Valid}.  Number of models is 2.
 	
 	
-	\section{FOL and situation calculus}
+	\section{FOL and situation calculus}		
+
+	\subsection{Axioms of world behavior}
 	
+	\subsubsection{Auxiliary predicats }
+	\begin{itemize}
+		\item TimeUp(s) - check if time passed the deadline
+		
+		$ \forall s, t \quad TimeUp(s) \Leftrightarrow Time(t, s) > Deadline(t) $
+	\end{itemize}
+
+
+	\subsubsection{Effect axioms}
+	\begin{itemize}
+		
+		
+		
+		\item Moving to edge - update time fluent
+		
+		For every action, the new time to the current time the time for performing the action
+		$$ 
+		\forall a, s, t \quad Time(t, Result(a, s)) \Leftrightarrow 
+		[(a=NoOp \land Time(t+1, s)) 
+		\lor 
+		(\exists e \quad a=Traverse(e) \land Time(t+Weight(e, w), s))]
+		$$
+		
+		\item Pickup people
+		
+		$ \forall v, a, s \quad Loc(v, Result(a, s)) \Rightarrow Carrying(n + At(v, n, s), Result(a, s))  $
+		
+		\item Remove picked up people
+		
+		For all states and vertices, 0 people are at vertex, v, if loc is v.
+		
+		$ \forall v, a, s \quad Loc(v, Result(a, s)) \Rightarrow  At(v, 0, Result(a, s))$
+		
+		\item Save people
+		
+		People in vehicle are safe if vehicle is at a shelter and time is not up
+		
+		$ \forall s, a, v \quad Loc(v, s) \land Shelter(v) \land \nt{TimeUp(s)} \Rightarrow Safe(n + Carrying(n, s), Result(a, s))  $
+		
+		\item Remove carried people
+
+		$ \forall s, a, v \quad Loc(v, s) \land Shelter(v) \land \nt{TimeUp(s)} \Rightarrow Carrying(0, Result(a, s))  $
+				
+	\end{itemize}
+
+
 	
-	
+	\subsubsection{Successor state axioms}
+	\begin{itemize}
+		\item Number of people in towns never change
+		
+		$ \forall a, v, s\quad At(v, n, Result(a, s)) \Leftrightarrow At(v, n, s) \land \nt{Loc(v, s)}$
+		
+		\item Number of safe people never change
+		
+		$ \forall a, s \quad Safe(n, Result(a, s)) \Leftrightarrow Safe(n, s) + (\exists v\quad (Loc(v, s) \land Shelter(v) ) \times Carrying(n, s))$
+		
+		\item Number of people carrying never change
+		
+		$ \forall s \quad Carrying(n, s+1) \Leftrightarrow Carrying(n, s) \land (\exists v \quad (Loc(v, s) \land \nt{Shelter(v)}) $
+	\end{itemize}
 	
 
 	
