@@ -238,7 +238,11 @@
 	\begin{itemize}
 		\item TimeUp(s) - check if time passed the deadline
 		
-		$ \forall s, t \quad TimeUp(s) \Leftrightarrow Time(t, s) > Deadline(t) $
+		$ \forall s, t \exists d \quad TimeUp(s) \Rightarrow Time(t, s) > Deadline(d) $
+		
+		\item Bidirectional edge
+		$$ \forall e, v1, v2 \quad Edge(e, v1, v2) \Leftrightarrow Edge(e, v2, v1) $$
+		
 	\end{itemize}
 
 
@@ -247,35 +251,41 @@
 		
 		
 		
-		\item Moving to edge - update time fluent
-		
-		For every action, the new time to the current time the time for performing the action
+		\item Update time fluent
 		$$ 
-		\forall a, s, t \quad Time(t, Result(a, s)) \Leftrightarrow 
-		[(a=NoOp \land Time(t+1, s)) 
-		\lor 
-		(\exists e \quad a=Traverse(e) \land Time(t+Weight(e, w), s))]
+		\forall a, s, t \quad  
+		(\exists e, w \quad a=Traverse(e) \land Weight(e, w)) \land Time(t, s)
+		\Rightarrow 
+		Time(t+w, Result(a, s))
+		$$
+		or,
+		$$ 
+		\forall at, a, s, t \quad  
+		a=NoOp() \land Time(t, s)
+		\Rightarrow 
+		Time(t+1, Result(a, s))
+		$$
+				
+		\item Loc update
+		$$
+		\forall s, v1, a, e \quad (\exists v \quad a=Traverse(e) \land Edge(e, v, v1) \land Loc(v, s)) \Rightarrow Loc(v1, Result(a, s))
 		$$
 		
 		\item Pickup people
-		
-		$ \forall v, a, s \quad Loc(v, Result(a, s)) \Rightarrow Carrying(n + At(v, n, s), Result(a, s))  $
+		$$ \forall c, v, a, s \quad Carrying(c ,s)\land Loc(v, Result(a, s)) \Rightarrow \exists n At(v, n, s) \land Carrying(c + n, Result(a, s))  $$
 		
 		\item Remove picked up people
 		
 		For all states and vertices, 0 people are at vertex, v, if loc is v.
-		
-		$ \forall v, a, s \quad Loc(v, Result(a, s)) \Rightarrow  At(v, 0, Result(a, s))$
+		$$ \forall v, a, s \quad Loc(v, Result(a, s)) \Rightarrow  At(v, 0, Result(a, s))$$
 		
 		\item Save people
 		
 		People in vehicle are safe if vehicle is at a shelter and time is not up
-		
-		$ \forall s, a, v \quad Loc(v, s) \land Shelter(v) \land \nt{TimeUp(s)} \Rightarrow Safe(n + Carrying(n, s), Result(a, s))  $
+		$$ \forall s, a, v, n \quad Safe(n, s) \land Loc(v, s) \land Shelter(v) \land \nt{TimeUp(s)} \Rightarrow \exists c\quad Safe(n + c, Result(a, s))\land Carrying(c, s)  $$
 		
 		\item Remove carried people
-
-		$ \forall s, a, v \quad Loc(v, s) \land Shelter(v) \land \nt{TimeUp(s)} \Rightarrow Carrying(0, Result(a, s))  $
+		$$ \forall s, a, v \quad Loc(v, s) \land Shelter(v) \land \nt{TimeUp(s)} \Rightarrow Carrying(0, Result(a, s))  $$
 				
 	\end{itemize}
 
@@ -283,21 +293,235 @@
 	
 	\subsubsection{Successor state axioms}
 	\begin{itemize}
-		\item Number of people in towns never change
+		\item Loc unchanged
+		$$
+		\forall a, s, v  \quad Loc(v, s) \Leftrightarrow Loc(v, Result(a, s)) \land (a = NoOp())
+		$$
 		
-		$ \forall a, v, s\quad At(v, n, Result(a, s)) \Leftrightarrow At(v, n, s) \land \nt{Loc(v, s)}$
+		\item Number of people in towns unchanged
+		$$ \forall a, v, s\quad  At(v, n, s) \land \nt{Loc(v, s)} \Rightarrow At(v, n, Result(a, s)) $$
 		
-		\item Number of safe people never change
+		\item Number of safe people unchanged
+		$$ \forall a, s \quad   Safe(n, s) + (\exists v\quad (Loc(v, s) \land \neg Shelter(v) ) \Rightarrow Safe(n, Result(a, s))$$
 		
-		$ \forall a, s \quad Safe(n, Result(a, s)) \Leftrightarrow Safe(n, s) + (\exists v\quad (Loc(v, s) \land Shelter(v) ) \times Carrying(n, s))$
-		
-		\item Number of people carrying never change
-		
-		$ \forall s \quad Carrying(n, s+1) \Leftrightarrow Carrying(n, s) \land (\exists v \quad (Loc(v, s) \land \nt{Shelter(v)}) $
+		\item Number of people carrying unchanged
+		$$ \forall a, s \quad Carrying(n, s) \land (\exists v \quad (Loc(v, s) \land \nt{Shelter(v)}) \Rightarrow  Carrying(n, Result(a, ∨ ∃(cs))$$
 	\end{itemize}
 	
 
+	\subsection{Prove that the people in V3 are safe}
+
+	Please note - This is an extremely long process. Therefore, all the NoOp are not written since they are not part of the plan. In addition, simple arithmetic, which should be part of the axioms are excluded. 
+	\subsubsection{CNF}
+	$$ 
+	\forall a, s, t \quad  
+	(\forall e, w \quad \neg a=Traverse(e) \lor \neg Weight(e, w)) \lor \neg Time(t, s)
+	\lor 
+	Time(t+w, Result(a, s))
+	$$
 	
+	$$
+	\forall s, v1, a, e \quad (\neg\exists v \quad a=Traverse(e) \land Edge(e, v, v1) \land Loc(v, s)) \lor Loc(v1, Result(a, s))
+	$$
+	\begin{equation}\label{key}
+	\forall s, v1, a, e \quad (\forall v \quad \neg (a=Traverse(e)) \lor \neg Edge(e, v, v1) \lor \neg Loc(v, s)) \lor Loc(v1, Result(a, s))
+	\end{equation}
+	
+	\begin{equation}\label{key}
+	 \forall v, a, s, c \quad \neg Carrying(c, s) \lor \neg Loc(v, Result(a, s)) \lor (\exists n Carrying(n + c, Result(a, s)) 
+	\end{equation}
+	
+	\begin{equation}\label{key}
+		\forall s, t \exists d \quad \neg TimeUp(s) \lor (Time(t, s) > Deadline(d))
+	\end{equation}	
+	
+	\begin{equation}\label{key}
+	\forall e, v1, v2 (\neg Edge(e, v1, v2) \lor Edge(e, v2, v1)) \land (Edge(e, v1, v2) \lor \neg Edge(e, v2, v1))
+	\end{equation}
+	
+	\begin{equation}\label{cnf:at_unc}
+ 	\forall a, v, s\quad At(v, n, Result(a, s)) \lor \neg At(v, n, s) \lor \nt{Loc(v, s)}
+	\end{equation}
+	
+	\begin{equation}\label{cnf:edge}
+	\forall e, v1, v2 \quad (\neg Edge(e, v1, v2) \lor Edge(e, v2, v1) ) \land (Edge(e, v1, v2) \lor \neg Edge(e, v2, v1) )
+	\end{equation}
+	
+	
+	\begin{equation}\label{cnf:remove_pickup}
+	 \forall v, a, s \quad \neg Loc(v, Result(a, s)) \lor  At(v, 0, Result(a, s))
+	\end{equation}
+	
+	\begin{equation}\label{key}
+	\forall v, a, s, c \quad \neg Carrying(c, s) \neg Loc(v, Result(a, s)) \lor (\exists n \quad Carrying(n + c, Result(a, s)) \land At(v, n, s))
+	\end{equation}
+	
+	
+	\begin{equation}\label{cnf:safe}
+	\neg Safe(n, s) \lor \neg Loc(v, s) \lor \neg Shelter(v) \lor {TimeUp(s)} \lor \exists (c\quad Safe(n + c, Result(a, s))\land Carrying(c, s))
+	\end{equation}
+	
+	
+	
+	
+	\subsubsection{What we need to prove}
+	From Q2 we have discovered that the optimal plan is $ E2 \rightarrow E3 \rightarrow E3 \rightarrow E2 $, and the location of the agent will be $ V0 \rightarrow V2 \rightarrow V3 \rightarrow V2 \rightarrow V0$.
+	
+	In order to show this plan, $ p=[Traverse(E2), Traverse(E3), Traverse(E3), Traverse(E2)] $ will actually save the people in $ V3 $, we shall prove by contradiction that time will not elapse, i.e. $ KB \land p \land TimeOut(S4) $ is false. In addition, we shall prove that the people are actually safe, i.e., $ KB \land p \land (\exists n \quad \neg(Safe(n, S4)\land At(V3, n, s0))) $
+	
+	\subsubsection{Proof with resolution}
+	$$ S1 = Result(Traverse(E2), S0) $$
+	$$ S2 = Result(Traverse(E3), S1) $$
+	$$ S3 = Result(Traverse(E3), S2) $$
+	$$ S4 = Result(Traverse(E2), S3) $$
+	$$ TimeOut(S4) $$
+	
+	$$ Loc(V0, S0) $$ 
+	$$ Carrying(0, S0) $$ 
+	$$ At(V3, 1, S0) $$ 
+	$$ At(V1, 9, S0) $$  
+	$$ Safe(0, S0) $$ 
+	$$ Time(0, S0) $$ 
+	
+	And more...
+	
+	1. Proof of Timeup
+	
+	\begin{equation}\label{cnf:timeout}
+	TimeUp(S4), Deadline(9), \neg TimeUp(s) \lor (Time(t, s) > Deadline(d)) \rightarrow
+	\end{equation}
+	$$ Time(t, S4) > Deadline(9) $$
+	
+	
+	\begin{equation}\label{key}
+	\begin{split}
+	Time(0, S0), S1 = Result(Traverse(E2), S0), Weight(E2,2), \\
+	 \neg a=Traverse(e) \lor \neg Weight(e, w)) \lor \neg Time(t, s)
+	\lor 
+	Time(t+w, Result(a, s))
+	\end{split}
+	\end{equation}
+	$$ Time(0+2, S1) \rightarrow Time(2, S1) $$
+	
+	\begin{equation}\label{key}
+	\begin{split}
+	Time(1, S1), S2 = Result(Traverse(E3), S1), Weight(E3,1),  \\
+	\neg a=Traverse(e) \lor \neg Weight(e, w)) \lor \neg Time(t, s)
+	\lor 
+	Time(t+w, Result(a, s))
+	\end{split}
+	\end{equation}	
+	$$ Time(2+1, S2) \rightarrow Time(3, S2) $$	
+
+	\begin{equation}\label{key}
+	\begin{split}
+	Time(3, S3), S3 = Result(Traverse(E3), S2), Weight(E3,1),  \\
+	\neg a=Traverse(e) \lor \neg Weight(e, w)) \lor \neg Time(t, s)
+	\lor 
+	Time(t+w, Result(a, s))
+	\end{split}
+	\end{equation}	
+	$$ Time(3+1, S3) \rightarrow Time(4, S3) $$	
+
+	\begin{equation}\label{key}
+	\begin{split}
+	Time(4, S3), S2 = Result(Traverse(E2), S3), Weight(E2,2),  \\
+	\neg a=Traverse(e) \lor \neg Weight(e, w)) \lor \neg Time(t, s)
+	\lor 
+	Time(t+w, Result(a, s))
+	\end{split}
+	\end{equation}	
+	$$ Time(4+2, S4) \rightarrow Time(6, S4) $$	
+	
+	From CNF \ref{cnf:timeout} and the Time expansion above we get a contradiction, i.e.,
+	\begin{equation}\label{key}
+	\begin{split}
+		Time(6, S4), Time(t, S4) > Deadline(9) \Rightarrow False
+	\end{split}
+	\end{equation}
+	
+	This concludes that time does not elapse. We will continue with proving the people are safe.
+	
+	2. Proof of safety
+	$$ \exists n \quad \neg(Safe(n, S4)\land At(V3, n, s0)) $$
+	$$ \exists n \quad \neg Safe(n, S4)\lor \neg At(V3, n, s0) $$
+	
+	Along with At(V3, 1, S0) we need to disprove that,
+	$$ \neg Safe(1, S4) $$
+	
+	\begin{equation}\label{key}
+	\begin{split}
+	S1 = Result(Traverse(E2), S0), Loc(V0, S0), Edge(E2, V0, V2),  \\\neg (a=Traverse(e)) \lor \neg Edge(e, v, v1) \lor \neg Loc(v, s)) \lor Loc(v1, Result(a, s))
+	\end{split}
+	\end{equation}
+	$$ Loc(V2, S1) $$
+	
+	\begin{equation}\label{key}
+	\begin{split}
+	S2 = Result(Traverse(E3), S1), Loc(V2, S1), Edge(E3, V2, V3),  \\\neg (a=Traverse(e)) \lor \neg Edge(e, v, v1) \lor \neg Loc(v, s)) \lor Loc(v1, Result(a, s))
+	\end{split}
+	\end{equation}
+	$$ Loc(V3, S2) $$
+	
+	\begin{equation}\label{key}
+	\begin{split}
+	S3 = Result(Traverse(E3), S2), Loc(V3, S2), Edge(E3, V2, V3),  \\\neg (a=Traverse(e)) \lor \neg Edge(e, v, v1) \lor \neg Loc(v, s)) \lor Loc(v1, Result(a, s)), and \eqref{cnf:edge}
+	\end{split}
+	\end{equation}
+	$$ Loc(V2, S3) $$
+	
+	\begin{equation}\label{key}
+	\begin{split}
+	S4 = Result(Traverse(E2), S3), Loc(V2, S3), Edge(E2, V0, V2), \\ \neg (a=Traverse(e)) \lor \neg Edge(e, v, v1) \lor \neg Loc(v, s)) \lor Loc(v1, Result(a, s)), and \eqref{cnf:edge}
+	\end{split}
+	\end{equation}
+	$$ Loc(V0, S4) $$
+	
+	In addition, we need to move the At() fluents forward for all cases, but we will show only for V3 using \ref{cnf:at_unc}
+	\begin{equation}\label{key}
+	\begin{split}
+	S1 = Result(Traverse(E2), S0), At(V3, 1, S0), Loc(V0, S0),	 \\At(v, n, Result(a, s)) \lor \neg At(v, n, s) \lor \nt{Loc(v, s)} \rightarrow
+	\end{split}
+	\end{equation}
+	$$ At(V3, 1, S1) $$
+	
+	\begin{equation}\label{key}
+	\begin{split}
+	S2 = Result(Traverse(E3), S1), At(V3, 1, S1), Loc(V2, S1),	 \\At(v, n, Result(a, s)) \lor \neg At(v, n, s) \lor \nt{Loc(v, s)} \rightarrow
+	\end{split}
+	\end{equation}
+	$$ At(V3, 1, S2) $$
+	
+	At next state \eqref{cnf:at_unc} will not hold, however, \eqref{cnf:remove_pickup} does hold, and thus,
+	\begin{equation}\label{key}
+	\begin{split}
+	S3 = Result(Traverse(E3), S2), At(V3, 1, S2), Loc(V3, S2),	 \\\neg Loc(v, Result(a, s)) \lor  At(v, 0, Result(a, s)) \rightarrow
+	\end{split}
+	\end{equation}
+	$$ At(V3, 0, S3) $$
+	
+	Now we need to handle the carrying fluent. The same procedure is applied as with the At fluent. To conserve time and space, we will skip this process and jump to the fluent at state S4, i.e., 
+	$$ Carrying(1, S4) $$
+	
+	The final step for proving the people are safe is performed using \eqref{cnf:safe}. Once again, we skipped propagating the safe fluent through states.
+	
+	\begin{equation}\label{key}
+	\begin{split}
+	Safe(0, S3), S4=Result(Tranverse(E2), S3), Loc(v0, S4), Shelter(V0), \neg TimeUp(S4), Carrying(1, S4) \\
+	\neg Safe(n, s) \lor \neg Loc(v, s) \lor \neg Shelter(v) \lor {TimeUp(s)} \lor \exists (c\quad Safe(n + c, Result(a, s))\land Carrying(c, s))
+	\end{split}
+	\end{equation}
+	$$ 	Safe(1, S4) $$
+	
+	We got a contradiction, therefore, the people are safe and sound. 
+	
+	
+
+	\subsection{Remove frame axioms - bad idea}
+	Of course the proof will fail without the frame (Successor state) axioms since we won't have any knowledge of whether there are people at $ V_3 $ any more, or will not know what if people are safe, or are we carrying people in the vehicle.
+	
+	\subsection{Proving with forward chaining}
+	Unfortunately, Forward chaining is not an option since there are some non Horn clauses (e.g. \eqref{cnf:safe}) where more than one of the predacits is positive. 
 
 \end{document}
 
