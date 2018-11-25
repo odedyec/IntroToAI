@@ -1,0 +1,31 @@
+\contentsline {section}{\numberline {1}Agents and environment simulators}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}An agent that plays Whist}{2}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}An agent that can solve Sokoban problems}{2}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}An autonomous humanoid robot that can win the DARPA robotics challenge}{2}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}An internet shopping agent specializing in trip planning}{2}{subsection.1.4}
+\contentsline {subsection}{\numberline {1.5}An agent that can play Go}{2}{subsection.1.5}
+\contentsline {section}{\numberline {2}Search}{2}{section.2}
+\contentsline {subsection}{\numberline {2.1}Greedy agent}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}$ A^* $}{3}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Real-time $ A^* $}{4}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}$ h=2 * h' $}{4}{subsection.2.4}
+\contentsline {section}{\numberline {3}Game trees}{6}{section.3}
+\contentsline {section}{\numberline {4}Game-tree search - alpha-beta pruning}{6}{section.4}
+\contentsline {section}{\numberline {5}Propositional logic}{6}{section.5}
+\contentsline {subsection}{\numberline {5.1}$ (\neg A \land \neg B \land \neg C \land \neg D \land \neg E \land F) \lor (A \land B \land C \land D \land E)$}{6}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}$ (\neg A \lor \neg B \lor \neg C \lor \neg D \lor \neg E \lor \neg F) \land (A \lor B \lor C \lor D \lor E \lor F)$}{6}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}$ (A \lor B \land (D \lor \neg A) \land (E \lor A) \Rightarrow (B \lor C \land (\neg D \lor E))) \land (A \land \neg A)$}{6}{subsection.5.3}
+\contentsline {subsection}{\numberline {5.4}$ (A \land (A \Rightarrow B) \land (B \Rightarrow C)) \Rightarrow C $}{6}{subsection.5.4}
+\contentsline {subsection}{\numberline {5.5}$ \neg ((A \land (A \Rightarrow B) \land (B \Rightarrow C)) \Rightarrow C )$}{7}{subsection.5.5}
+\contentsline {subsection}{\numberline {5.6}$ (A\Rightarrow \neg A) \lor (\neg A \Rightarrow A) $}{7}{subsection.5.6}
+\contentsline {section}{\numberline {6}FOL and situation calculus}{7}{section.6}
+\contentsline {subsection}{\numberline {6.1}Axioms of world behavior}{7}{subsection.6.1}
+\contentsline {subsubsection}{\numberline {6.1.1}Auxiliary predicats }{7}{subsubsection.6.1.1}
+\contentsline {subsubsection}{\numberline {6.1.2}Effect axioms}{7}{subsubsection.6.1.2}
+\contentsline {subsubsection}{\numberline {6.1.3}Successor state axioms}{8}{subsubsection.6.1.3}
+\contentsline {subsection}{\numberline {6.2}Prove that the people in V3 are safe}{8}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}CNF}{9}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}What we need to prove}{9}{subsubsection.6.2.2}
+\contentsline {subsubsection}{\numberline {6.2.3}Proof with resolution}{9}{subsubsection.6.2.3}
+\contentsline {subsection}{\numberline {6.3}Remove frame axioms - bad idea}{12}{subsection.6.3}
+\contentsline {subsection}{\numberline {6.4}Proving with forward chaining}{12}{subsection.6.4}
