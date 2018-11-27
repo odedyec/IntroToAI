@@ -77,6 +77,8 @@
 	
 	We can examine an example of calculating the heuristics for the starting location. The agent is at $ V_0 $ and it is possible to go to $ V_1 $ or $ V_2 $. The heuristic for going to $ V_1 $ will be 100, since we have picked up all the 9 people in $ V_1 $ and the only town with people is $ V_3 $ with 1 person. Going to $ V_2 $ will result in a heuristic of 900, since in $ V_1 $ there are 9 people which are un-savable.
 	
+	\textbf{NOTE - } this heuristic is not admissible! In the assignment we have used a different heuristic which is admissible where all of the people are taken into account, not only the people in the town with most people.
+	
 	
 	\subsection{Greedy agent}
 	From the example above, the greedy agent will obviously prefer going to $ V_1 $, even-though it is obvious that the pick-up will be his final move. Fig. \ref{fig:q2a} shows the decision making of the greedy agent: $ V_0 \rightarrow V_1 \rightarrow V_3 $.
@@ -92,7 +94,7 @@
 	
 	
 	\subsection{$ A^* $}
-	Opposed to the greedy agent, the $ A^* $ agent will provide an optimal solution since the heuristic is admissible. Since, the heuristic is extremely optimistic the $ A^* $ agent will perform much more expansions than he would have needed if the heuristic was better.
+	Opposed to the greedy agent, the $ A^* $ agent will provide an optimal solution, although the heuristic is not admissible. This is due to the fact that the g value is complementary. Since, the heuristic is extremely optimistic the $ A^* $ agent will perform much more expansions than he would have needed if the heuristic was better.
 	
 	The $ A^* $ agent takes into account the time took to get to this state, and if a goal state is reached it adds the number of unsaved  people.
 	\begin{equation}\label{eq:g_val}
@@ -187,7 +189,7 @@
 	
 	For unsatisfiability it will be shown that the setence is always false.
 	
-	Number of models equals to: $ 2^n $, where n is the number of symbols.
+	Number of models equals to: $ 2^n $, if the sentence is valid, where n is the number of symbols.
 	
 	\subsection{$ (\nt{A} \land \nt{B} \land \nt{C} \land \nt{D} \land \nt{E} \land F) \lor (A \land B \land C \land D \land E)$}
 	\textit{True model} - A, B, C, D, F are true, therefore,
@@ -198,7 +200,7 @@
 
 	$ False \lor False = False $
 	
-	\textbf{Satisfiable}.
+	\textbf{Satisfiable}. Number of satisfiable models is 3.
 	\subsection{$ (\nt{A} \lor \nt{B} \lor \nt{C} \lor \nt{D} \lor \nt{E} \lor \nt{F}) \land (A \lor B \lor C \lor D \lor E \lor F)$}
 	\textit{False model} - A, B, C, D, F are true, therefore,
 	
@@ -208,7 +210,7 @@
 	
 	$ True \land True = True $
 	
-	\textbf{Satisfiable}. Number of models is 64.
+	\textbf{Satisfiable}. Number of satisfiable models is 62.
 	
 	\subsection{$ (A \lor B \land (D \lor \nt{A}) \land (E \lor A) \Rightarrow  (B \lor C \land (\nt{D} \lor E))) \land (A \land \nt{A})$}
 	
@@ -217,7 +219,7 @@
 	
 	$ \alpha \land (A \land \nt{A}) \rightarrow \alpha \land False \rightarrow False $
 	
-	\textbf{Unsatisfiable}  Number of models is 64.
+	\textbf{Unsatisfiable}  Number of models is 0.
 	
 	\subsection{$ (A \land (A \Rightarrow B) \land (B \Rightarrow C)) \Rightarrow C $}
 
@@ -256,7 +258,7 @@
 		$ \neg (True) \rightarrow False$
 	\end{description}
 
-	\textbf{Unsatisfiable}.  Number of models is 8.
+	\textbf{Unsatisfiable}.  Number of models is 0.
 	
 	\subsection{$ (A\Rightarrow \nt{A}) \lor (\nt{A} \Rightarrow A) $}
 		\begin{description}
