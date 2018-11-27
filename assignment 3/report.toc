@@ -16,21 +16,24 @@
 \contentsline {subsection}{\numberline {3.4}A and C are partners aiming to maximize the sum of their scores}{8}{subsection.3.4}
 \contentsline {subsection}{\numberline {3.5}A is a firm believer in Murphy's laws: "mother nature is a b*!=h", and wants toplay absolutely safe.}{8}{subsection.3.5}
 \contentsline {section}{\numberline {4}Game-tree search - alpha-beta pruning}{9}{section.4}
-\contentsline {section}{\numberline {5}Propositional logic}{9}{section.5}
-\contentsline {subsection}{\numberline {5.1}$ (\neg A \land \neg B \land \neg C \land \neg D \land \neg E \land F) \lor (A \land B \land C \land D \land E)$}{9}{subsection.5.1}
-\contentsline {subsection}{\numberline {5.2}$ (\neg A \lor \neg B \lor \neg C \lor \neg D \lor \neg E \lor \neg F) \land (A \lor B \lor C \lor D \lor E \lor F)$}{9}{subsection.5.2}
-\contentsline {subsection}{\numberline {5.3}$ (A \lor B \land (D \lor \neg A) \land (E \lor A) \Rightarrow (B \lor C \land (\neg D \lor E))) \land (A \land \neg A)$}{9}{subsection.5.3}
-\contentsline {subsection}{\numberline {5.4}$ (A \land (A \Rightarrow B) \land (B \Rightarrow C)) \Rightarrow C $}{9}{subsection.5.4}
-\contentsline {subsection}{\numberline {5.5}$ \neg ((A \land (A \Rightarrow B) \land (B \Rightarrow C)) \Rightarrow C )$}{10}{subsection.5.5}
-\contentsline {subsection}{\numberline {5.6}$ (A\Rightarrow \neg A) \lor (\neg A \Rightarrow A) $}{10}{subsection.5.6}
-\contentsline {section}{\numberline {6}FOL and situation calculus}{10}{section.6}
-\contentsline {subsection}{\numberline {6.1}Axioms of world behavior}{10}{subsection.6.1}
-\contentsline {subsubsection}{\numberline {6.1.1}Auxiliary predicats }{10}{subsubsection.6.1.1}
-\contentsline {subsubsection}{\numberline {6.1.2}Effect axioms}{10}{subsubsection.6.1.2}
-\contentsline {subsubsection}{\numberline {6.1.3}Successor state axioms}{11}{subsubsection.6.1.3}
-\contentsline {subsection}{\numberline {6.2}Prove that the people in V3 are safe}{11}{subsection.6.2}
-\contentsline {subsubsection}{\numberline {6.2.1}CNF}{12}{subsubsection.6.2.1}
-\contentsline {subsubsection}{\numberline {6.2.2}What we need to prove}{12}{subsubsection.6.2.2}
-\contentsline {subsubsection}{\numberline {6.2.3}Proof with resolution}{13}{subsubsection.6.2.3}
-\contentsline {subsection}{\numberline {6.3}Remove frame axioms - bad idea}{15}{subsection.6.3}
-\contentsline {subsection}{\numberline {6.4}Proving with forward chaining}{15}{subsection.6.4}
+\contentsline {subsection}{\numberline {4.1}Construct an example where the optimal first move is no-op}{9}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Construct and show an example}{10}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Show where alpha-beta pruning can decrease search effort in the tree from b}{10}{subsection.4.3}
+\contentsline {section}{\numberline {5}Propositional logic}{10}{section.5}
+\contentsline {subsection}{\numberline {5.1}$ (\neg A \land \neg B \land \neg C \land \neg D \land \neg E \land F) \lor (A \land B \land C \land D \land E)$}{10}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}$ (\neg A \lor \neg B \lor \neg C \lor \neg D \lor \neg E \lor \neg F) \land (A \lor B \lor C \lor D \lor E \lor F)$}{11}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}$ (A \lor B \land (D \lor \neg A) \land (E \lor A) \Rightarrow (B \lor C \land (\neg D \lor E))) \land (A \land \neg A)$}{11}{subsection.5.3}
+\contentsline {subsection}{\numberline {5.4}$ (A \land (A \Rightarrow B) \land (B \Rightarrow C)) \Rightarrow C $}{11}{subsection.5.4}
+\contentsline {subsection}{\numberline {5.5}$ \neg ((A \land (A \Rightarrow B) \land (B \Rightarrow C)) \Rightarrow C )$}{11}{subsection.5.5}
+\contentsline {subsection}{\numberline {5.6}$ (A\Rightarrow \neg A) \lor (\neg A \Rightarrow A) $}{12}{subsection.5.6}
+\contentsline {section}{\numberline {6}FOL and situation calculus}{12}{section.6}
+\contentsline {subsection}{\numberline {6.1}Axioms of world behavior}{12}{subsection.6.1}
+\contentsline {subsubsection}{\numberline {6.1.1}Auxiliary predicats }{12}{subsubsection.6.1.1}
+\contentsline {subsubsection}{\numberline {6.1.2}Effect axioms}{12}{subsubsection.6.1.2}
+\contentsline {subsubsection}{\numberline {6.1.3}Successor state axioms}{13}{subsubsection.6.1.3}
+\contentsline {subsection}{\numberline {6.2}Prove that the people in V3 are safe}{13}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}CNF}{13}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}What we need to prove}{14}{subsubsection.6.2.2}
+\contentsline {subsubsection}{\numberline {6.2.3}Proof with resolution}{14}{subsubsection.6.2.3}
+\contentsline {subsection}{\numberline {6.3}Remove frame axioms - bad idea}{17}{subsection.6.3}
+\contentsline {subsection}{\numberline {6.4}Proving with forward chaining}{17}{subsection.6.4}

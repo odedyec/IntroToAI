@@ -180,7 +180,31 @@
 
 	
 	\section{Game-tree search - alpha-beta pruning}
+	\subsection{Construct an example where the optimal first move is no-op}
+	Assuming the world shown in Fig.~\ref{fig:q41}. K=0 and Deadline=5. In this world B is a vandal agent that works as follows: He moves one turn, destroying the traversed edge, and then does NoOp() one turn.
+	The agent A is at V4 and already carrying people (number does not matter). The agent wants to get to the shelter, however, he must see first what B will do. If B goes to V1, A have to be at V1 already, because next move B might go to the shelter and A won't be able to save the carrying people. However, if B goes to V2 or V3 first, the optimal solution will be to save an additional person.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\linewidth]{q4_1.png}
+		\caption{World where all edges are 1. B is a vandal agent that waits 1 turn in place, and one turn moves randomly and destroys the traversed edge. A is carrying 1 person and should wait to see what B does first.}
+		\label{fig:q41}
+	\end{figure}
+
+	\subsection{Construct and show an example}
+	Using the heuristic of calculating how many people will not be saved, the expansion tree is given for the choices of agent A. At first it can go to V2, V3 or do NoOp. For each option, the B agent will randomly go to either V2, V3 or V1 with probability of 1/3. 
 	
+	As seen by Fig.~\ref{fig:q42}, If agent A will go to V2 or V3 there is a possibility that the agent will finish the game with a very high heuristic value, therefore, the h value is 466.
+	
+	However, if agent A will do No-Op then it has enough time to react to agent's B decision.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.9\linewidth]{q4_2.png}
+		\caption{Expansion tree.}
+		\label{fig:q42}
+	\end{figure}
+	
+	\subsection{Show where alpha-beta pruning can decrease search effort in the tree from b}
+	Assume that we start expanding V2. After the choice of agent B, several of the remaining choices can be discarded. In addition (and mostly), due to symmetry, expanding V3 will be futile and will finish this branch much faster.
 	
 	\section{Propositional logic}
 	For validity it will be shown that the sentence is always true.
