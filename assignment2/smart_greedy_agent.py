@@ -1,5 +1,4 @@
 from greedy_agent import Greedy
-from agent import BaseAgent
 from simulator import HurricaneSimulator
 from shortest_path import dijkstra_shortest_path
 import copy
@@ -7,6 +6,7 @@ from utils import find_closest
 
 
 PEOPLE_UNSAVED_VALUE = 100
+
 
 class Node(object):
     def __init__(self, state=None, sim=None, g=0, h=0, p=None):
@@ -19,7 +19,9 @@ class Node(object):
 
 
 class SmartGreedy(Greedy):
-    def get_all_possible_actions(self, sim=HurricaneSimulator()):
+
+    @staticmethod
+    def get_all_possible_actions(sim=HurricaneSimulator()):
         """
         Find all possible actions from a specific node
         :param sim: an environment
@@ -69,7 +71,8 @@ class SmartGreedy(Greedy):
                 people_unable_to_save -= sim.graph[people[2]][people[2]].num_of_people
         return cost + people_unable_to_save * PEOPLE_UNSAVED_VALUE
 
-    def is_goal(self, full_state, sim=HurricaneSimulator()):
+    @staticmethod
+    def is_goal(full_state, sim=HurricaneSimulator()):
         """
         Is a goal reached?
         A goal is run out the clock or best goal is saved all people
@@ -85,7 +88,8 @@ class SmartGreedy(Greedy):
             return True
         return False
 
-    def build_full_state(self, sim=HurricaneSimulator()):
+    @staticmethod
+    def build_full_state(sim=HurricaneSimulator()):
         """
         Build a full state to work with
         :param sim: the env
@@ -105,10 +109,11 @@ class SmartGreedy(Greedy):
                       'number_of_people_to_save': sum_of_people+sim.people_in_vehicle, 'number_of_people_in_vehicle': sim.people_in_vehicle}
         return full_state
 
-    def find_best_branch_to_explore(self, list_of_nodes=[Node()]):
+    @staticmethod
+    def find_best_branch_to_explore(list_of_nodes=[Node()]):
         """
         This function gets a tree of possible states to go to
-        :param states_and_sims:
+        :param list_of_nodes:
         :return:
         """
         best_child = None

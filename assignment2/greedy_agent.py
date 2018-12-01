@@ -1,8 +1,8 @@
 from agent import BaseAgent
 from simulator import HurricaneSimulator
 from shortest_path import dijkstra_shortest_path
+from math import inf
 
-inf = 2 ** 31
 
 class Greedy(BaseAgent):
 

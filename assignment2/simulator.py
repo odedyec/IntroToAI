@@ -15,9 +15,9 @@ def parse_line(line):
         if len(s_line) == 2:
             return SET_NUM_OF_VERTICES, (int(s_line[1]))
         else:
-            return SET_VERTIX_INFO, (int(s_line[1])-1, s_line[2:])
+            return SET_VERTIX_INFO, (int(s_line[1]), s_line[2:])
     if "#E" in line:
-        return SET_EDGE_WEIGHT, (int(s_line[1])-1, int(s_line[2])-1, int(s_line[3]))
+        return SET_EDGE_WEIGHT, (int(s_line[1]), int(s_line[2]), int(s_line[3]))
     if "#D" in line:
         return SET_DEADLINE, (int(s_line[1]))
 
@@ -189,8 +189,4 @@ class HurricaneSimulator:
         self.current_agent = self.all_agents[self.agent_index]
 
 
-if __name__ == '__main__':
-    hs = HurricaneSimulator(0)
-    hs.print_all()
-    hs.print_all()
 

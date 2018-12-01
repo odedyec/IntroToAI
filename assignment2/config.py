@@ -1,11 +1,12 @@
 from human_agent import Human
-from ai_agent import AIAgent
+from adverserial_agent import AdverserialAgent
+from fully_coop_agent import FullyCoopAgent
 
 
 """ Global variables """
 config_file = 'input_graph2.txt'
 K = 0.1  # Set to a value to stop asking for input
-GAME_TYPE = AIAgent.FULLY_COOPERATIVE
-agents = [AIAgent(0, GAME_TYPE), AIAgent(2, GAME_TYPE)]  # Set an agent to stop asking for input
+
+agents = [AdverserialAgent(0), AdverserialAgent(2)]  # Set an agent to stop asking for input
 DEBUG = True
 f_value = -10

@@ -1,21 +1,19 @@
 from smart_greedy_agent import SmartGreedy
-from greedy_agent import Greedy
 from simulator import HurricaneSimulator
 from utils import *
 from copy import deepcopy
+from math import inf
 
 
-class AIAgent(SmartGreedy):
-    ADVERSERIAL = 1
-    SEMI_COOPERATIVE = 2
-    FULLY_COOPERATIVE = 3
-    MAX_DEPTH = 2
+class GameTreeAgent(SmartGreedy):
 
-    def __init__(self, state, game_type=2):
+    def __init__(self, state):
         SmartGreedy.__init__(self, state)
-        self.game_type = game_type
+        self.is_zero_sum = False
+        self.MAX_DEPTH = 2
 
-    def is_terminal(self, sim=HurricaneSimulator()):
+    @staticmethod
+    def is_terminal(sim=HurricaneSimulator()):
         """
         Checks if reached a terminal point, i.e., no more people to save, or time is up
         :param sim:
@@ -27,7 +25,8 @@ class AIAgent(SmartGreedy):
             return True
         return False
 
-    def value(self, sim=HurricaneSimulator()):
+    @staticmethod
+    def value(sim=HurricaneSimulator()):
         """ How many people were saved by each agent """
         return [agent.people_saved for agent in sim.all_agents]
 
@@ -69,42 +68,60 @@ class AIAgent(SmartGreedy):
         return [agent.people_saved + self.calculate_heuristic_for_agent(agent, sim) for agent in sim.all_agents]
 
     def is_new_action_better(self, best_value, new_value, sim_emulator=HurricaneSimulator()):
-        """ check, based on game type, if the new value is better than current best value """
-        if self.game_type == self.SEMI_COOPERATIVE:
-            return (new_value[sim_emulator.agent_index - 1] > best_value[sim_emulator.agent_index - 1] or
-                    (new_value[sim_emulator.agent_index - 1] == best_value[sim_emulator.agent_index - 1] and
-                    new_value[sim_emulator.agent_index] > best_value[sim_emulator.agent_index]))
+        """
+        check, based on game type, if the new value is better than current best value
+        Note that this function is called after apply_action is performed, so the player index
+        is switched. Thus, we use "sim_emulator.agent_index - 1" to refer to the right player.
+        """
+        raise NotImplementedException
 
-        if self.game_type == self.FULLY_COOPERATIVE:
-            return sum(new_value) > sum(best_value)
+    @staticmethod
+    def get_max_agent_score(value_tuple):
+        raise NotImplementedException
 
-        if self.game_type == self.ADVERSERIAL:
-            return new_value[sim_emulator.agent_index - 1] - new_value[sim_emulator.agent_index] >= \
-                   best_value[sim_emulator.agent_index - 1] - best_value[sim_emulator.agent_index]
-
-    def recursive_tree(self, depth, sim=HurricaneSimulator()):
+    def recursive_tree(self, depth, is_zero_sum=True, sim=HurricaneSimulator(), alpha=-inf, beta=inf):
         """
         Main function. Recursively find for each action what is the score and return the action with the best score
         :param depth:
+        :param is_zero_sum:
+        :param alpha:
+        :param beta:
         :param sim:
         :return:
         """
+
+        max_agent = True if sim.agent_index == 0 else False
+
         ''' Check if terminal or depth reached an end '''
         if self.is_terminal(sim):
             return self.value(sim)
         if depth == self.MAX_DEPTH:
             return self.heuristic(sim)
         ''' Set vars '''
-        best_value = [-2 ** 31] * len(sim.all_agents)
+        best_value = [-inf] * len(sim.all_agents)
         best_move = [-1, 1]
         ''' Check all possible actions '''
         for action in self.get_all_possible_actions(sim):
             sim_emulator = deepcopy(sim)
             sim_emulator.apply_action(action[0])
-            new_value = self.recursive_tree(depth + 1, sim_emulator)
+            new_value = self.recursive_tree(depth + 1, is_zero_sum, sim_emulator, alpha, beta)
             if self.is_new_action_better(best_value, new_value, sim_emulator):
                 best_value = new_value
                 best_move = action
+
+            if is_zero_sum:
+                max_agent_score = self.get_max_agent_score(new_value)
+                if max_agent:
+                    "max agent"
+                    if max_agent_score >= beta:
+                        return new_value
+                    alpha = max(alpha, max_agent_score)
+                else:
+                    "min agent"
+                    if max_agent_score <= alpha:
+                        return new_value
+                    beta = min(beta, max_agent_score)
+
         ''' return values '''
         if depth == 0:
             return best_move
@@ -114,6 +131,6 @@ class AIAgent(SmartGreedy):
     def choose_next_option(self, sim=HurricaneSimulator()):
         if self.is_terminal(sim):
             return -1
-        best = self.recursive_tree(0, sim)
+        best = self.recursive_tree(0, self.is_zero_sum, sim)
         return best[0]
 

@@ -1,6 +1,7 @@
 from agent import BaseAgent
 from simulator import HurricaneSimulator
 
+
 class Human(BaseAgent):
 
     def choose_next_option(self, sim=HurricaneSimulator()):
