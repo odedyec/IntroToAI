@@ -27,8 +27,8 @@ class SmartGreedy(Greedy):
         (the vertex to go to, the cost to that vertex (for A*), the heuristic of the vertex)
         """
         weights = sim.get_weights()
-        actions = []
-        for vertex, cost in enumerate(weights[sim.get_state()]):
+        actions = []  # TODO: add as an action (-1, 1)
+        for vertex, cost in enumerate(weights[sim.current_agent.get_state()]):
             if cost != -1:
                 action = (vertex, cost)
                 actions.append(action)
@@ -42,7 +42,7 @@ class SmartGreedy(Greedy):
         :return: a heuristic value
         """
         number_of_people_in_towns = sim.get_number_of_people_in_towns()
-        people_unable_to_save = number_of_people_in_towns + sim.people_in_vehicle
+        people_unable_to_save = number_of_people_in_towns + self.people_in_vehicle
         cost_to_people = self.find_people(sim)  # Find costs for all vertices with people
         cost_to_shelter = self.find_sheleter(sim)  # Find costs for all shelter vertices
 
@@ -51,9 +51,9 @@ class SmartGreedy(Greedy):
             return cost + people_unable_to_save * PEOPLE_UNSAVED_VALUE
         """ Find closest shelter """
         closest_shelter = find_closest(cost_to_shelter)[1]
-        if (1+ sim.K * sim.people_in_vehicle) * closest_shelter + sim.get_time() < sim.deadline:
+        if (1+ sim.K * self.people_in_vehicle) * closest_shelter + sim.get_time() < sim.deadline:
             """ People in vehicle can be saved """
-            people_unable_to_save -= sim.people_in_vehicle
+            people_unable_to_save -= self.people_in_vehicle
         else:
             """ Unable to reach shelter """
             return cost + people_unable_to_save * PEOPLE_UNSAVED_VALUE

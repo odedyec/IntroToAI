@@ -10,3 +10,10 @@ def find_closest(list_of_vertices):
                 closest = vertex
     return closest
 
+
+def sum_of_people(list_of_people):
+    sum_val = 0
+    for row in list_of_people:
+        for i in row:
+            sum_val += i
+    return sum_val
