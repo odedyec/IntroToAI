@@ -22,7 +22,7 @@ class AdverserialAgent(GameTreeAgent):
             '" If the second score is - infinity, set the subtraction to be - infinity "'
             cur_best = -inf
 
-        return new_value[1 - sim_emulator.agent_index] - new_value[sim_emulator.agent_index] >= cur_best
+        return new_value[1 - sim_emulator.agent_index] - new_value[sim_emulator.agent_index] > cur_best
 
     @staticmethod
     def get_max_agent_score(value_tuple):

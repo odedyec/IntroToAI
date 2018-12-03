@@ -96,9 +96,9 @@
 		\end{algorithmic}
 	\end{algorithm}
 	
-	The recursive tree function in Algorithm~\ref{al:recursive} receives a simulator, that hold all of the data and used to emulate each action, depth value representing the depth of tree, and a boolean stating whether it is a zeros sum game. 
+	The recursive tree function in Algorithm~\ref{al:recursive} receives a simulator, that hold all of the data and used to emulate each action, depth value representing the depth of tree, and a Boolean stating whether it is a zeros sum game. 
 	
-	The algorithm starts by checking for terminal states and checks if the depth is maxed out for cutoff purposes. For terminal states the actual value, i.e., number of people saved, of each agent is returned. Maxing out depth returns a heuristic of how many people each agent may save, disregarding the other agent and assuming each town with people is the only town with people.
+	The algorithm starts by checking for terminal states and checks if the depth is maxed out for cutoff purposes. For terminal states the actual value, i.e., number of people saved, of each agent is returned. Maxing out depth returns a heuristic (line~\ref{al:h}) of how many people each agent may save, disregarding the other agent and assuming each town with people is the only town with people.
 	This same heuristic was used in assignment 1.
 	
 	The function continues, if not returned, to a for loop (line \ref{al:actions}) that branches every possible action of an agent, and calls recursively to itself with an emulated simulator where its the next agent's turn, and depth is increased by 1. 
@@ -117,7 +117,7 @@
 	       \State \Return \textsc{Value}(Simulator)
 	       \EndIf
 	       \If {Depth reached MAX\_DEPTH:}
-	       \State \Return \textsc{Heuristic}(Simulator)
+	       \State \Return \textsc{Heuristic}(Simulator) \label{al:h}
 			\EndIf
 			
 			\State BestValue $\longleftarrow  [-inf, -inf] $
@@ -130,7 +130,7 @@
 				
 				\State NewValue $ \leftarrow $ \textsc{RecursiveTree}(Simulator, Depth+1, IsZeroSumGame)
 				
-				\If {\textsc{IsBetterAction}(NewValue, BestValue)}
+				\If {\textsc{IsBetterAction}(NewValue, BestValue)} \label{al:is_better}
 				
 				\State BestValue $ \longleftarrow $ NewValue
 				
@@ -158,9 +158,89 @@
 	\end{algorithm}
 			
 	\subsection{Adversarial agent}
+	The adversarial agent is a zero sum game agent. In plain words, the agent prefers that everyone will die as long as the opponent agent will not save more people than him.
 	
+	Therefore, the \textsc{IsBetterAction} shown in Algorithm~\ref{al:recursive} in line~\ref{al:is_better} will be as follows:
+	\begin{algorithm}[H]
+		\label{al:adv}
+		\caption{Adversarial action assessment}
+		\begin{algorithmic}[1]
+			\Procedure{IsBetterAction}(NewValue, BestValue)
+			\State $ Best \leftarrow BestValue[CurrentAgent] - BestValue[OtherAgent]$
+			\State $ New \leftarrow NewValue[CurrentAgent] - NewValue[OtherAgent]  $
+			\If     {$ New > Best $}
+			\State  \Return True
+			\Else   \Return False
+			\EndIf
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+	
+	The action is better than other options in the case where the difference in values is higher than previous difference in value. 
+
+
 	\subsection{semi-cooperative agent}
-		
+	The semi-cooperative agent tries to maximize its own value, disregarding the other agent value. This is partially true, the agent will help the other agent if he does not sacrifice his own score.
+	The \textsc{IsBetterAction} will be as follows:
+	
+	\begin{algorithm}[H]
+		\label{al:coop}
+		\caption{Semi-cooperative action assessment}
+		\begin{algorithmic}[1]
+			\Procedure{IsBetterAction}(NewValue, BestValue)
+			\State $ Best \leftarrow BestValue[CurrentAgent]$
+			\State $ New \leftarrow NewValue[CurrentAgent]$
+			\If     {$ New > Best~or~(New == Best~and~NewValue[OtherAgent] > BestValue[OtherAgent])$}
+			\State  \Return True
+			\Else   \Return False
+			\EndIf
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+
+	
 	\subsection{Cooperative agent}
+	
+	The cooperative agent tries to maximize the global score, sacrificing his own score for the good of the team. 
+	The \textsc{IsBetterAction} will be as follows:
+	\begin{algorithm}[H]
+		\label{al:semi}
+		\caption{Cooperative action assessment}
+		\begin{algorithmic}[1]
+			\Procedure{IsBetterAction}(NewValue, BestValue)
+			\State $ Best \leftarrow BestValue[CurrentAgent] + BestValue[OtherAgent]$
+			\State $ New \leftarrow NewValue[CurrentAgent] + NewValue[OtherAgent]  $
+			\If     {$ New > Best $}
+			\State  \Return True
+			\Else   \Return False
+			\EndIf
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+
+	
+	\section{Example}
+	Fig.~\ref{fig:worlddrawing} shows a world where there are 5 vertices. There are people in vertices, V1, V4, and V5 with 1, 2, and 2 people respectively. There are shelters in vertices V0 and V3. Agent0 start at V0. Agent1 starts at V4 and immediately pick up the people there. The deadline is in 16[time].
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\linewidth]{world_drawing}
+		\caption{An example of a world where Agent0 will choose a different option per type of game. Agent1 starts at V0. Agent 2 starts at V4 and immediately picks up the 2 people.}
+		\label{fig:worlddrawing}
+	\end{figure}
+
+	\begin{itemize}
+		\item Adversarial agent
+		
+		It is clear that agent0 has to go to V4, thus finishing the game with 0 people saved for each agent. Otherwise, agent1 will reach a shelter and rescue 2 people.
+		
+		\item Semi-cooperative agent
+		
+		Agent0 will go to V1 picking up the person and will go back to V0 maximizing the amount of people he could save. Agent1 will go immediately to V3 saving the 2 people he is carrying, as there is no time to go to V5.
+		
+		\item Fully cooperative agent
+		
+		Agent0 will go to V2 in order to conserve as much time as he can so agent1 will reach V5 and save 1 more person. Agent0 is sacrificing his score for the greater good.
+		
+	\end{itemize}
 \end{document}
 

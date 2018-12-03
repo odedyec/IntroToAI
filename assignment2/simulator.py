@@ -50,6 +50,11 @@ class HurricaneSimulator:
         self.load_from_file(config_file)
         self.num_of_actions = 0
         self.last_action_cost = 0
+        """ Pick up people at location"""
+        for agent in self.all_agents:
+            agent.add_people_to_vehicle(self.graph[agent.get_state()][agent.get_state()].num_of_people)
+            self.graph[agent.get_state()][agent.get_state()].num_of_people = 0
+
 
     def no_op(self):
         self.num_of_actions += 1
