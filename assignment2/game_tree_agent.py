@@ -10,7 +10,7 @@ class GameTreeAgent(SmartGreedy):
     def __init__(self, state):
         SmartGreedy.__init__(self, state)
         self.is_zero_sum = False
-        self.MAX_DEPTH = 2
+        self.MAX_DEPTH = 20
 
     @staticmethod
     def is_terminal(sim=HurricaneSimulator()):
@@ -90,7 +90,7 @@ class GameTreeAgent(SmartGreedy):
         :return:
         """
 
-        max_agent = True if sim.agent_index == 0 else False
+        max_agent = True if (depth == 0 or not (depth % 2)) else False
 
         ''' Check if terminal or depth reached an end '''
         if self.is_terminal(sim):

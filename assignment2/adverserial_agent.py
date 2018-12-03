@@ -19,7 +19,7 @@ class AdverserialAgent(GameTreeAgent):
         """
         cur_best = best_value[1 - sim_emulator.agent_index] - best_value[sim_emulator.agent_index]
         if isinf(best_value[sim_emulator.agent_index]) and best_value[sim_emulator.agent_index] < 0:
-            " If the second score is - infinity, set the subtraction to be - infinity"
+            '" If the second score is - infinity, set the subtraction to be - infinity "'
             cur_best = -inf
 
         return new_value[1 - sim_emulator.agent_index] - new_value[sim_emulator.agent_index] >= cur_best
