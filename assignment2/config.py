@@ -8,6 +8,6 @@ from semi_coop_agent import SemiCoopAgent
 config_file = 'input_graph2.txt'
 K = 1  # Set to a value to stop asking for input
 
-agents = [SemiCoopAgent(0), SemiCoopAgent(4)]  # Set an agent to stop asking for input
+agents = [FullyCoopAgent(0), FullyCoopAgent(4)]  # Set an agent to stop asking for input
 DEBUG = True
 f_value = -10

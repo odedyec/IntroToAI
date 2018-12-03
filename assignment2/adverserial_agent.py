@@ -25,5 +25,5 @@ class AdverserialAgent(GameTreeAgent):
         return new_value[1 - sim_emulator.agent_index] - new_value[sim_emulator.agent_index] > cur_best
 
     @staticmethod
-    def get_max_agent_score(value_tuple):
-        return value_tuple[0] - value_tuple[1]
+    def get_max_agent_score(value_tuple, max_agent_id):
+        return value_tuple[max_agent_id] - value_tuple[1 - max_agent_id]

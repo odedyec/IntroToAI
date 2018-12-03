@@ -76,7 +76,7 @@ class GameTreeAgent(SmartGreedy):
         raise NotImplementedError("")
 
     @staticmethod
-    def get_max_agent_score(value_tuple):
+    def get_max_agent_score(value_tuple, max_agent_id):
         raise NotImplementedError("")
 
     def recursive_tree(self, depth, is_zero_sum=True, sim=HurricaneSimulator(), alpha=-inf, beta=inf):
@@ -91,6 +91,7 @@ class GameTreeAgent(SmartGreedy):
         """
 
         max_agent = True if (depth == 0 or not (depth % 2)) else False
+        max_agent_id = sim.agent_index if max_agent else 1 - sim.agent_index
 
         ''' Check if terminal or depth reached an end '''
         if self.is_terminal(sim):
@@ -110,7 +111,8 @@ class GameTreeAgent(SmartGreedy):
                 best_move = action
 
             if is_zero_sum:
-                max_agent_score = self.get_max_agent_score(new_value)
+
+                max_agent_score = self.get_max_agent_score(new_value, max_agent_id)
                 if max_agent:
                     "max agent"
                     if max_agent_score >= beta:
