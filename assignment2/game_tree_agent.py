@@ -73,11 +73,11 @@ class GameTreeAgent(SmartGreedy):
         Note that this function is called after apply_action is performed, so the player index
         is switched. Thus, we use "sim_emulator.agent_index - 1" to refer to the right player.
         """
-        raise NotImplementedException
+        raise NotImplementedError("")
 
     @staticmethod
     def get_max_agent_score(value_tuple):
-        raise NotImplementedException
+        raise NotImplementedError("")
 
     def recursive_tree(self, depth, is_zero_sum=True, sim=HurricaneSimulator(), alpha=-inf, beta=inf):
         """

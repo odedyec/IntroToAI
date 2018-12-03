@@ -1,0 +1,166 @@
+\documentclass{article}                     % onecolumn (standard format)
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{subfig}
+\usepackage{rotating}
+\usepackage[left=2.2cm, right=2.2cm]{geometry}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+%\floatstyle{ruled}
+\usepackage{hyperref}
+\usepackage{algpseudocode}
+
+\newfloat{algorithm}{tbp}{loa}
+\providecommand{\algorithmname}{Algorithm}
+\floatname{algorithm}{\protect\algorithmname}
+%
+% \usepackage{mathptmx}      % use Times fonts if available on your TeX system
+%
+% insert here the call for the packages your document requires
+%\usepackage{latexsym}
+% etc.
+%
+% please place your own definitions here and don't use \def but
+% \newcommand{}{}
+%
+
+%
+\begin{document}
+	
+	\title{Introduction to AI - assignment 2}
+	
+	
+	\author{Oded~Yechiel         \and
+		Matan~Rusanovsky
+	}
+	
+	\date{27/11/18}
+	
+	\maketitle
+	
+	\section{Introduction}
+	In this assignment we had to use the hurricane simulator from assignment 1, but operate several agents in parallel.
+	
+	The agents have 3 different options of operation:
+	\begin{enumerate}
+		\item Adversarial - where the agent must get more than the opponent.
+		\item Semi-cooperative - where the agent must maximize their score.
+		\item Cooperative - where the agent has to cooperate with the other agent to maximize the global score.
+	\end{enumerate}
+	
+	\section{Base agent -- Assignment 1 recap}
+	In assignment 1 a basic agent was developed, in which the method \textsc{BestAction} (In actual code you should search for \texttt{choose\_next\_action}) had to be implemented by any other inheriting agent.
+	The basic agent had all of the information required by the agent to make decisions, such as the,
+	\begin{itemize}
+		\item current vertex
+		\item number of people in the vehicle
+		\item number of people saved
+	\end{itemize}
+	
+	\section{Game tree agent}
+	The three agents that are implemented in this assignment are all based on the game-tree-agent.
+	\begin{algorithm}[H]
+		\label{al:main}
+		\caption{Game tree best action}
+		\begin{algorithmic}[1]
+			\Procedure{BestAction}{State, Simulator}
+			\If     {\textsc{IsTerminal}(Simulator)}
+			\State  \Return \textsc{NoOp()}
+			\EndIf
+			\State \Return \textsc{RecursiveTree}(Simulator, 0, IsZeroSumGame)
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+	The  \textsc{BestAction} function is described in Algorithm~\ref{al:main} and is fairly simple. It just checks if we are at a terminal state, and if so return a NoOp result, otherwise it starts the the recursive function described in Algorithm~\ref{al:recursive}.
+	
+	The terminal state, shown in Algorithm~\ref{al:terminal}, is a boolean function. It returns true if the time surpassed the deadline, or if there are no more people to save. 
+	
+
+	
+	\begin{algorithm}
+		\caption{Terminal position}
+		\label{al:terminal}		
+		\begin{algorithmic}[1]
+			\Procedure{IsTerminal}{Simulator}
+			\If     {Simulator.Time $ \geq $ Simulator.Deadline}
+			\State  \Return True
+			\ElsIf     {Simulator.PeopleInTowns == 0 and $ \forall agent \quad agent.carrying == 0 $}
+			\State  \Return True
+			\Else
+			\State \Return False
+			\EndIf
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+	
+	The recursive tree function in Algorithm~\ref{al:recursive} receives a simulator, that hold all of the data and used to emulate each action, depth value representing the depth of tree, and a boolean stating whether it is a zeros sum game. 
+	
+	The algorithm starts by checking for terminal states and checks if the depth is maxed out for cutoff purposes. For terminal states the actual value, i.e., number of people saved, of each agent is returned. Maxing out depth returns a heuristic of how many people each agent may save, disregarding the other agent and assuming each town with people is the only town with people.
+	This same heuristic was used in assignment 1.
+	
+	The function continues, if not returned, to a for loop (line \ref{al:actions}) that branches every possible action of an agent, and calls recursively to itself with an emulated simulator where its the next agent's turn, and depth is increased by 1. 
+	
+	The result of this action is compared with all of the other actions and the best action's value is returned if the depth is larger than 0, otherwise the best action itself.
+	For each type of agent (adversarial, cooperative, semi-cooperative) the comparison function is different and will be elaborated in the following section.
+	
+	In case the game is adversarial, or a zero sum game, an alpha-beta cutoff is also compared to try and trim branches off.
+	
+	\begin{algorithm}[H]
+		\label{al:recursive}
+		\caption{Game tree recursive tree expansion}
+		\begin{algorithmic}[1]
+			\Procedure{RecursiveTree}{Simulator, Depth, IsZeroSumGame}
+	       \If {\textsc{IsTerminal}(Simulator)}
+	       \State \Return \textsc{Value}(Simulator)
+	       \EndIf
+	       \If {Depth reached MAX\_DEPTH:}
+	       \State \Return \textsc{Heuristic}(Simulator)
+			\EndIf
+			
+			\State BestValue $\longleftarrow  [-inf, -inf] $
+			
+			\State BestMove  $\longleftarrow -1 $
+			
+			\For {each Action $ \in $ possible actions of current player}\label{al:actions}
+			
+				\State Simulator.\textsc{EmulateAction}(Action)
+				
+				\State NewValue $ \leftarrow $ \textsc{RecursiveTree}(Simulator, Depth+1, IsZeroSumGame)
+				
+				\If {\textsc{IsBetterAction}(NewValue, BestValue)}
+				
+				\State BestValue $ \longleftarrow $ NewValue
+				
+				\State BestMove $ \longleftarrow $ Action
+				\EndIf
+				
+				\If {IsZeroSumGame is True} \label{al:alphabeta}
+				
+				\EndIf
+				
+			\EndFor
+			
+			\If {Depth == 0}
+			
+				\Return BestMove
+				
+			\Else
+			
+				\Return BestValue
+				
+			\EndIf
+			\EndProcedure
+		\end{algorithmic}
+
+	\end{algorithm}
+			
+	\subsection{Adversarial agent}
+	
+	\subsection{semi-cooperative agent}
+		
+	\subsection{Cooperative agent}
+\end{document}
+
