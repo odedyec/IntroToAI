@@ -46,9 +46,9 @@
 	
 	The agents have 3 different options of operation:
 	\begin{enumerate}
-		\item Adversarial - where the agent must get more than the opponent.
-		\item Semi-cooperative - where the agent must maximize their score.
-		\item Cooperative - where the agent has to cooperate with the other agent to maximize the global score.
+		\item Adversarial - where the agent tries to get higher score than the opponent.
+		\item Semi-cooperative - where each agent tries to maximize its score, ties are broken cooperatively.
+		\item Cooperative - where the agents have to cooperate with each other to maximize the global score.
 	\end{enumerate}
 	
 	\section{Base agent -- Assignment 1 recap}
@@ -63,8 +63,8 @@
 	\section{Game tree agent}
 	The three agents that are implemented in this assignment are all based on the game-tree-agent.
 	\begin{algorithm}[H]
-		\label{al:main}
 		\caption{Game tree best action}
+		\label{alg:main}
 		\begin{algorithmic}[1]
 			\Procedure{BestAction}{State, Simulator}
 			\If     {\textsc{IsTerminal}(Simulator)}
@@ -74,15 +74,15 @@
 			\EndProcedure
 		\end{algorithmic}
 	\end{algorithm}
-	The  \textsc{BestAction} function is described in Algorithm~\ref{al:main} and is fairly simple. It just checks if we are at a terminal state, and if so return a NoOp result, otherwise it starts the the recursive function described in Algorithm~\ref{al:recursive}.
+	The  \textsc{BestAction} function is described in Algorithm~\ref{alg:main} and is fairly simple. It just checks if we are at a terminal state, and if so return a NoOp result, otherwise it starts the the recursive function described in Algorithm~\ref{alg:recursive}.
 	
-	The terminal state, shown in Algorithm~\ref{al:terminal}, is a boolean function. It returns true if the time surpassed the deadline, or if there are no more people to save. 
+	The terminal state, shown in Algorithm~\ref{alg:terminal}, is a boolean function. It returns true if the time surpassed the deadline, or if there are no more people to save. 
 	
-
+	
 	
 	\begin{algorithm}
 		\caption{Terminal position}
-		\label{al:terminal}		
+		\label{alg:terminal}		
 		\begin{algorithmic}[1]
 			\Procedure{IsTerminal}{Simulator}
 			\If     {Simulator.Time $ \geq $ Simulator.Deadline}
@@ -96,7 +96,7 @@
 		\end{algorithmic}
 	\end{algorithm}
 	
-	The recursive tree function in Algorithm~\ref{al:recursive} receives a simulator, that hold all of the data and used to emulate each action, depth value representing the depth of tree, and a Boolean stating whether it is a zeros sum game. 
+	The recursive tree function in Algorithm~\ref{alg:recursive} receives a simulator, that hold all of the data and used to emulate each action, depth value representing the depth of tree, a Boolean stating whether it is a zero sum game, and an $\alpha, \beta$ values (initially set to $-\infty$ and to $\infty$) for $\alpha - \beta$ pruning. 
 	
 	The algorithm starts by checking for terminal states and checks if the depth is maxed out for cutoff purposes. For terminal states the actual value, i.e., number of people saved, of each agent is returned. Maxing out depth returns a heuristic (line~\ref{al:h}) of how many people each agent may save, disregarding the other agent and assuming each town with people is the only town with people.
 	This same heuristic was used in assignment 1.
@@ -106,18 +106,18 @@
 	The result of this action is compared with all of the other actions and the best action's value is returned if the depth is larger than 0, otherwise the best action itself.
 	For each type of agent (adversarial, cooperative, semi-cooperative) the comparison function is different and will be elaborated in the following section.
 	
-	In case the game is adversarial, or a zero sum game, an alpha-beta cutoff is also compared to try and trim branches off.
+	In case the game is a zero sum game (in our case, adversarial) an alpha-beta pruning is implemented to try and trim branches that will not affect the final result. The value that was used for the pruning was the score that the max agent achieved ("MaxAgentScore" in the algorithm below).
 	
 	\begin{algorithm}[H]
-		\label{al:recursive}
 		\caption{Game tree recursive tree expansion}
+		\label{alg:recursive}
 		\begin{algorithmic}[1]
-			\Procedure{RecursiveTree}{Simulator, Depth, IsZeroSumGame}
-	       \If {\textsc{IsTerminal}(Simulator)}
-	       \State \Return \textsc{Value}(Simulator)
-	       \EndIf
-	       \If {Depth reached MAX\_DEPTH:}
-	       \State \Return \textsc{Heuristic}(Simulator) \label{al:h}
+			\Procedure{RecursiveTree}{Simulator, Depth, IsZeroSumGame, $\alpha$, $\beta$}
+			\If {\textsc{IsTerminal}(Simulator)}
+			\State \Return \textsc{Value}(Simulator)
+			\EndIf
+			\If {Depth reached MAX\_DEPTH:}
+			\State \Return \textsc{Heuristic}(Simulator) \label{al:h}
 			\EndIf
 			
 			\State BestValue $\longleftarrow  [-inf, -inf] $
@@ -126,41 +126,54 @@
 			
 			\For {each Action $ \in $ possible actions of current player}\label{al:actions}
 			
-				\State Simulator.\textsc{EmulateAction}(Action)
-				
-				\State NewValue $ \leftarrow $ \textsc{RecursiveTree}(Simulator, Depth+1, IsZeroSumGame)
-				
-				\If {\textsc{IsBetterAction}(NewValue, BestValue)} \label{al:is_better}
-				
-				\State BestValue $ \longleftarrow $ NewValue
-				
-				\State BestMove $ \longleftarrow $ Action
-				\EndIf
-				
-				\If {IsZeroSumGame is True} \label{al:alphabeta}
-				
-				\EndIf
-				
+			\State Simulator.\textsc{EmulateAction}(Action)
+			
+			\State NewValue $ \leftarrow $ \textsc{RecursiveTree}(Simulator, Depth+1, IsZeroSumGame, $\alpha$, $\beta$)
+			
+			\If {\textsc{IsBetterAction}(NewValue, BestValue)} \label{al:is_better}
+			
+			\State BestValue $ \longleftarrow $ NewValue
+			
+			\State BestMove $ \longleftarrow $ Action
+			\EndIf
+			
+			\If {IsZeroSumGame is True} \label{al:alphabeta}
+			\If {MaxAgent}
+			\If {MaxAgentScore $\geq \beta$}
+			\State \Return NewValue
+			\EndIf
+			\State $\alpha = max(\alpha,$ MaxAgentScore)
+			\Else
+			\If {MaxAgentScore $\leq \alpha$}
+			\State \Return NewValue
+			\EndIf
+			\State $\beta = min(\beta,$ MaxAgentScore)
+			
+			\EndIf
+			
+			
+			\EndIf
+			
 			\EndFor
 			
 			\If {Depth == 0}
 			
-				\Return BestMove
-				
+			\Return BestMove
+			
 			\Else
 			
-				\Return BestValue
-				
+			\Return BestValue
+			
 			\EndIf
 			\EndProcedure
 		\end{algorithmic}
-
+		
 	\end{algorithm}
-			
+	
 	\subsection{Adversarial agent}
 	The adversarial agent is a zero sum game agent. In plain words, the agent prefers that everyone will die as long as the opponent agent will not save more people than him.
 	
-	Therefore, the \textsc{IsBetterAction} shown in Algorithm~\ref{al:recursive} in line~\ref{al:is_better} will be as follows:
+	Therefore, the \textsc{IsBetterAction} shown in Algorithm~\ref{alg:recursive} in line~\ref{al:is_better} will be as follows:
 	\begin{algorithm}[H]
 		\label{al:adv}
 		\caption{Adversarial action assessment}
@@ -177,8 +190,8 @@
 	\end{algorithm}
 	
 	The action is better than other options in the case where the difference in values is higher than previous difference in value. 
-
-
+	
+	
 	\subsection{semi-cooperative agent}
 	The semi-cooperative agent tries to maximize its own value, disregarding the other agent value. This is partially true, the agent will help the other agent if he does not sacrifice his own score.
 	The \textsc{IsBetterAction} will be as follows:
@@ -197,7 +210,7 @@
 			\EndProcedure
 		\end{algorithmic}
 	\end{algorithm}
-
+	
 	
 	\subsection{Cooperative agent}
 	
@@ -217,7 +230,7 @@
 			\EndProcedure
 		\end{algorithmic}
 	\end{algorithm}
-
+	
 	
 	\section{Example}
 	Fig.~\ref{fig:worlddrawing} shows a world where there are 5 vertices. There are people in vertices, V1, V4, and V5 with 1, 2, and 2 people respectively. There are shelters in vertices V0 and V3. Agent0 start at V0. Agent1 starts at V4 and immediately pick up the people there. The deadline is in 16[time].
@@ -227,7 +240,7 @@
 		\caption{An example of a world where Agent0 will choose a different option per type of game. Agent1 starts at V0. Agent 2 starts at V4 and immediately picks up the 2 people.}
 		\label{fig:worlddrawing}
 	\end{figure}
-
+	
 	\begin{itemize}
 		\item Adversarial agent
 		
