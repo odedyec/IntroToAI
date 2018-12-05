@@ -97,16 +97,19 @@ class GameTreeAgent(SmartGreedy):
         if self.is_terminal(sim):
             return self.value(sim)
         if depth == self.MAX_DEPTH:
+            print("exceeded depth limit")
             return self.heuristic(sim)
         ''' Set vars '''
         best_value = [-inf] * len(sim.all_agents)
         best_move = [-1, 1]
         ''' Check all possible actions '''
         for action in self.get_all_possible_actions(sim):
+            if action[0] == -1:
+                continue
             sim_emulator = deepcopy(sim)
             sim_emulator.apply_action(action[0])
             new_value = self.recursive_tree(depth + 1, is_zero_sum, sim_emulator, alpha, beta)
-            if self.is_new_action_better(best_value, new_value, sim_emulator):
+            if self.is_new_action_better(best_value, new_value, sim):
                 best_value = new_value
                 best_move = action
 

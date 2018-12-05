@@ -29,7 +29,7 @@ class SmartGreedy(Greedy):
         (the vertex to go to, the cost to that vertex (for A*), the heuristic of the vertex)
         """
         weights = sim.get_weights()
-        actions = []  # TODO: add as an action (-1, 1)
+        actions = [(-1, 1)]  # NoOp
         for vertex, cost in enumerate(weights[sim.current_agent.get_state()]):
             if cost != -1:
                 action = (vertex, cost)

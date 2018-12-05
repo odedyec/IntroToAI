@@ -14,15 +14,14 @@ class AdverserialAgent(GameTreeAgent):
     @staticmethod
     def is_new_action_better(best_value, new_value, sim_emulator=HurricaneSimulator()):
         """
-        Note that this function is called after apply_action is performed, so the player index
-        is switched. Thus, we use "sim_emulator.agent_index - 1" to refer to the right player.
+        Adversarial (zero sum game): each agent aims to maximize its own score minus the opposing agent's score
         """
-        cur_best = best_value[1 - sim_emulator.agent_index] - best_value[sim_emulator.agent_index]
-        if isinf(best_value[sim_emulator.agent_index]) and best_value[sim_emulator.agent_index] < 0:
+        cur_best = best_value[sim_emulator.agent_index] - best_value[1 - sim_emulator.agent_index]
+        if isinf(best_value[1 - sim_emulator.agent_index]) and best_value[1 - sim_emulator.agent_index] < 0:
             '" If the second score is - infinity, set the subtraction to be - infinity "'
             cur_best = -inf
 
-        return new_value[1 - sim_emulator.agent_index] - new_value[sim_emulator.agent_index] > cur_best
+        return new_value[sim_emulator.agent_index] - new_value[1 - sim_emulator.agent_index] > cur_best
 
     @staticmethod
     def get_max_agent_score(value_tuple, max_agent_id):
