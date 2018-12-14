@@ -1,0 +1,174 @@
+
+<!-- saved from url=(0057)https://www.cs.bgu.ac.il/~shimony/AI2019/AIass4_2019.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>AI Assignment 4</title>
+<link rev="made" href="mailto:webmaster@cs.bgu.ac.il">
+
+</head>
+
+<body>
+        <center>
+        <h1>Introduction to Artificial Inteligence </h1>
+        <h3>Assignment 4</h3>
+        </center>
+<hr>
+        <center>
+<h2> Programming assignment - Reasoning under uncertainty  </h2>
+<h2>Hurricane Evacuation Problem: Locate the Blockages and Evacuees</h2>
+        </center>
+<p>
+
+</p><h3>Goals </h3>
+<p>
+Probabilistic reasoning using 
+Bayes networks, with scenarios similar to the
+hurricane evacuation problem environment of assignment 1.
+
+</p><h3>Uncerain Hurricane Evacuation Problem - Domain Description</h3>
+
+<p>
+
+As they try to find their best path, in the real world, evacuation forces may be unable
+to tell in advance what which road are blocked and where are there people to be evacuated, if any.
+There may be evidence which can help, but one cannot be sure until
+the node and or edge in question is reached! Not knowing the blockages and
+evacuee contents in advance makes it hard
+to plan an optimal path, so reasoning about the unknown is crucial.
+We know that it is more likely for people to need evacuation near blocked roads,
+and roads are more likely to be blocked if there is evidence of flooding at adjacent vertices.
+In this version of the problem, we will consider only binary-valued occupation
+of vertices, i.e. whether it contains people to be evacuated, or not.
+</p><p>
+
+Thus we have a binary random variable Fl(v)
+standing in for "flooding" at vertex v,
+one binary random variable Ev(v) standing in for "people to evacuate" at each vertex v,
+and a binary variable B(e) standing in for "blocked" for each edge e.
+The flooding events are assumed independent, with known distributions.
+The blockages are noisy-or distributed given the flooding at incident vertices,
+with pi =(1-qi)= 0.6*1/w(e). There are people at vertex v, with noisy or distributions given all the
+edge blockages at all edges incident on v, with pi = 0.8 for an edge with weight greater then
+4, and with pi=0.4 for shorter edges..
+
+</p><p>
+All in all, you have 3 types of variables (BN nodes): blockages (one for each edge)
+flooding (one for each vertex,) and evacuees present (one for each vertex).
+</p><p>
+
+In your program, a file specifies the geometry (graph), and parameters such as P(Fl(v)=true)).
+Then, you enter some locations where flooding, blockages, or evacuees are 
+reported either present or absent (and the rest remain unknown).
+This is the evidence in the problem.
+
+Once evidence is instantiated, you need to perform reasoning about the likely locations of 
+flooding, blockages, and evacuees:
+
+</p><ol>
+<li> What is the probability that each of the vertices contains evacuees?
+</li><li> What is the probability that each of the vertices is flooded?
+</li><li> What is the probability that each of the edges is blocked?
+</li><li> What is the probability that a certain path (set of edges) is free from blockages?
+(Note that the distributions of blockages in edges are NOT necessarily independent.)
+</li><li> What is the path from a given location to a goal that has the highest probability of
+being free from blockages? (bonus)
+</li></ol>
+
+<p>
+Input can be as an ASCII
+file, similar to graph descriptions in previous assignments, for example:
+
+</p><pre>#V 4          ; number of vertices n in graph (from 1 to n)
+
+#V 1 F 0.2    ; Vertex 1, probability flooding 0.2
+#V 2 F 0.4    ; Vertex 2, probability flooding 0.4
+              ; Either assume flooding probability 0 by default,
+              ; or make sure to specify this probability for all vertices.
+
+#E1 1 2 W1 ; Edge1 between vertices 1 and 2, weight 1
+#E2 2 3 W3 ; Edge2 between vertices 2 and 3, weight 3
+#E3 3 4 W3 ; Edge3 between vertices 3 and 4, weight 3
+#E4 2 4 W4 ; Edge4 between vertices 2 and 4, weight 4
+</pre>
+
+
+<p>
+ 
+</p><h3>Requirements </h3>
+
+<p>
+(Part I) Your program should read the data, including the distribution
+parameters, which are defined as above.
+The program should construct a Bayes network according
+to the scenario.
+The program should also allow for an output of the Bayes network constructed
+for the scenario.
+
+</p><p>
+For example, part of the output for the above graph,  would be:
+</p><pre>
+VERTEX 1:
+  P(Flooding) = 0.2
+  P(not Flooding) = 0.8
+
+  P(Evacuees|Blockage 1) = 0.6
+  P(Evacuees|not Blockage 1) = 0
+  P(not Evacuees|Blockage 1) = 0.4
+  P(not Evacuees|not Blockage 1) = 1
+
+VERTEX 2:
+etc.
+
+EDGE 1:
+  P(Blocakge 1 | not flooding 1, not flooding 2) = 0
+  P(Blocakge 1 | flooding 1, not flooding 2) = 0.4
+  P(Blocakge 1 | not flooding 1, flooding 2) = 0.4
+  P(Blocakge 1 | flooding 1, flooding 2) = 0.64
+etc,
+
+</pre>
+
+<p>
+(Part II) You should then query the
+user for a set of evidence. We do this
+by reading one piece of evidence at a time (e.g. "Flood reported at vertex 2", and then
+"Evacuees reported at vertex 1" etc.).
+The online interactive operations your program  should support are:
+<il>
+</il></p><li> Reset evidence list to empty.
+</li><li> Add piece of evidence to evidence list.
+</li><li> Do probabilistic reasoning (1, 2, 3, 4, or 5, whichever your program supports) 
+and report the results.
+</li><li> Quit.
+
+
+<p>
+Probabilistic reasoning should be done
+in order to answer the questions on
+distribution of blockages, etc., and report on the answers,
+including all the posterior probabilities. 
+
+You may use any algorithm in the literature that supports solution of
+BNs, including simple enumerarion,
+variable elimination, polytree propagation, or sampling.
+
+
+</p><h3>Deliverables </h3>
+
+<ol>
+<li> Source code and executable files of programs.
+</li><li> Explanation of the method for constructing the BN and your
+reasoning algorithm.
+</li><li> Non-trivial example runs on at least 2 scenarios,
+including the input and output.
+</li><li> Submit makefile and short description on how to run your program.
+ i.e. how what  parameters are passed to the program and how 
+other inputs including 
+at least one full example on how to run your program with actual input.
+</li></ol>
+
+<p>
+
+Due date: December 25, 2018.
+
+
+</p></li></body><auto-scroll></auto-scroll></html>
