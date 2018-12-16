@@ -1,5 +1,7 @@
-from simulator import Simulator
+from bayes_network import BayesNetwork
+from parser import load_from_file
 
 
-sim = Simulator()
-print(str(sim))
+bn = load_from_file()
+bn.print_vertices([0])
+bn.print_edges([1])

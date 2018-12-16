@@ -1,42 +1,65 @@
+from evacuees import Evacuees
+from blockage import Blockage
+from prob_lib import ProbVar
+import itertools
+
+
 class Vertex:
-    def __init__(self, id, num_of_vertices, flood=0., people=0.):
+    """
+    A vertex object with all the associated information such as flooding probability and probability for evacuees
+    """
+    def __init__(self, id, num_of_vertices, flood=0.):
         self.id = id
-        self.flood_p = flood
-        self.people_p = people
-        self._edges = [-1] * num_of_vertices
+        self.flood_p = ProbVar(flood)
+        self._edges = []
+        self._num_of_vertices = num_of_vertices
+        self.evacuees = Evacuees([], [])
 
     def set_flood_prob(self, f):
-        self.flood_p = f
+        self.flood_p = ProbVar(f)
 
-    def set_people_prob(self, p):
-        self.people_p = p
+    def add_edge(self, edge):
+        """
+        An add edge method that connects two vertices together.
+        ASSUMPTION!!!! all edges are unblocked at first!!!
+        :param edge: An edge object that connects this vertex to a different vertex.
+        """
+        self._edges.append(edge)
+        self.evacuees = Evacuees(
+            [edge.weight for edge in self._edges],
+            [False] * len(self._edges)
+        )
 
-    def set_edge_weight(self, vertex, weight):
-        self._edges[vertex] = weight
-
-    def set_all_data(self, flood, people, edges=None):
-        self.set_flood_prob(flood)
-        self.set_people_prob(people)
-        if edges is None:
-            return
-        if len(edges) != len(self._edges):
-            raise Exception("length of edges is different than number of vertices")
-        self._edges = edges
-
-    def edge_weight(self, vertex):
-        return self._edges[vertex]
-
-    def __neg__(self):
-        v = Vertex(self.id, len(self._edges), 1 - self.flood_p, 1 - self.people_p)
-        v._edges = self._edges
-        return v
+    def get_edge_list(self):
+        edges = []
+        for edge in self._edges:
+            if edge.v1 is self:
+                edges.append(edge.v2.id)
+            else:
+                edges.append(edge.v1.id)
+        return edges
 
     def __str__(self):
-        return ("({}%, {}%)").format(self.flood_p, self.people_p)
+        s = 'Vertex{}\n'.format(self.id)
+        s += "---------\n"
+        s += ("P(Flood)={}\n".format(self.flood_p))
+        f_n = (-self.flood_p)
+        s += ("P(!Flood)={}\n".format(f_n))
+        for twice in [True, False]:
+            for perm in list(itertools.product([False, True], repeat=len(self._edges))):
+                if twice:
+                    s += "P(Evacuees|"
+                else:
+                    s += "P(!Evacuees|"
+                for p, e in zip(perm, self._edges):
+                    s += "Blockage{} ".format(e.id) if p else "!Blockage{} ".format(e.id)
+                if twice:
+                    s += ')={}\n'.format(Evacuees([b.weight for b in self._edges], perm))
+                else:
+                    s += ')={}\n'.format((-Evacuees([b.weight for b in self._edges], perm)))
+        return s
 
 
 if __name__ == '__main__':
-    v = Vertex(3, 2, 0.2, 0.4)
+    v = Vertex(3, 2, 0.2)
     print str(v)
-    n_v = -v
-    print str(n_v)
