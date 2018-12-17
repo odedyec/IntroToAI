@@ -10,22 +10,22 @@ class Graph:
     """
     def __init__(self, num_of_vertices):
         self._num_of_vertices = num_of_vertices
-        self._graph = []
+        self._vertices = []
         self._edges = []
         for i in range(num_of_vertices):
-            self._graph.append(Vertex(i, num_of_vertices))
+            self._vertices.append(Vertex(i, num_of_vertices))
 
     def set_vertex_flood(self, vertex, flood_prob):
-        self._graph[vertex].set_flood_prob(flood_prob)
+        self._vertices[vertex].set_flood_prob(flood_prob)
 
     def set_edge(self, vertex1, vertex2, weight, id):
-        e = Edge(id, self._graph[vertex1], self._graph[vertex2], weight)
-        self._graph[vertex1].add_edge(e)
-        self._graph[vertex2].add_edge(e)
+        e = Edge(id, self._vertices[vertex1], self._vertices[vertex2], weight)
+        self._vertices[vertex1].add_edge(e)
+        self._vertices[vertex2].add_edge(e)
         self._edges.append(e)
 
     def print_vertices(self, list_of_vertices=None):
-        for v in self._graph:
+        for v in self._vertices:
             if list_of_vertices is None or v.id in list_of_vertices:
                 print(str(v))
 

@@ -24,7 +24,7 @@ class ProbVar:
         return v
 
     def __str__(self):
-        return "{}%".format(self.value)
+        return "{}%".format(100 * self.value)
 
     def __mul__(self, other):
         v = ProbVar(self.value * other.value)

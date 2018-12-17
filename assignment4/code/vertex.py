@@ -14,6 +14,7 @@ class Vertex:
         self._edges = []
         self._num_of_vertices = num_of_vertices
         self.evacuees = Evacuees([], [])
+        self._evacuees_reported = None
 
     def set_flood_prob(self, f):
         self.flood_p = ProbVar(f)
@@ -27,7 +28,7 @@ class Vertex:
         self._edges.append(edge)
         self.evacuees = Evacuees(
             [edge.weight for edge in self._edges],
-            [False] * len(self._edges)
+            [None] * len(self._edges)
         )
 
     def get_edge_list(self):
@@ -38,6 +39,29 @@ class Vertex:
             else:
                 edges.append(edge.v1.id)
         return edges
+
+    def print_prob_for_flood(self):
+        print ("P(Flood)={}\n".format(self.flood_p))
+
+    def print_prob_for_evacuees(self):
+        self.evacuees.print_conditional_prob(self._edges)
+
+    def reset(self):
+        self.evacuees.update_blockages([None] * len(self._edges))
+
+    def evacuees_reported(self):
+        self._evacuees_reported = True
+
+    def flood_reported(self):
+        for edge in self._edges:
+            if self.id == edge.v1.id:
+                current_flooding_situation = edge.blockage.floodings
+                current_flooding_situation[0] = True
+                edge.blockage.update_floodings(current_flooding_situation)
+            else:
+                current_flooding_situation = edge.blockage.floodings
+                current_flooding_situation[1] = True
+                edge.blockage.update_floodings(current_flooding_situation)
 
     def __str__(self):
         s = 'Vertex{}\n'.format(self.id)

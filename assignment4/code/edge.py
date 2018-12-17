@@ -13,18 +13,23 @@ class Edge:
         self.v2 = v2
         self.id = id
         self.weight = weight
-        self.blockage = Blockage(weight, [False, False])
+        self.blockage = Blockage(self.id, weight, [None, None], [v1, v2])
+
+    def print_prob_for_blockage(self):
+        print(str(self.blockage))
 
     def __str__(self):
         s = 'Edge{}\n'.format(self.id)
         s += '----------\n'
         s += 'P(Blockage {}| !flood{}, !flood{})={}\n'.format(self.id, self.v1.id, self.v2.id,
-                                                              Blockage(self.weight, [False, False]))
+                                                              Blockage(self.id, self.weight, [False, False],[self.v1, self.v2]))
         s += 'P(Blockage {}| !flood{}, flood{})={}\n'.format(self.id, self.v1.id, self.v2.id,
-                                                            Blockage(self.weight, [False, True]))
+                                                            Blockage(self.id, self.weight, [False, True],[self.v1, self.v2]))
         s += 'P(Blockage {}| flood{}, !flood{})={}\n'.format(self.id, self.v1.id, self.v2.id,
-                                                            Blockage(self.weight, [True, False]))
+                                                            Blockage(self.id, self.weight, [True, False],[self.v1, self.v2]))
         s += 'P(Blockage {}| flood{}, flood{})={}\n'.format(self.id, self.v1.id, self.v2.id,
-                                                            Blockage(self.weight, [True, True]))
+                                                            Blockage(self.id, self.weight, [True, True],[self.v1, self.v2]))
         return s
 
+    def reset(self):
+        self.blockage.update_floodings([None, None])

@@ -2,5 +2,5 @@ from graph import *
 
 
 class BayesNetwork(Graph):
-    def do_something(self):
-        pass
+    def __init__(self):
+        Graph.__init__(self)

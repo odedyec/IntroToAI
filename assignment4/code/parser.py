@@ -1,7 +1,7 @@
 """
 Parser
 """
-from graph import Graph
+from main import UserInterface
 SET_NUM_OF_VERTICES = 0
 SET_EDGE_WEIGHT = 1
 SET_VERTIX_INFO = 2
@@ -33,7 +33,7 @@ def load_from_file(file_path=None):
                 op, args = parse_line(line)
                 if op == SET_NUM_OF_VERTICES:
                     num_of_vertices = args
-                    graph = Graph(num_of_vertices)
+                    graph = UserInterface(num_of_vertices)
                 elif op == SET_EDGE_WEIGHT:
                     graph.set_edge(args[0], args[1], args[2], args[3])
                 elif op == SET_VERTIX_INFO:

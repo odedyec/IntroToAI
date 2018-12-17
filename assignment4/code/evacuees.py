@@ -28,9 +28,18 @@ class Evacuees(ProbVar):
 
     def calculate_value(self):
         for edge_weight, blockage in zip(self.edges_weight, self.blockages):
+            if blockage is None:
+                continue
             if blockage:
                 self.value *= 0.8 if edge_weight > 4 else 0.4
         self.value = 1 - self.value
+
+    def print_conditional_prob(self, edges):
+        s = "P(Evacuees|"
+        for i, p in enumerate(self.blockages):
+            s += "Blockage{} ".format(edges[i].id) if p else "!Blockage{} ".format(edges[i].id)
+        s += ')={}\n'.format(self.value)
+        print s
 
 
 if __name__ == '__main__':
