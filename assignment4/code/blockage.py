@@ -29,8 +29,8 @@ class Blockage(ProbVar):
         if None in self.floodings:
             for v, flood in enumerate(self.floodings):
                 if flood is None:
-                    self.value *= (self.vertices[v].flood_p.value * (self.probability_of_blockage_if(True)) +
-                                   (-self.vertices[v].flood_p).value * self.probability_of_blockage_if(False))
+                    self.value *= (self.vertices[v].flood_p.value * (self.probability_of_blockage_if(True))
+                                   )
                 elif flood is True:
                     self.value *= self.probability_of_blockage_if(True)
                 else:
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         def __init__(self, flood_p=0., id=1):
             self.flood_p = ProbVar(flood_p)
             self.id = id
-    b = Blockage(1, 1, [True, False], [V(id=1), V(id=2)])
+    b = Blockage(1, 1, [True, True], [V(id=1), V(id=2)])
     print(str(b))
-    b = Blockage(1, 1, [None, None], [V(id=1, flood_p=1.), V(id=2, flood_p=0.)])
+    b = Blockage(1, 1, [None, None], [V(id=1, flood_p=0.1), V(id=2, flood_p=0.1)])
     print(str(b))

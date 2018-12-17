@@ -21,14 +21,11 @@ class Edge:
     def __str__(self):
         s = 'Edge{}\n'.format(self.id)
         s += '----------\n'
-        s += 'P(Blockage {}| !flood{}, !flood{})={}\n'.format(self.id, self.v1.id, self.v2.id,
-                                                              Blockage(self.id, self.weight, [False, False],[self.v1, self.v2]))
-        s += 'P(Blockage {}| !flood{}, flood{})={}\n'.format(self.id, self.v1.id, self.v2.id,
-                                                            Blockage(self.id, self.weight, [False, True],[self.v1, self.v2]))
-        s += 'P(Blockage {}| flood{}, !flood{})={}\n'.format(self.id, self.v1.id, self.v2.id,
-                                                            Blockage(self.id, self.weight, [True, False],[self.v1, self.v2]))
-        s += 'P(Blockage {}| flood{}, flood{})={}\n'.format(self.id, self.v1.id, self.v2.id,
-                                                            Blockage(self.id, self.weight, [True, True],[self.v1, self.v2]))
+        s += '{}\n'.format(Blockage(self.id, self.weight, [False, False],[self.v1, self.v2]))
+        s += '{}\n'.format(Blockage(self.id, self.weight, [False, True],[self.v1, self.v2]))
+        s += '{}\n'.format(Blockage(self.id, self.weight, [True, False],[self.v1, self.v2]))
+        s += '{}\n'.format(Blockage(self.id, self.weight, [True, True],[self.v1, self.v2]))
+
         return s
 
     def reset(self):

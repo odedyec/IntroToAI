@@ -1,7 +1,7 @@
 """
 Parser
 """
-from main import UserInterface
+from user_interface import UserInterface
 SET_NUM_OF_VERTICES = 0
 SET_EDGE_WEIGHT = 1
 SET_VERTIX_INFO = 2
