@@ -16,6 +16,7 @@ class Blockage(ProbVar):
 
     def report(self, what):
         self._blockage_reported = what
+        self.calculate_value()
 
     def update_floodings(self, floodings):
         """

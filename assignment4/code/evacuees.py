@@ -21,6 +21,7 @@ class Evacuees(ProbVar):
 
     def report(self, what):
         self._evacuees_reported = what
+        self.calculate_value()
 
     def update_edges(self, edges_weight):
         self.edges_weight = edges_weight
@@ -31,6 +32,13 @@ class Evacuees(ProbVar):
         self.calculate_value()
 
     def calculate_value(self):
+        if self._evacuees_reported is True:
+            self.value = 1.0
+            return
+        if self._evacuees_reported is False:
+            self.value = 0.
+            return
+
         conditions = []
         for blockage in self.blockages:
             conditions.append((P(-blockage), P(blockage)))
