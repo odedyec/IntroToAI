@@ -39,8 +39,16 @@ class UserInterface(BayesNetwork):
         evidence_type, vertex = evidence_menu()
         if evidence_type is EVIDENCE_TYPE_FLOOD:
             self._vertices[vertex].flood_reported()
+        elif evidence_type is EVIDENCE_TYPE_NOT_FLOOD:
+            self._vertices[vertex].flood_reported(False)
         elif evidence_type is EVIDENCE_TYPE_EVACUESS:
-            pass
+            self._vertices[vertex].evacuees_reported()
+        elif evidence_type is EVIDENCE_TYPE_NOT_EVACUESS:
+            self._vertices[vertex].evacuees_reported(False)
+        elif evidence_type is EVIDENCE_TYPE_BLOCKAGE:
+            self._edges[vertex].blockage_reported()
+        elif evidence_type is EVIDENCE_TYPE_NOT_BLOCKAGE:
+            self._edges[vertex].blockage_reported(False)
         else:
             print 'Please learn how to read'
 

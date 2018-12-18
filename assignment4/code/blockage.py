@@ -1,17 +1,21 @@
-from prob_lib import ProbVar
+from prob_lib import *
 
 
 class Blockage(ProbVar):
     """
     The blockages are noisy-or distributed given the flooding at incident vertices, with pi =(1-qi)= 0.6*1/w(e)
     """
-    def __init__(self, edge_id, edge_weight, floodings, vertices):
+    def __init__(self, edge_id, edge_weight, floodings, vertices, report=None):
         ProbVar.__init__(self, 1.)
         self._id = edge_id
         self.vertices = vertices
         self.edge_weight = edge_weight
         self.floodings = floodings
+        self._blockage_reported = report
         self.calculate_value()
+
+    def report(self, what):
+        self._blockage_reported = what
 
     def update_floodings(self, floodings):
         """
@@ -25,26 +29,36 @@ class Blockage(ProbVar):
         """
         Calculate the probability value based on the flooding situation
         """
-        self.value = 1.
-        if None in self.floodings:
-            for v, flood in enumerate(self.floodings):
-                if flood is None:
-                    self.value *= (self.vertices[v].flood_p.value * (self.probability_of_blockage_if(True))
-                                   )
-                elif flood is True:
-                    self.value *= self.probability_of_blockage_if(True)
-                else:
-                    self.value *= self.probability_of_blockage_if(False)
-            self.value = 1 - self.value
+        if self._blockage_reported is True:
+            self.value = 1.
             return
-
+        if self._blockage_reported is False:
+            self.value = 0.
+            return
+        self.value = 0.
+        prob_conditions = []
         for v, flood in enumerate(self.floodings):
-            if flood:
-                self.value *= self.probability_of_blockage_if(True)
-        self.value = 1. - self.value
+            if flood is None:
+                p_true, p_false = P(self.vertices[v].flood_p), P(-self.vertices[v].flood_p)
+            else:
+                (p_true, p_false) = (1.0, 0.0) if flood is True else (0.0, 1.0)
+            prob_conditions.append((p_false, p_true))
+        self.value = total_probability(self.noisy_or, prob_conditions)
+
+    def noisy_or(self, conditions):
+        """
+            This function is a noisy-or implementation
+            P(x | condtions) = 1 - PI_{if condition is true}( Value if true)
+
+            :param value_if_true: The value if true
+            :param list_conditions:  a list of booleans
+            :return: Noisy-Or probability
+            """
+        l = list(filter(lambda x: x is True, conditions))
+        return 1 - self.probability_of_blockage_if(True) ** len(l)
 
     def probability_of_blockage_if(self, what=True):
-        return 0.6 * 1 / self.edge_weight if what else 0.
+        return 0.6 * 1 / self.edge_weight if what else 0
 
     def __str__(self):
         s = 'P(Blockage {}|'.format(self._id)
@@ -65,5 +79,5 @@ if __name__ == '__main__':
             self.id = id
     b = Blockage(1, 1, [True, True], [V(id=1), V(id=2)])
     print(str(b))
-    b = Blockage(1, 1, [None, None], [V(id=1, flood_p=0.1), V(id=2, flood_p=0.1)])
+    b = Blockage(1, 1, [None, None], [V(id=1, flood_p=1.), V(id=2, flood_p=0.1)])
     print(str(b))

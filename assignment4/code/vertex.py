@@ -14,7 +14,6 @@ class Vertex:
         self._edges = []
         self._num_of_vertices = num_of_vertices
         self.evacuees = Evacuees([], [])
-        self._evacuees_reported = None
 
     def set_flood_prob(self, f):
         self.flood_p = ProbVar(f)
@@ -28,7 +27,7 @@ class Vertex:
         self._edges.append(edge)
         self.evacuees = Evacuees(
             [edge.weight for edge in self._edges],
-            [None] * len(self._edges)
+            [edge.blockage for edge in self._edges]
         )
 
     def get_edge_list(self):
@@ -47,20 +46,21 @@ class Vertex:
         self.evacuees.print_conditional_prob(self._edges)
 
     def reset(self):
-        self.evacuees.update_blockages([None] * len(self._edges))
+        self.evacuees.update_blockages([edge.blockage for edge in self._edges])
+        self.evacuees.report(None)
 
-    def evacuees_reported(self):
-        self._evacuees_reported = True
+    def evacuees_reported(self, what=True):
+        self.evacuees.report(what)
 
-    def flood_reported(self):
+    def flood_reported(self, what=True):
         for edge in self._edges:
             if self.id == edge.v1.id:
                 current_flooding_situation = edge.blockage.floodings
-                current_flooding_situation[0] = True
+                current_flooding_situation[0] = what
                 edge.blockage.update_floodings(current_flooding_situation)
             else:
                 current_flooding_situation = edge.blockage.floodings
-                current_flooding_situation[1] = True
+                current_flooding_situation[1] = what
                 edge.blockage.update_floodings(current_flooding_situation)
 
     def __str__(self):
@@ -78,9 +78,10 @@ class Vertex:
                 for p, e in zip(perm, self._edges):
                     s += "Blockage{} ".format(e.id) if p else "!Blockage{} ".format(e.id)
                 if twice:
-                    s += ')={}\n'.format(Evacuees([b.weight for b in self._edges], perm))
+                    s += ')={}\n'.format(Evacuees([b.weight for b in self._edges], [Blockage(None, None, None, None, report=p) for p in  perm]))
                 else:
-                    s += ')={}\n'.format((-Evacuees([b.weight for b in self._edges], perm)))
+                    s += ')={}\n'.format(-Evacuees([b.weight for b in self._edges],
+                                                  [Blockage(None, None, None, None, report=p) for p in perm]))
         return s
 
 

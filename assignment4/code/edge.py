@@ -15,6 +15,9 @@ class Edge:
         self.weight = weight
         self.blockage = Blockage(self.id, weight, [None, None], [v1, v2])
 
+    def blockage_reported(self, what=True):
+        self.blockage.report(what)
+
     def print_prob_for_blockage(self):
         print(str(self.blockage))
 
@@ -30,3 +33,4 @@ class Edge:
 
     def reset(self):
         self.blockage.update_floodings([None, None])
+        self.blockage.report(None)

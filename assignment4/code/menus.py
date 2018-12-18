@@ -1,5 +1,9 @@
-EVIDENCE_TYPE_FLOOD = 0
-EVIDENCE_TYPE_EVACUESS = 1
+EVIDENCE_TYPE_FLOOD = 1
+EVIDENCE_TYPE_NOT_FLOOD = 2
+EVIDENCE_TYPE_EVACUESS = 3
+EVIDENCE_TYPE_NOT_EVACUESS = 4
+EVIDENCE_TYPE_BLOCKAGE = 5
+EVIDENCE_TYPE_NOT_BLOCKAGE = 6
 
 
 def main_menu():
@@ -26,12 +30,13 @@ def reasoning_menu():
 
 
 def evidence_menu():
-    evidence_type = int(input('\n\n1. There is a flood?\n2. There is a blockage?'))
-    if evidence_type is 1:
-        vertex = int(input("\n\nWhich vertex is flooded?"))
+    evidence_type = int(input('\n\n1. There is a flood?\n2. There is no flood?\n3. There are evacuees?\n'
+                              '4. There are no evacuees?\n5. There is blockage?\n6. There is no blockage?\n'))
+    if evidence_type is EVIDENCE_TYPE_BLOCKAGE or evidence_type is EVIDENCE_TYPE_NOT_BLOCKAGE:
+        vertex = int(input("\n\nWhich edge?"))
 
-    elif evidence_type is 2:
-        vertex = int(input("\n\nWhere are there reported evacuees?"))
+    else:
+        vertex = int(input("\n\nWhich vertex?"))
 
     return evidence_type, vertex
 

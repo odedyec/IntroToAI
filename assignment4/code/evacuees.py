@@ -1,4 +1,4 @@
-from prob_lib import ProbVar
+from prob_lib import *
 
 
 class Evacuees(ProbVar):
@@ -16,7 +16,11 @@ class Evacuees(ProbVar):
         ProbVar.__init__(self, 1.)
         self.edges_weight = edges_weight
         self.blockages = blockages
+        self._evacuees_reported = None
         self.calculate_value()
+
+    def report(self, what):
+        self._evacuees_reported = what
 
     def update_edges(self, edges_weight):
         self.edges_weight = edges_weight
@@ -27,12 +31,17 @@ class Evacuees(ProbVar):
         self.calculate_value()
 
     def calculate_value(self):
-        for edge_weight, blockage in zip(self.edges_weight, self.blockages):
-            if blockage is None:
-                continue
-            if blockage:
-                self.value *= 0.8 if edge_weight > 4 else 0.4
-        self.value = 1 - self.value
+        conditions = []
+        for blockage in self.blockages:
+            conditions.append((P(-blockage), P(blockage)))
+        self.value = total_probability(self.noisy_or, conditions)
+
+    def noisy_or(self, conditions):
+        value = 1.0
+        for edge_weight, condition in zip(self.edges_weight, conditions):
+            if condition:
+                value *= 0.8 if edge_weight > 4 else 0.4
+        return 1.0 - value
 
     def print_conditional_prob(self, edges):
         s = "P(Evacuees|"
@@ -41,16 +50,3 @@ class Evacuees(ProbVar):
         s += ')={}\n'.format(self.value)
         print s
 
-
-if __name__ == '__main__':
-    e = Evacuees([1], [True])
-    print(str(e))
-    e = Evacuees([1], [False])
-    print(str(e))
-    e = Evacuees([1], [True])
-    print(str(-e))
-    e = Evacuees([1], [False])
-    print(str(-e))
-
-    e = Evacuees([1, 8], [True, True])
-    print(str(e))
