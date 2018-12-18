@@ -73,13 +73,13 @@ def total_probability(conditional_prob_func, list_of_noisy_boolean_variables):
 if __name__ == "__main__":
     v = ProbVar(0.4)
     v2 = ProbVar(0.4)
-    print P(v2)
-    print str(v)
-    print str(-v)
-    print str(v+v2)
-    print str(v * v2)
-    print str(v.p_or(v2))
+    print (P(v2))
+    print (str(v))
+    print (str(-v))
+    print (str(v+v2))
+    print (str(v * v2))
+    print (str(v.p_or(v2)))
 
     def my_noisy_or(list_of_conditions):
         return noisy_or(0.6, list_of_conditions)
-    print total_probability(my_noisy_or, [(0., 1), (1., 0.)])
+    print (total_probability(my_noisy_or, [(0., 1), (1., 0.)]))

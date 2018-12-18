@@ -5,17 +5,17 @@ from menus import *
 class UserInterface(BayesNetwork):
     def print_flood_in_all_vertices(self):
         for vertex in self._vertices:
-            print "Vertex {}\n-----------".format(vertex.id)
+            print ("Vertex {}\n-----------".format(vertex.id))
             vertex.print_prob_for_flood()
 
     def print_evacuees_in_all_vertices(self):
         for vertex in self._vertices:
-            print "Vertex {}\n-----------".format(vertex.id)
+            print ("Vertex {}\n-----------".format(vertex.id))
             vertex.print_prob_for_evacuees()
 
     def print_blocked_of_all_edges(self):
         for edge in self._edges:
-            print "Edge {}\n------------".format(edge.id)
+            print ("Edge {}\n------------".format(edge.id))
             edge.print_prob_for_blockage()
 
     def query(self):
@@ -27,7 +27,7 @@ class UserInterface(BayesNetwork):
         elif inp is 3:
             self.print_blocked_of_all_edges()
         else:
-            print 'Please learn how to read'
+            print ('Please learn how to read')
 
     def reset_evidence_list(self):
         for vertex in self._vertices:
@@ -50,7 +50,7 @@ class UserInterface(BayesNetwork):
         elif evidence_type is EVIDENCE_TYPE_NOT_BLOCKAGE:
             self._edges[vertex].blockage_reported(False)
         else:
-            print 'Please learn how to read'
+            print ('Please learn how to read')
 
     def menu(self):
         inp = main_menu()
@@ -63,5 +63,5 @@ class UserInterface(BayesNetwork):
         elif inp is 4:
             return False
         else:
-            print 'Please learn how to read'
+            print ('Please learn how to read')
         return True

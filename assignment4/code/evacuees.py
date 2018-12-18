@@ -56,5 +56,5 @@ class Evacuees(ProbVar):
         for i, p in enumerate(self.blockages):
             s += "Blockage{} ".format(edges[i].id) if p else "!Blockage{} ".format(edges[i].id)
         s += ')={}\n'.format(self.value)
-        print s
+        print (s)
 

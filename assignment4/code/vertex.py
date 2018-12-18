@@ -40,7 +40,7 @@ class Vertex:
         return edges
 
     def print_prob_for_flood(self):
-        print ("P(Flood)={}\n".format(self.flood_p))
+        print("P(Flood)={}\n".format(self.flood_p))
 
     def print_prob_for_evacuees(self):
         self.evacuees.print_conditional_prob(self._edges)
@@ -87,4 +87,4 @@ class Vertex:
 
 if __name__ == '__main__':
     v = Vertex(3, 2, 0.2)
-    print str(v)
+    print (str(v))

@@ -7,7 +7,7 @@ EVIDENCE_TYPE_NOT_BLOCKAGE = 6
 
 
 def main_menu():
-    print '\n\n\n'
+    print ('\n\n\n')
     inp = input("1. Reset evidence list to empty.\n"
                 "2. Add piece of evidence to evidence list.\n"
                 "3. Do probabilistic reasoning (1, 2, 3, 4, or 5, whichever your program supports) and report the results.\n"
@@ -18,7 +18,7 @@ def main_menu():
 
 
 def reasoning_menu():
-    print '\n\n\n'
+    print ('\n\n\n')
     inp = input("1. What is the probability that each of the vertices contains evacuees?\n"
                 "2. What is the probability that each of the vertices is flooded?\n"
                 "3. What is the probability that each of the edges is blocked?\n"

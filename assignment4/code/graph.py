@@ -32,7 +32,15 @@ class Graph:
     def print_edges(self, list_of_edges=None):
         for edge in self._edges:
             if list_of_edges is None or edge.id in list_of_edges:
-                print str(edge)
+                print (str(edge))
+
+    def path_free_of_blockages(self, list_of_edges=None):
+        prob_sum = 0
+        for edge in self._edges:
+            if list_of_edges is not None and edge.id in list_of_edges:
+                prob_sum += edge.blockage.value
+        print("The probability that the given path is free from blockages is ", 1-prob_sum)
+
 
 
 if __name__ == '__main__':
