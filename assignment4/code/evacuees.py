@@ -45,6 +45,8 @@ class Evacuees(ProbVar):
         self.value = total_probability(self.noisy_or, conditions)
 
     def noisy_or(self, conditions):
+        if len(list(filter(lambda condition: condition is True, conditions))) == 0:
+            return 0.001
         value = 1.0
         for edge_weight, condition in zip(self.edges_weight, conditions):
             if condition:

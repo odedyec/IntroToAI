@@ -55,11 +55,16 @@ class Blockage(ProbVar):
             :param list_conditions:  a list of booleans
             :return: Noisy-Or probability
             """
-        l = list(filter(lambda x: x is True, conditions))
-        return 1 - self.probability_of_blockage_if(True) ** len(l)
+        p = 0.6 * 1 / self.edge_weight
+        if conditions[0] and conditions[1]: return 1 - (1 - p) * (1 - p)
+        if not conditions[0] and not conditions[1]: return 0.001
+        return p
+        #
+        # l = list(filter(lambda x: x is True, conditions))
+        # return 1 - self.probability_of_blockage_if(True) ** len(l)
 
     def probability_of_blockage_if(self, what=True):
-        return 0.6 * 1 / self.edge_weight if what else 0
+        return 0.6 * 1 / self.edge_weight if what else 0.001
 
     def __str__(self):
         s = 'P(Blockage {}|'.format(self._id)
