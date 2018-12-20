@@ -3,6 +3,7 @@ from blockage import Blockage
 from edge import Edge
 from prob_lib import P
 import itertools
+import json
 
 
 class Graph:
@@ -36,16 +37,26 @@ class Graph:
                 print (str(edge))
 
     def path_free_of_blockages(self, list_of_edges=None):
-        prob = 1
-        path_vertices = []
-        for edge in self._edges:
-            if list_of_edges is not None and edge.id in list_of_edges:
-                prob *= P(-edge.blockage)
-                print("prob= ", prob)
-                for v in [edge.v1, edge.v2]:
-                    if not (v in path_vertices):
-                        prob *= P(v.flood_p)
-                        path_vertices.append(v)
+
+        prob = 0
+        vertices_indices = []
+
+        for v in self._vertices:
+            vertices_indices.append(v.id)
+
+        for perm in list(itertools.product([False, True], repeat=len(vertices_indices))):
+            temp_prob = 1
+
+            for v in self._vertices:
+                temp_prob *= P(v.flood_p) if perm[vertices_indices.index(v.id)] else P(-v.flood_p)
+
+            for edge in self._edges:
+                if list_of_edges is not None and edge.id in list_of_edges:
+                    flooding_temp = [perm[vertices_indices.index(edge.v1.id)], perm[vertices_indices.index(edge.v2.id)]]
+                    blockage_temp = Blockage(edge.id, edge.weight, flooding_temp, [edge.v1, edge.v2])
+
+                    temp_prob *= P(-blockage_temp)
+            prob += temp_prob
 
         print("The probability that the given path is free from blockages is ", prob)
 

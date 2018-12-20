@@ -66,13 +66,20 @@ class Vertex:
                 current_flooding_situation[1] = what
                 edge.blockage.update_floodings(current_flooding_situation)
 
+    def is_no_evidence(self):
+        return self._flood_reported is None
+
+    def get_flodding_status(self):
+        return self._flood_reported
+
     def P(self):
-        if self._flood_reported:
-            return 1
-        elif self._flood_reported == False:
-            return 0
-        else:
+        if self._flood_reported is None:
             P(self.flood_p)
+        elif self._flood_reported:
+            return 1
+        else:
+            return 0
+
 
     def __str__(self):
         s = 'Vertex{}\n'.format(self.id)
