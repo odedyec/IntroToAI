@@ -1,6 +1,7 @@
 from vertex import Vertex
 from blockage import Blockage
 from edge import Edge
+from prob_lib import P
 import itertools
 
 
@@ -35,11 +36,18 @@ class Graph:
                 print (str(edge))
 
     def path_free_of_blockages(self, list_of_edges=None):
-        prob_sum = 0
+        prob = 1
+        path_vertices = []
         for edge in self._edges:
             if list_of_edges is not None and edge.id in list_of_edges:
-                prob_sum += edge.blockage.value
-        print("The probability that the given path is free from blockages is ", 1-prob_sum)
+                prob *= P(-edge.blockage)
+                print("prob= ", prob)
+                for v in [edge.v1, edge.v2]:
+                    if not (v in path_vertices):
+                        prob *= P(v.flood_p)
+                        path_vertices.append(v)
+
+        print("The probability that the given path is free from blockages is ", prob)
 
 
 
