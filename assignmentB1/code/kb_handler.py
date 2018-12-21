@@ -8,17 +8,14 @@ class KnoledgeBase(Axiom):
         return False
 
     def print_status(self):
-        if self.is_query_false():
-            print("\n==============\nQuery is False\n==============\n")
-        else:
-            for i in range(len(self.predicats)):
-                print(str(self.predicats[i])),
+        for i in range(len(self.predicats)):
+            print(str(self.predicats[i])),
 
-                if i == len(self.predicats) - 1: continue
+            if i == len(self.predicats) - 1: continue
 
-                print('V'),
+            print('V'),
 
-            print('')
+        print('')
 
     def pretty_print_resolve(self, obj):
         print("\n----------------\nResolving   "),
@@ -29,12 +26,11 @@ class KnoledgeBase(Axiom):
 
     def resolve(self,obj, obj_is_axiom=False):
         self.pretty_print_resolve(obj)
-        res, KB = self.unite(obj, obj_is_axiom)
+        res = self.unite(obj, obj_is_axiom)
         if res is False:
-            KB.print_status()
-            print("\n==============\nCONTRADICTION\nQuery is True\n==============\n")
-        self.predicats = KB.predicats
+            return False
         self.remove_similar()
+        self.print_status()
 
     def remove_similar(self):
         list_to_remove = []
@@ -45,3 +41,13 @@ class KnoledgeBase(Axiom):
                     break
         for idx in list_to_remove:
             self.predicats.pop(idx)
+
+    def resolve_axiom_list(self, list_of_axioms):
+        for axiom in list_of_axioms:
+            if self.resolve(axiom, True) is False:
+                print("\n==============\nCONTRADICTION\nQuery is True\n==============\n")
+                return
+        if self.is_query_false():
+            print("\n==============\nQuery is False\n==============\n")
+        else:
+            print("\n--------------\nQuery can not be disproven\n------------\n")

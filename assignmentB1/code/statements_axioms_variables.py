@@ -57,7 +57,7 @@ class Axiom:
         for i in range(len(self.predicats)):
             s += str(self.predicats[i])
             if i == len(self.predicats) - 1: continue
-            s += ' V'
+            s += ' V '
         return s
 
     def add_predicat(self, predicat):
@@ -76,19 +76,16 @@ class Axiom:
 
     def unite_axiom(self, axiom):
         new_predicats = []
-        new_statement = None
         res = True
         for predicat in axiom.predicats:
             if self.is_complement_predicat_exist(predicat):
-                res, new_statement = self.unite_predicat(predicat)
+                res = self.unite_predicat(predicat)
                 if res is False: return res, None
             else:
                 new_predicats.append(predicat)
-        if new_statement is None:
-            new_statement = axiom
         for pred in new_predicats:
-            new_statement.add_predicat(pred)
-        return res, new_statement
+            self.add_predicat(pred)
+        return res
 
     def unite_predicat(self, predicat):
         new_list = []
@@ -97,7 +94,7 @@ class Axiom:
             if pred.is_complement(predicat):
                 res = pred.substitute(predicat.vars)
                 if res is False:
-                    return False, None
+                    return False
                 else:
                     var = res
             else:
@@ -108,8 +105,8 @@ class Axiom:
                     for i in range(len(p.vars)):
                         if p.vars[i] is it[0]:
                             p.vars[i] = it[1]
-
-        return True, Axiom(new_list)
+        self.predicats = Axiom(new_list).predicats
+        return True
 
     def print_axiom(self):
         if len(self.predicats) == 0:
