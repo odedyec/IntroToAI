@@ -1,6 +1,6 @@
 from evacuees import Evacuees
 from blockage import Blockage
-from prob_lib import ProbVar
+from prob_lib import ProbVar, P
 import itertools
 
 
@@ -8,12 +8,13 @@ class Vertex:
     """
     A vertex object with all the associated information such as flooding probability and probability for evacuees
     """
-    def __init__(self, id, num_of_vertices, flood=0.):
+    def __init__(self, id, num_of_vertices, flood=0., report=None):
         self.id = id
         self.flood_p = ProbVar(flood)
         self._edges = []
         self._num_of_vertices = num_of_vertices
         self.evacuees = Evacuees([], [])
+        self._flood_reported = report
 
     def set_flood_prob(self, f):
         self.flood_p = ProbVar(f)
@@ -48,11 +49,13 @@ class Vertex:
     def reset(self):
         self.evacuees.update_blockages([edge.blockage for edge in self._edges])
         self.evacuees.report(None)
+        self._flood_reported = None
 
     def evacuees_reported(self, what=True):
         self.evacuees.report(what)
 
     def flood_reported(self, what=True):
+        self._flood_reported = what
         for edge in self._edges:
             if self.id == edge.v1.id:
                 current_flooding_situation = edge.blockage.floodings
@@ -62,6 +65,21 @@ class Vertex:
                 current_flooding_situation = edge.blockage.floodings
                 current_flooding_situation[1] = what
                 edge.blockage.update_floodings(current_flooding_situation)
+
+    def is_no_evidence(self):
+        return self._flood_reported is None
+
+    def get_flodding_status(self):
+        return self._flood_reported
+
+    def P(self):
+        if self._flood_reported is None:
+            P(self.flood_p)
+        elif self._flood_reported:
+            return 1
+        else:
+            return 0
+
 
     def __str__(self):
         s = 'Vertex{}\n'.format(self.id)
