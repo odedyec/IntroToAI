@@ -2,7 +2,7 @@ from statements_axioms_variables import *
 
 
 def get_predicates(line):
-    return line.replace('V','').replace('v', '').split(' ')
+    return line.replace(' ', '').split('V')
 
 
 def get_predicat_and_vars(name):
@@ -15,7 +15,9 @@ def get_predicat_and_vars(name):
 
 
 def create_variable(var=''):
-    if var[0].islower():
+    if var.isdigit():
+        v = Variable(symbolic=var, var=int(var))
+    elif var[0].islower():
         v = Variable(symbolic=var)
     else:
         v = Variable(symbolic=var, var=var)
@@ -45,21 +47,28 @@ def create_predicat_from_string(predicat, list_of_vars):
         idx_list_for_predicat.append(idx)
     return Predicat(pred_name, [list_of_vars[i] for i in idx_list_for_predicat], is_not)
 
+
+def create_axiom_from_line(line):
+    try:
+        list_of_predicats = []
+        list_of_vars = []
+        for predicat in get_predicates(line.replace('\n', '')):
+            if predicat == '': continue
+            list_of_predicats.append(create_predicat_from_string(predicat, list_of_vars))
+        return Axiom(list_of_predicats)
+    except:
+        raise Exception('Problem with line: "{}"'.format(line.replace('\n', "")))
+
 def parser(file_name):
     list_of_axioms = []
     with open(file_name) as f:
-        list_of_vars = []
         for line in f:
-            list_of_predicats = []
-            for predicat in get_predicates(line.replace('\n', '')):
-                if predicat == '': continue
-                list_of_predicats.append(create_predicat_from_string(predicat, list_of_vars))
-            list_of_axioms.append(Axiom(list_of_predicats))
+            list_of_axioms.append(create_axiom_from_line(line))
     return list_of_axioms
 
 
 
 if __name__ == '__main__':
-    axioms = parser("cnf.txt")
+    axioms = parser("hurricane_cnf.txt")
     for a in axioms:
         print str(a)

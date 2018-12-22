@@ -7,7 +7,8 @@ class KnoledgeBase(Axiom):
             return True
         return False
 
-    def print_status(self):
+    def print_status(self, color_code=''):
+        print color_code,
         for i in range(len(self.predicats)):
             print(str(self.predicats[i])),
 
@@ -15,14 +16,14 @@ class KnoledgeBase(Axiom):
 
             print('V'),
 
-        print('')
+        print('' + '\033[0m')
 
     def pretty_print_resolve(self, obj):
         print("\n----------------\nResolving   "),
-        print(str(obj)),
+        print('\033[95m' + str(obj) + '\033[0m'),
         print("  With   "),
-        self.print_status()
-        print("Result    "),
+        self.print_status('\033[94m')
+        print("\nResult    "),
 
     def resolve(self,obj, obj_is_axiom=False):
         self.pretty_print_resolve(obj)
@@ -30,7 +31,7 @@ class KnoledgeBase(Axiom):
         if res is False:
             return False
         self.remove_similar()
-        self.print_status()
+        self.print_status('\033[92m')
 
     def remove_similar(self):
         list_to_remove = []

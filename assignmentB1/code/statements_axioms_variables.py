@@ -1,3 +1,13 @@
+def result(predicat):
+    if predicat.name != 'Result':
+        raise Exception("the result should only get a Result(a, s) predicat")
+    state = predicat.vars[1].var
+    num_s = state[1:]
+    num_i = int(num_s)
+    new_state = 'S'+str(num_i+1)
+    return new_state
+
+
 class Variable:
     def __init__(self, var=None, symbolic=''):
         self.var = var
@@ -6,7 +16,13 @@ class Variable:
     def __str__(self):
         if self.var is None:
             return self.symbol
-        return self.var
+        return str(self.var) if type(self.var) is int else self.var
+
+    def __add__(self, other):
+        if type(self.var) is int and type(other.var) is int:
+            self.var += other.var
+        else:
+            raise Exception("Trying to add two non numeric vars")
 
 
 class Predicat:
@@ -78,7 +94,17 @@ class Axiom:
         new_predicats = []
         res = True
         for predicat in axiom.predicats:
-            if self.is_complement_predicat_exist(predicat):
+            if predicat.name == 'Plus':
+                predicat.vars[2].var = predicat.vars[0].var + predicat.vars[1].var
+            elif predicat.name == 'Result':
+                predicat.vars[2].var = result(predicat)
+            elif predicat.name == 'Greater':
+                if predicat.vars[0].var > predicat.vars[1].var:
+                    p = Predicat("Timeup", predicat.vars[2], is_not=False)
+                else:
+                    p = Predicat("Timeup", [predicat.vars[2]], is_not=True)
+                res = self.unite_predicat(p)
+            elif self.is_complement_predicat_exist(predicat):
                 res = self.unite_predicat(predicat)
                 if res is False: return res, None
             else:

@@ -1,0 +1,137 @@
+
+----------------
+Resolving    Weight(E1,3) V Edge(E1,K0,K1) V Traverse(E1)   With     Timeup(S6) V Time(0,S0) V Carrying(0,S0) V Loc(K0,S0) V Deadline(11) 
+
+Result      Timeup(S6) V Time(0,S0) V Carrying(0,S0) V Loc(K0,S0) V Deadline(11) V Weight(E1,3) V Edge(E1,K0,K1) V Traverse(E1) 
+
+----------------
+Resolving    ~Traverse(a) V ~Carrying(x,s) V Carrying(x,s1) V ~Weight(a,w) V ~Time(t,s) V Time(t2,s1) V ~Edge(a,v1,v2) V ~Loc(v1,s) V Loc(v2,s1) V Result(a,s,s1) V Plus(t,w,t2)   With     Timeup(S6) V Time(0,S0) V Carrying(0,S0) V Loc(K0,S0) V Deadline(11) V Weight(E1,3) V Edge(E1,K0,K1) V Traverse(E1) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(0,S1) V Time(3,S1) V Loc(K1,S1) 
+
+
+----------------
+Resolving    Weight(E2,1) V Edge(E2,K1,K2) V Traverse(E2)   With     Timeup(S6) V Deadline(11) V Carrying(0,S1) V Time(3,S1) V Loc(K1,S1) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(0,S1) V Time(3,S1) V Loc(K1,S1) V Weight(E2,1) V Edge(E2,K1,K2) V Traverse(E2) 
+
+
+----------------
+Resolving    ~Traverse(a) V ~Carrying(x,s) V Carrying(x,s1) V ~Weight(a,w) V ~Time(t,s) V Time(t2,s1) V ~Edge(a,v1,v2) V ~Loc(v1,s) V Loc(v2,s1) V Result(a,s,s1) V Plus(t,w,t2)   With     Timeup(S6) V Deadline(11) V Carrying(0,S1) V Time(3,S1) V Loc(K1,S1) V Weight(E2,1) V Edge(E2,K1,K2) V Traverse(E2) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(0,S2) V Time(4,S2) V Loc(K2,S2) 
+
+----------------
+Resolving    Weight(E3,1) V Edge(E3,K2,K3) V Traverse(E3)   With     Timeup(S6) V Deadline(11) V Carrying(0,S2) V Time(4,S2) V Loc(K2,S2) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(0,S2) V Time(4,S2) V Loc(K2,S2) V Weight(E3,1) V Edge(E3,K2,K3) V Traverse(E3) 
+
+
+----------------
+Resolving    ~Traverse(a) V ~Carrying(x,s) V Carrying(x,s1) V ~Weight(a,w) V ~Time(t,s) V Time(t2,s1) V ~Edge(a,v1,v2) V ~Loc(v1,s) V Loc(v2,s1) V Result(a,s,s1) V Plus(t,w,t2)   With     Timeup(S6) V Deadline(11) V Carrying(0,S2) V Time(4,S2) V Loc(K2,S2) V Weight(E3,1) V Edge(E3,K2,K3) V Traverse(E3) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(0,S3) V Time(5,S3) V Loc(K3,S3) 
+
+
+
+----------------
+Resolving    At(K3,2)   With     Timeup(S6) V Deadline(11) V Carrying(0,S3) V Time(5,S3) V Loc(K3,S3) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(0,S3) V Time(5,S3) V Loc(K3,S3) V At(K3,2) 
+
+
+
+----------------
+Resolving    ~At(v2,p) V ~Carrying(x,s1) V Carrying(y,s1) V At(v2,0) V Plus(x,p,y)   With     Timeup(S6) V Deadline(11) V Carrying(0,S3) V Time(5,S3) V Loc(K3,S3) V At(K3,2) 
+
+Result      Timeup(S6) V Deadline(11) V Time(5,S3) V Loc(K3,S3) V Carrying(2,S3) V At(K3,0) 
+
+----------------
+Resolving    ~At(K3,0)   With     Timeup(S6) V Deadline(11) V Time(5,S3) V Loc(K3,S3) V Carrying(2,S3) V At(K3,0) 
+
+Result      Timeup(S6) V Deadline(11) V Time(5,S3) V Loc(K3,S3) V Carrying(2,S3) 
+
+
+----------------
+Resolving    Weight(E3,1) V Edge(E3,K2,K3) V Traverse(E3)   With     Timeup(S6) V Deadline(11) V Time(5,S3) V Loc(K3,S3) V Carrying(2,S3) 
+
+Result      Timeup(S6) V Deadline(11) V Time(5,S3) V Loc(K3,S3) V Carrying(2,S3) V Weight(E3,1) V Edge(E3,K2,K3) V Traverse(E3) 
+
+
+
+----------------
+Resolving    ~Edge(e,k1,k2) V Edge(e,k2,k1)   With     Timeup(S6) V Deadline(11) V Time(5,S3) V Loc(K3,S3) V Carrying(2,S3) V Weight(E3,1) V Edge(E3,K2,K3) V Traverse(E3) 
+
+Result      Timeup(S6) V Deadline(11) V Time(5,S3) V Loc(K3,S3) V Carrying(2,S3) V Weight(E3,1) V Traverse(E3) V Edge(E3,K3,K2) 
+
+
+
+----------------
+Resolving    ~Traverse(a) V ~Carrying(x,s) V Carrying(x,s1) V ~Weight(a,w) V ~Time(t,s) V Time(t2,s1) V ~Edge(a,v1,v2) V ~Loc(v1,s) V Loc(v2,s1) V Result(a,s,s1) V Plus(t,w,t2)   With     Timeup(S6) V Deadline(11) V Time(5,S3) V Loc(K3,S3) V Carrying(2,S3) V Weight(E3,1) V Traverse(E3) V Edge(E3,K3,K2) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(2,S4) V Time(6,S4) V Loc(K2,S4) 
+
+
+
+----------------
+Resolving    Weight(E2,1) V Edge(E2,K1,K2) V Traverse(E2)   With     Timeup(S6) V Deadline(11) V Carrying(2,S4) V Time(6,S4) V Loc(K2,S4) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(2,S4) V Time(6,S4) V Loc(K2,S4) V Weight(E2,1) V Edge(E2,K1,K2) V Traverse(E2) 
+
+
+----------------
+Resolving    ~Edge(e,k1,k2) V Edge(e,k2,k1)   With     Timeup(S6) V Deadline(11) V Carrying(2,S4) V Time(6,S4) V Loc(K2,S4) V Weight(E2,1) V Edge(E2,K1,K2) V Traverse(E2) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(2,S4) V Time(6,S4) V Loc(K2,S4) V Weight(E2,1) V Traverse(E2) V Edge(E2,K2,K1) 
+
+
+----------------
+Resolving    ~Traverse(a) V ~Carrying(x,s) V Carrying(x,s1) V ~Weight(a,w) V ~Time(t,s) V Time(t2,s1) V ~Edge(a,v1,v2) V ~Loc(v1,s) V Loc(v2,s1) V Result(a,s,s1) V Plus(t,w,t2)   With     Timeup(S6) V Deadline(11) V Carrying(2,S4) V Time(6,S4) V Loc(K2,S4) V Weight(E2,1) V Traverse(E2) V Edge(E2,K2,K1) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(2,S5) V Time(7,S5) V Loc(K1,S5) 
+
+
+----------------
+Resolving    Weight(E1,3) V Edge(E1,K0,K1) V Traverse(E1)   With     Timeup(S6) V Deadline(11) V Carrying(2,S5) V Time(7,S5) V Loc(K1,S5) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(2,S5) V Time(7,S5) V Loc(K1,S5) V Weight(E1,3) V Edge(E1,K0,K1) V Traverse(E1) 
+
+
+----------------
+Resolving    ~Edge(e,k1,k2) V Edge(e,k2,k1)   With     Timeup(S6) V Deadline(11) V Carrying(2,S5) V Time(7,S5) V Loc(K1,S5) V Weight(E1,3) V Edge(E1,K0,K1) V Traverse(E1) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(2,S5) V Time(7,S5) V Loc(K1,S5) V Weight(E1,3) V Traverse(E1) V Edge(E1,K1,K0) 
+
+
+----------------
+Resolving    ~Traverse(a) V ~Carrying(x,s) V Carrying(x,s1) V ~Weight(a,w) V ~Time(t,s) V Time(t2,s1) V ~Edge(a,v1,v2) V ~Loc(v1,s) V Loc(v2,s1) V Result(a,s,s1) V Plus(t,w,t2)   With     Timeup(S6) V Deadline(11) V Carrying(2,S5) V Time(7,S5) V Loc(K1,S5) V Weight(E1,3) V Traverse(E1) V Edge(E1,K1,K0) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(2,S6) V Time(10,S6) V Loc(K0,S6) 
+
+
+----------------
+Resolving    Shelter(K0)   With     Timeup(S6) V Deadline(11) V Carrying(2,S6) V Time(10,S6) V Loc(K0,S6) 
+
+Result      Timeup(S6) V Deadline(11) V Carrying(2,S6) V Time(10,S6) V Loc(K0,S6) V Shelter(K0) 
+
+
+----------------
+Resolving    ~Shelter(k) V ~Carrying(x,s) V Carrying(0,s)   With     Timeup(S6) V Deadline(11) V Carrying(2,S6) V Time(10,S6) V Loc(K0,S6) V Shelter(K0) 
+
+Result      Timeup(S6) V Deadline(11) V Time(10,S6) V Loc(K0,S6) V Carrying(0,S6) 
+
+
+----------------
+Resolving    ~Carrying(0,S6) V ~Loc(K0,S6)   With     Timeup(S6) V Deadline(11) V Time(10,S6) V Loc(K0,S6) V Carrying(0,S6) 
+
+Result      Timeup(S6) V Deadline(11) V Time(10,S6) 
+
+
+----------------
+Resolving    ~Time(t,s) V ~Deadline(t2) V Greater(t,t2,s)   With     Timeup(S6) V Deadline(11) V Time(10,S6) 
+
+Result      
+
+==============
+Query is False
+==============
