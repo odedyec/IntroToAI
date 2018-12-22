@@ -54,9 +54,11 @@ class Evacuees(ProbVar):
         return 1.0 - value
 
     def print_conditional_prob(self, edges):
+        self.calculate_value()
         s = "P(Evacuees|"
         for i, p in enumerate(self.blockages):
-            s += "Blockage{} ".format(edges[i].id) if p else "!Blockage{} ".format(edges[i].id)
+            if p.is_blockage_reported() is not None:
+                s += "Blockage{} ".format(edges[i].id) if p else "!Blockage{} ".format(edges[i].id)
         s += ')={}\n'.format(self.value)
-        print (s)
+        return s
 

@@ -14,8 +14,13 @@ class Blockage(ProbVar):
         self._blockage_reported = report
         self.calculate_value()
 
+    def is_blockage_reported(self):
+        return self._blockage_reported
+
     def report(self, what):
         self._blockage_reported = what
+        for vertex in self.vertices:
+            vertex.blockage_reported()
         self.calculate_value()
 
     def update_floodings(self, floodings):

@@ -19,7 +19,7 @@ class Edge:
         self.blockage.report(what)
 
     def print_prob_for_blockage(self):
-        print(str(self.blockage))
+        return str(self.blockage)
 
     def __str__(self):
         s = 'Edge{}\n'.format(self.id)
@@ -28,7 +28,7 @@ class Edge:
         s += '{}\n'.format(Blockage(self.id, self.weight, [False, True],[self.v1, self.v2]))
         s += '{}\n'.format(Blockage(self.id, self.weight, [True, False],[self.v1, self.v2]))
         s += '{}\n'.format(Blockage(self.id, self.weight, [True, True],[self.v1, self.v2]))
-
+        s += self.print_prob_for_blockage()
         return s
 
     def reset(self):

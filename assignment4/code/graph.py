@@ -55,7 +55,7 @@ class Graph:
                     flooding_temp = [perm[vertices_indices.index(edge.v1.id)], perm[vertices_indices.index(edge.v2.id)]]
                     blockage_temp = Blockage(edge.id, edge.weight, flooding_temp, [edge.v1, edge.v2])
 
-                    temp_prob *= P(-blockage_temp)
+                    temp_prob *= (1 - blockage_temp.noisy_or(flooding_temp))
             prob += temp_prob
 
         print("The probability that the given path is free from blockages is ", prob)

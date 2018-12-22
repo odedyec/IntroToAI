@@ -44,7 +44,7 @@ class Vertex:
         print("P(Flood)={}\n".format(self.flood_p))
 
     def print_prob_for_evacuees(self):
-        self.evacuees.print_conditional_prob(self._edges)
+        return self.evacuees.print_conditional_prob(self._edges)
 
     def reset(self):
         self.evacuees.update_blockages([edge.blockage for edge in self._edges])
@@ -53,6 +53,9 @@ class Vertex:
 
     def evacuees_reported(self, what=True):
         self.evacuees.report(what)
+
+    def blockage_reported(self):
+        self.evacuees.update_blockages([edge.blockage for edge in self._edges])
 
     def flood_reported(self, what=True):
         self._flood_reported = what
@@ -100,6 +103,8 @@ class Vertex:
                 else:
                     s += ')={}\n'.format(-Evacuees([b.weight for b in self._edges],
                                                   [Blockage(None, None, None, None, report=p) for p in perm]))
+
+        s += self.print_prob_for_evacuees()
         return s
 
 
