@@ -18,11 +18,14 @@ class UserInterface(BayesNetwork):
             print ("Edge {}\n------------".format(edge.id))
             edge.print_prob_for_blockage()
 
+    def print_path_free_of_blockages(self):
+        print("The probability that the given path is free from blockages is \n------------")
+
     def query(self):
         inp = reasoning_menu()
-        if inp is 1:
+        if inp is 2:
             self.print_flood_in_all_vertices()
-        elif inp is 2:
+        elif inp is 1:
             self.print_evacuees_in_all_vertices()
         elif inp is 3:
             self.print_blocked_of_all_edges()
