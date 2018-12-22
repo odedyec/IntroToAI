@@ -1,3 +1,13 @@
+def result(predicat):
+    if predicat.name != 'Result':
+        raise Exception("the result should only get a Result(a, s) predicat")
+    state = predicat.vars[1].var
+    num_s = state[1:]
+    num_i = int(num_s)
+    new_state = 'S'+str(num_i+1)
+    return new_state
+
+
 class Variable:
     def __init__(self, var=None, symbolic=''):
         self.var = var
@@ -6,7 +16,13 @@ class Variable:
     def __str__(self):
         if self.var is None:
             return self.symbol
-        return self.var
+        return str(self.var) if type(self.var) is int else self.var
+
+    def __add__(self, other):
+        if type(self.var) is int and type(other.var) is int:
+            self.var += other.var
+        else:
+            raise Exception("Trying to add two non numeric vars")
 
 
 class Predicat:
@@ -57,7 +73,7 @@ class Axiom:
         for i in range(len(self.predicats)):
             s += str(self.predicats[i])
             if i == len(self.predicats) - 1: continue
-            s += ' V'
+            s += ' V '
         return s
 
     def add_predicat(self, predicat):
@@ -76,19 +92,26 @@ class Axiom:
 
     def unite_axiom(self, axiom):
         new_predicats = []
-        new_statement = None
         res = True
         for predicat in axiom.predicats:
-            if self.is_complement_predicat_exist(predicat):
-                res, new_statement = self.unite_predicat(predicat)
+            if predicat.name == 'Plus':
+                predicat.vars[2].var = predicat.vars[0].var + predicat.vars[1].var
+            elif predicat.name == 'Result':
+                predicat.vars[2].var = result(predicat)
+            elif predicat.name == 'Greater':
+                if predicat.vars[0].var > predicat.vars[1].var:
+                    p = Predicat("Timeup", predicat.vars[2], is_not=False)
+                else:
+                    p = Predicat("Timeup", [predicat.vars[2]], is_not=True)
+                res = self.unite_predicat(p)
+            elif self.is_complement_predicat_exist(predicat):
+                res = self.unite_predicat(predicat)
                 if res is False: return res, None
             else:
                 new_predicats.append(predicat)
-        if new_statement is None:
-            new_statement = axiom
         for pred in new_predicats:
-            new_statement.add_predicat(pred)
-        return res, new_statement
+            self.add_predicat(pred)
+        return res
 
     def unite_predicat(self, predicat):
         new_list = []
@@ -97,7 +120,7 @@ class Axiom:
             if pred.is_complement(predicat):
                 res = pred.substitute(predicat.vars)
                 if res is False:
-                    return False, None
+                    return False
                 else:
                     var = res
             else:
@@ -108,8 +131,8 @@ class Axiom:
                     for i in range(len(p.vars)):
                         if p.vars[i] is it[0]:
                             p.vars[i] = it[1]
-
-        return True, Axiom(new_list)
+        self.predicats = Axiom(new_list).predicats
+        return True
 
     def print_axiom(self):
         if len(self.predicats) == 0:

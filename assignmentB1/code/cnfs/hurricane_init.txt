@@ -1,0 +1,4 @@
+Time(0, S0)
+Carrying(0, S0)
+Loc(K0, S0)
+Deadline(11)

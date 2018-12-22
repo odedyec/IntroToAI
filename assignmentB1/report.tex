@@ -1,0 +1,179 @@
+\documentclass{article}                     % onecolumn (standard format)
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{subcaption}
+\usepackage{rotating}
+\usepackage[left=2.2cm, right=2.2cm]{geometry}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+%\floatstyle{ruled}
+\usepackage[hidelinks]{hyperref}
+\usepackage{algpseudocode}
+
+
+\newfloat{algorithm}{tbp}{loa}
+\providecommand{\algorithmname}{Algorithm}
+\floatname{algorithm}{\protect\algorithmname}
+
+
+%\renewcommand{\thesection}{\Roman{section}}
+\usepackage{titlesec}
+\titleformat{\section}
+{\normalfont\Large\bfseries}{Exercise~\thesection}{1em}{}
+
+\newfloat{algorithm}{tbp}{loa}
+\providecommand{\algorithmname}{Algorithm}
+\floatname{algorithm}{\protect\algorithmname}
+
+\begin{document}
+	
+	\title{Introduction to AI - assignment B1}
+	
+	
+	\author{Oded~Yechiel}
+	
+	\date{1/1/19}
+	
+	\maketitle
+	
+	\section{Introduction}
+	In this assignment a theorem proving resolution program was developed. The program gets as an input a file containing axioms in Conjunctive Normal Form (CNF) and a query (also in CNF) that is desired to prove.
+	
+	The program output is one of the 3:
+	\begin{itemize}
+		\item \textit{Query is False}
+		\item \textit{CONTRADICTION Query is True}
+		\item \textit{Query can not be disproven}
+	\end{itemize}
+	The program is written in \texttt{Python} and can be found in \url{https://github.com/odedyec/IntroToAI/tree/master/assignmentB1}.
+	\section{Conventions}
+	The parser of the program can parse very neatly text into understandable sentences by the solver engine. In order to conserve time of development there are several strict conventions which are have to be met:
+	\begin{enumerate}
+		\item Each line is an axiom and can contain as many fluents or predicats as desired. From hereon, we will consider all of the fluents as predicats.
+		\item It is recommended to start the fluents / predicats with a capital letter. For example, \text{Enemy(...)}, \texttt{Weapon(...)}, \texttt{Loc(...)}.
+		\item Predicats are separated by  a \textbf{V} sign. It is disallowed to use \textbf{V} in any variable or predicat.
+		\item A predicat has to have at least one variable.
+		\item A negated predicat starts with a "!" sign.
+		\item A variable is a Skolem (constant) iff the variable starts with a capital letter. For example, \texttt{Criminal(West)} - West is a Skolem variable. 
+		\item Adding between variables is possible iff the variable is defined as an integer. For example, \texttt{Carrying(0, S0)} - the first variable is an integer and it is possible to add on this variable.
+		\item Variables that are lower case can be assigned by the program.
+		\item There are some protected names for predicats that have a unique definition. 
+			\begin{itemize}
+				\item Result(a, s, s1) - this predicat gets as an input \texttt{s}, as skolem value (e.g. S0) and \textit{s1}  as a skolem value with the next following number (e.g. S1).
+				\item Plus(a, b, c) - this predicat gets as an input two integer valued defined variables, $ a $ and $ b $, and sets the variable $ c $ as the sum of them.
+				\item Greater(a, b, s) - this predicat checks if $ a > b $, if so it creates the predicat \texttt{$ \neg  $ Timeup(s)} otherwise, \texttt{Timeup(s)}
+			\end{itemize}
+		These predicats disappear after they are called, as opposed to regular predicats that disappear only when combined with their complementary predicat. 
+	\end{enumerate}
+	\section{Code explanation}
+	There are mainly three objects which are the building blocks of the program: Variable, Predicats and Axioms.
+	\subsection{Variables}
+	The variable object is a mutable object, which means that it is not copied. Therefore, if several predicats are pointing to the same variable and the variable changes, all of the variables change as a result.
+	
+	A variable has to properties: a value (default: None)  and a symbol. A variable with no value is shown by its symbol and its value can be set. A value that is set can not be changed, unless its value is an integer, and is shown by its value.
+	
+	\subsection{Predicats}
+	The predicat object has a name defining it and a list of vars. It also has a boolean variable stating if its negated or not.
+	
+	The object has also two methods: \texttt{substitute} and \texttt{is\_complement}. The substitue method should get a list of variables objects. These variables are compared with the predicats own variables, and for each variable one of the three can occur:
+	\begin{itemize}
+		\item Both of the variables are not defined, in which case the variables are combined to a new variable.
+		\item One of the variables is defined and one is not. In this case the undefined variable is defined with the value of the second.
+		\item Both of the variables are defined. In this case, if the variables have the same value the program continues, otherwise we have a contradiction and the query is true.
+	\end{itemize}
+	
+	\subsection{Axiom}
+	The axiom object contains a list of predicats.
+	
+	The axiom object performs the unification with another axiom or predicat. The unification with a predicat is performed by checking if it is complement with any of the predicats contained by the axiom. If so, substitution is performed between the variables, and these predicats are removed from the axiom. If the predicat is not complement with any of the predicats of the axiom, the predicat is added to the axiom. 
+	
+	\subsection{The knowledgeBase object and main}
+	The knowledge base is an extension to the Axiom object. The KnowledgeBase has also a useful printing method and a resolve full list for automatic resolution of a list with axioms. 
+	
+	The main file simply parses a text file and runs  the Knowledge base until the knowledge base is empty, or there is no more resolutions to be performed. 
+	Each problem set will have its own main file. 
+	
+	\section{Examples}
+	\subsection{Criminal West}
+	The very well known query if captain west is a criminal is performed by negation using the following query \texttt{$ \neg$Criminal(West)}. The output is seen in Fig.~\ref{fig:west}.
+	\begin{figure}[H]
+		---------------\\
+		Resolving    ~Missile(x2) V Weapon(x2)   With     ~Criminal(West) \\
+		Result      ~Criminal(West) V ~Missile(x2) V Weapon(x2) \\
+		----------------\\
+		Resolving    ~American(x) V ~Weapon(y) V ~Sells(x,y,z) V ~Hostile(z) V Criminal(x)   With     ~Criminal(West) V ~Missile(x2) V Weapon(x2) \\
+		Result      ~Missile(y) V ~American(West) V ~Sells(West,y,z) V ~Hostile(z) \\
+		----------------\\
+		Resolving    American(West)   With     ~Missile(y) V ~American(West) V ~Sells(West,y,z) V ~Hostile(z) \\
+		Result      ~Missile(y) V ~Sells(West,y,z) V ~Hostile(z) \\
+		----------------\\
+		Resolving    Missile(M1)   With     ~Missile(y) V ~Sells(West,y,z) V ~Hostile(z) \\
+		Result      ~Sells(West,M1,z) V ~Hostile(z) \\
+		----------------\\
+		Resolving    ~Missile(x3) V ~Owns(Nono,x3) V Sells(West,x3,Nono)   With     ~Sells(West,M1,z) V ~Hostile(z) \\
+		Result      ~Hostile(Nono) V ~Missile(M1) V ~Owns(Nono,M1) \\
+		----------------\\
+		Resolving    Missile(M1)   With     ~Hostile(Nono) V ~Missile(M1) V ~Owns(Nono,M1) \\
+		Result      ~Hostile(Nono) V ~Owns(Nono,M1) \\
+		----------------\\
+		Resolving    Owns(Nono,M1)   With     ~Hostile(Nono) V ~Owns(Nono,M1) \\
+		Result      ~Hostile(Nono) \\
+		---------------\\
+		Resolving    ~Enemy(x4,America) V Hostile(x4)   With     ~Hostile(Nono) \\
+		Result      ~Enemy(Nono,America) \\
+		----------------\\
+		Resolving    Enemy(Nono,America)   With     ~Enemy(Nono,America) \\
+		Result      \\
+		==============\\
+		Query is False\\
+		==============
+		\caption{Output of the program.}
+		\label{fig:west}
+	\end{figure}
+	
+	\subsection{Hurricane environment}
+	The hurricane environment is explained in length in assignment 3 (also can be found in the git repo).
+	
+	Here I have provided a list of axioms that the user can choose which one to apply and at which time. The menu the user sees is
+	
+	\begin{figure}[H]
+		 --- What would you like to reolve --- \\
+		0. No way to coninue? \\
+		1. Weight(E1,3) V Edge(E1,K0,K1) V Traverse(E1)\\
+		2. Weight(E2,1) V Edge(E2,K1,K2) V Traverse(E2)\\
+		3. Weight(E3,1) V Edge(E3,K2,K3) V Traverse(E3)\\
+		4. ~Edge(e,k1,k2) V Edge(e,k2,k1)\\
+		5. ~Traverse(a) V ~Carrying(x,s) V Carrying(x,s1) V ~Weight(a,w) V ~Time(t,s) V Time(t2,s1) V ~Edge(a,v1,v2) V ~Loc(v1,s) V Loc(v2,s1) V Result(a,s,s1) V Plus(t,w,t2)\\
+		6. ~At(v2,p) V ~Carrying(x,s1) V Carrying(y,s1) V At(v2,0) V Plus(x,p,y)\\
+		7. ~Shelter(k) V ~Carrying(x,s) V Carrying(0,s)\\
+		8. ~Time(t,s) V ~Deadline(t2) V Greater(t,t2,s)\\
+		9. At(K3,2)\\
+		10. Shelter(K0)\\
+		11. ~Carrying(0,S6) V ~Loc(K0,S6)\\
+		12. Custom
+		\caption{Hurricane environment axiom user menu}
+	\end{figure}
+
+	The knowledge base is started with the following information:
+	\begin{figure}[H]
+		Time(0, S0)\\
+		Carrying(0, S0)\\
+		Loc(K0, S0)\\
+		Deadline(11)
+				\caption{Initial info for the knowledge base}
+	\end{figure}
+	The query of the knowledge base is $ \neg$\texttt{Timeup(S6)} (will time elapse) given the plan \texttt{Traverse(E1) V Traverse(E2) V Traverse(E3) V Traverse(E3) V Traverse(E2) V Traverse(E1)}.
+	
+	Entering a list of axioms of $ [1, 5, 2, 5, 3, 5, 9, 6] $ will bring the agent to Vertex 3 and will pick-up the people there (\texttt{Loc(K3, S3) V Carrying(2, S3)}).
+	
+	Now we wish to discard the \texttt{At(K3, 0)} predicat, and go back to Vertex 0. For that we will need to use the undirected property of the graph using axiom 4. Thus the input list will be $ [3, 4, 5, 2, 4, 5, 1, 4, 5, 10, 7] $.
+	
+	Discarding the position and carrying predicats using axiom 11 and applying axiom 8 will result in an empty knowledge base, thus proving there will be no sufficient time to rescue the two people given the plan. 
+	
+	The output of the program is provided in the text file in the repo. 
+	
+\end{document}
+
