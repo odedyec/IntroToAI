@@ -51,7 +51,7 @@ class Evacuees(ProbVar):
         for edge_weight, condition in zip(self.edges_weight, conditions):
             if condition:
                 value *= 0.8 if edge_weight > 4 else 0.4
-        return 1.0 - value
+        return value
 
     def print_conditional_prob(self, edges):
         self.calculate_value()

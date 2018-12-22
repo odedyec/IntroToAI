@@ -6,20 +6,18 @@ class UserInterface(BayesNetwork):
     def print_flood_in_all_vertices(self):
         for vertex in self._vertices:
             print ("Vertex {}\n-----------".format(vertex.id))
-            vertex.print_prob_for_flood()
+            print(vertex.print_prob_for_flood())
 
     def print_evacuees_in_all_vertices(self):
         for vertex in self._vertices:
             print ("Vertex {}\n-----------".format(vertex.id))
-            vertex.print_prob_for_evacuees()
+            print(vertex.print_prob_for_evacuees())
 
     def print_blocked_of_all_edges(self):
         for edge in self._edges:
             print ("Edge {}\n------------".format(edge.id))
-            edge.print_prob_for_blockage()
+            print(edge.print_prob_for_blockage())
 
-    def print_path_free_of_blockages(self):
-        print("The probability that the given path is free from blockages is \n------------")
 
     def query(self):
         inp = reasoning_menu()
@@ -29,8 +27,13 @@ class UserInterface(BayesNetwork):
             self.print_evacuees_in_all_vertices()
         elif inp is 3:
             self.print_blocked_of_all_edges()
+        elif inp is 4:
+            path = str(input("Please insert the wanted path by the edges separated by white-space\n"))
+            path = path.split(' ')
+            path = list(map(int, list(path)))
+            self.path_free_of_blockages(path)
         else:
-            print ('Please learn how to read')
+            print('Please learn how to read')
 
     def reset_evidence_list(self):
         for vertex in self._vertices:

@@ -30,6 +30,8 @@ class Blockage(ProbVar):
         """
         self.floodings = floodings
         self.calculate_value()
+        for vertex in self.vertices:
+            vertex.blockage_reported()
 
     def calculate_value(self):
         """

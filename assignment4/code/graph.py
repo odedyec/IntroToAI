@@ -34,7 +34,7 @@ class Graph:
     def print_edges(self, list_of_edges=None):
         for edge in self._edges:
             if list_of_edges is None or edge.id in list_of_edges:
-                print (str(edge))
+                print(str(edge))
 
     def path_free_of_blockages(self, list_of_edges=None):
 
@@ -58,7 +58,8 @@ class Graph:
                     temp_prob *= (1 - blockage_temp.noisy_or(flooding_temp))
             prob += temp_prob
 
-        print("The probability that the given path is free from blockages is ", prob)
+        print("\n------------")
+        print("The probability that the given path is free from blockages is {}\n------------".format(prob))
 
 
 

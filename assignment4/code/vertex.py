@@ -56,6 +56,7 @@ class Vertex:
 
     def blockage_reported(self):
         self.evacuees.update_blockages([edge.blockage for edge in self._edges])
+        self.evacuees.calculate_value()
 
     def flood_reported(self, what=True):
         self._flood_reported = what
