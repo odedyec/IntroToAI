@@ -2,6 +2,7 @@
 This file should contain probability library auxiliary functions and objects
 """
 import itertools
+import random
 
 
 class ProbVar:
@@ -46,6 +47,12 @@ class ProbVar:
         :return:
         """
         return self + other - self * other
+
+    def draw_boolean(self):
+        v = random.uniform(0, 1)
+        if v > self.value:
+            return False
+        return True
 
 
 P = lambda probvar: probvar.value

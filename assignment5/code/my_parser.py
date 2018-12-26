@@ -22,10 +22,10 @@ def parse_line(line):
                 return SET_VERTEX_EVACUEES, (int(s_line[1]), int(s_line[3]))
     if "#E" in line:
         if "B" in s_line:
-            return SET_EDGE_WEIGHT, (int(s_line[1]), int(s_line[2]), float(s_line[3]), int(''.join(filter(str.isdigit, s_line[0]))), float(s_line[5]))
+            return SET_EDGE_WEIGHT, (int(s_line[1]), int(s_line[2]), int(s_line[3]), int(''.join(filter(str.isdigit, s_line[0]))), float(s_line[5]))
         else:
             return SET_EDGE_WEIGHT, (
-            int(s_line[1]), int(s_line[2]), float(s_line[3]), int(''.join(filter(str.isdigit, s_line[0]))), 0.)
+            int(s_line[1]), int(s_line[2]), int(s_line[3]), int(''.join(filter(str.isdigit, s_line[0]))), 0.)
     if "#Deadline" in line:
         return SET_DEADLINE, [int(s_line[1])]
     if "#Start" in line:

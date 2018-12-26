@@ -9,6 +9,9 @@ class Vertex:
         self.evacuees = 0
         self.is_shelter = False
 
+    def get_edges(self):
+        return self._edges
+
     def set_shelter(self):
         self.is_shelter = True
 
@@ -33,5 +36,5 @@ class Vertex:
         return edges
 
     def __str__(self):
-        return str(self.id)
+        return "V{}_F".format(self.id) if self.evacuees == 0 else "V{}_T".format(self.id)
 

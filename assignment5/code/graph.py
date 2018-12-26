@@ -31,11 +31,20 @@ class Graph:
         self._vertices[vertex2].add_edge(e)
         self._edges.append(e)
 
-    def __str__(self):
+    def print_graph_as_string(self):
         s = ''
         for e in self._edges:
             s += "Edge {}: V{}({}) <-> V{}({}) --- W={}, P_blockage={}\n".format(e.id,
                                                                                  e.v1.id, e.v1.evacuees,
                                                                                  e.v2.id, e.v2.evacuees,
                                                                                  e.weight, P(e.blockage))
-        return s
+        print s
+
+    def get_edges(self):
+        return self._edges
+
+    def get_vertices(self):
+        return self._vertices
+
+    def __str__(self):
+        return 'Call print graph as string for now'

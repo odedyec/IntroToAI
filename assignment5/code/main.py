@@ -1,9 +1,12 @@
 from my_parser import load_from_file
+from simulator import Simulator
+
 
 if __name__ == '__main__':
-    ui = load_from_file("input_graph1.txt")
-    ui.print_vertices()
-    ui.print_edges()
-    ui.path_free_of_blockages([0,2])
-    while ui.menu():
-        pass
+    sim = load_from_file("input_graph.txt", Simulator)
+    sim.build_state_when_finished_loading_graph()
+    print (sim)
+    sim.apply_action(1)
+    print (sim)
+    sim.apply_action(2)
+    print (sim)
