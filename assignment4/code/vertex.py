@@ -10,14 +10,14 @@ class Vertex:
     """
     def __init__(self, id, num_of_vertices, flood=0., report=None):
         self.id = id
-        self.flood_p = ProbVar(flood)
+        self.flood_p = ProbVar(flood, "Flood " + str(id))
         self._edges = []
         self._num_of_vertices = num_of_vertices
-        self.evacuees = Evacuees([], [])
+        self.evacuees = Evacuees([], [], id)
         self._flood_reported = report
 
     def set_flood_prob(self, f):
-        self.flood_p = ProbVar(f)
+        self.flood_p = ProbVar(f, "Flood " + str(self.id))
 
     def add_edge(self, edge):
         """
@@ -28,7 +28,8 @@ class Vertex:
         self._edges.append(edge)
         self.evacuees = Evacuees(
             [edge.weight for edge in self._edges],
-            [edge.blockage for edge in self._edges]
+            [edge.blockage for edge in self._edges],
+            self.id
         )
 
     def get_edge_list(self):
@@ -100,12 +101,15 @@ class Vertex:
                 for p, e in zip(perm, self._edges):
                     s += "Blockage{} ".format(e.id) if p else "!Blockage{} ".format(e.id)
                 if twice:
-                    s += ')={}\n'.format(Evacuees([b.weight for b in self._edges], [Blockage(None, None, None, None, report=p) for p in  perm]))
+                    s += ')={}\n'.format(Evacuees([b.weight for b in self._edges],
+                                                  [Blockage(None, None, None, None, report=p) for p in perm],
+                                                  "unknown"))
                 else:
                     s += ')={}\n'.format(-Evacuees([b.weight for b in self._edges],
-                                                  [Blockage(None, None, None, None, report=p) for p in perm]))
+                                                  [Blockage(None, None, None, None, report=p) for p in perm],
+                                                   "unknown"))
 
-        s += self.print_prob_for_evacuees()
+        # s += self.print_prob_for_evacuees()
         return s
 
 

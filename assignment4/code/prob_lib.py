@@ -9,8 +9,9 @@ class ProbVar:
     A probability object with sigma-algebra properties (value between 0-1, -value == 1 - value
     OR and AND functions are implemented
     """
-    def __init__(self, value):
+    def __init__(self, value, name="unknown"):
         self.value = value
+        self.name = name
 
     def __neg__(self):
         v = ProbVar(1 - self.value)
@@ -31,6 +32,9 @@ class ProbVar:
         v = ProbVar(self.value * other.value)
         return v
 
+    def get_name(self):
+        return str(self.name)
+
     def p_and(self, other):
         """
         Calculates the P(self ^ other) probability
@@ -46,6 +50,14 @@ class ProbVar:
         :return:
         """
         return self + other - self * other
+
+    def calc_prob_from_evidence(self, evidence=None):
+        if evidence is None:
+            evidence = []
+        for (var, val) in evidence:
+            if var.get_name() == self.get_name():
+                return 1 if val else 0
+        return self.value
 
 
 P = lambda probvar: probvar.value

@@ -6,7 +6,7 @@ class Blockage(ProbVar):
     The blockages are noisy-or distributed given the flooding at incident vertices, with pi =(1-qi)= 0.6*1/w(e)
     """
     def __init__(self, edge_id, edge_weight, floodings, vertices, report=None):
-        ProbVar.__init__(self, 1.)
+        ProbVar.__init__(self, 1., "Blockage " + str(edge_id))
         self._id = edge_id
         self.vertices = vertices
         self.edge_weight = edge_weight
@@ -32,6 +32,20 @@ class Blockage(ProbVar):
         self.calculate_value()
         for vertex in self.vertices:
             vertex.blockage_reported()
+
+    def calc_prob_from_evidence(self, evidence=None):
+        if evidence is None:
+            evidence = []
+        parents = [None, None]
+        for (var, val) in evidence:
+            if var.get_name() == self.get_name():
+                return 1 if val else 0
+            for i in [0, 1]:
+                if var.get_name() == self.vertices[i].flood_p.get_name():
+                    parents[i] = val
+        return self.noisy_or(parents)
+
+
 
     def calculate_value(self):
         """

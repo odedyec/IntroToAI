@@ -28,7 +28,7 @@ class Edge:
         s += '{}\n'.format(Blockage(self.id, self.weight, [False, True],[self.v1, self.v2]))
         s += '{}\n'.format(Blockage(self.id, self.weight, [True, False],[self.v1, self.v2]))
         s += '{}\n'.format(Blockage(self.id, self.weight, [True, True],[self.v1, self.v2]))
-        s += self.print_prob_for_blockage()
+        # s += self.print_prob_for_blockage()
         return s
 
     def reset(self):

@@ -1,5 +1,6 @@
 from bayes_network import BayesNetwork
 from menus import *
+from copy import deepcopy
 
 
 class UserInterface(BayesNetwork):
@@ -10,13 +11,25 @@ class UserInterface(BayesNetwork):
 
     def print_evacuees_in_all_vertices(self):
         for vertex in self._vertices:
-            print ("Vertex {}\n-----------".format(vertex.id))
+            copy = deepcopy(self)
+            print("Vertex {}\n-----------".format(vertex.id))
             print(vertex.print_prob_for_evacuees())
+            q = self.enumeration_ask(vertex.evacuees, copy._evidence_list)
+            print("P(Evacuees {} | {}) = {}\n".format(vertex.id, [(i.get_name() if j else "! " + i.get_name()) for
+                                                                 (i, j) in self._evidence_list], q[0]))
 
     def print_blocked_of_all_edges(self):
         for edge in self._edges:
+            print("my evidence")
+            print(i.get_name() for (i, j) in self._evidence_list)
+            copy = deepcopy(self)
+            print("copy evidence")
+            print(i.get_name() for (i, j) in copy._evidence_list)
             print ("Edge {}\n------------".format(edge.id))
-            print(edge.print_prob_for_blockage())
+            # print(edge.print_prob_for_blockage())
+            q = self.enumeration_ask(edge.blockage, copy._evidence_list)
+            print("P(Blockage {} | {}) = {}\n".format(edge.id, [(i.get_name() if j else "! " + i.get_name()) for
+                                                                 (i, j) in self._evidence_list], q[0]))
 
 
     def query(self):
@@ -40,23 +53,30 @@ class UserInterface(BayesNetwork):
             vertex.reset()
         for edge in self._edges:
             edge.reset()
+        self._evidence_list = []
 
     def add_evidence(self):
         evidence_type, vertex = evidence_menu()
         if evidence_type is EVIDENCE_TYPE_FLOOD:
             self._vertices[vertex].flood_reported()
+            self._evidence_list.append((self._vertices[vertex].flood_p, True))
         elif evidence_type is EVIDENCE_TYPE_NOT_FLOOD:
             self._vertices[vertex].flood_reported(False)
+            self._evidence_list.append((self._vertices[vertex].flood_p, False))
         elif evidence_type is EVIDENCE_TYPE_EVACUESS:
             self._vertices[vertex].evacuees_reported()
+            self._evidence_list.append((self._vertices[vertex].evacuees, True))
         elif evidence_type is EVIDENCE_TYPE_NOT_EVACUESS:
             self._vertices[vertex].evacuees_reported(False)
+            self._evidence_list.append((self._vertices[vertex].evacuees, False))
         elif evidence_type is EVIDENCE_TYPE_BLOCKAGE:
             self._edges[vertex].blockage_reported()
+            self._evidence_list.append((self._edges[vertex].blockage, True))
         elif evidence_type is EVIDENCE_TYPE_NOT_BLOCKAGE:
             self._edges[vertex].blockage_reported(False)
+            self._evidence_list.append((self._edges[vertex].blockage, False))
         else:
-            print ('Please learn how to read')
+            print('Please learn how to read')
 
     def menu(self):
         inp = main_menu()
@@ -69,5 +89,5 @@ class UserInterface(BayesNetwork):
         elif inp is 4:
             return False
         else:
-            print ('Please learn how to read')
+            print('Please learn how to read')
         return True

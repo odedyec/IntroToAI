@@ -8,12 +8,12 @@ class Evacuees(ProbVar):
     There are people at vertex v, with noisy or distributions given all the edge blockages at all edges incident on v,
     with pi = 0.8 for an edge with weight greater then 4, and with pi=0.4 for shorter edges..
     """
-    def __init__(self, edges_weight, blockages):
+    def __init__(self, edges_weight, blockages, v_id):
         """
         :param edges_weight: a list of edges connected to the vertex
         :param blockages:    a list of booleans denoting the blockage status. Has to be same size as edges list
         """
-        ProbVar.__init__(self, 1.)
+        ProbVar.__init__(self, 1., "Evacuees " + str(v_id))
         self.edges_weight = edges_weight
         self.blockages = blockages
         self._evacuees_reported = None
@@ -30,6 +30,18 @@ class Evacuees(ProbVar):
     def update_blockages(self, blockages):
         self.blockages = blockages
         self.calculate_value()
+
+    def calc_prob_from_evidence(self, evidence=None):
+        if evidence is None:
+            evidence = []
+        parents = [None] * len(self.blockages)
+        for (var, val) in evidence:
+            if var.get_name() == self.get_name():
+                return 1 if val else 0
+            for i in range(len(self.blockages)):
+                if var.get_name() == self.blockages[i].get_name():
+                    parents[i] = val
+        return self.noisy_or(parents)
 
     def calculate_value(self):
         if self._evacuees_reported is True:
