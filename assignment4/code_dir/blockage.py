@@ -38,8 +38,6 @@ class Blockage(ProbVar):
             evidence = []
         parents = [None, None]
         for (var, val) in evidence:
-            if var.get_name() == self.get_name():
-                return 1 if val else 0
             for i in [0, 1]:
                 if var.get_name() == self.vertices[i].flood_p.get_name():
                     parents[i] = val
@@ -98,13 +96,13 @@ class Blockage(ProbVar):
         s += ')={}'.format(self.value)
         return s
 
-
-if __name__ == '__main__':
-    class V:
-        def __init__(self, flood_p=0., id=1):
-            self.flood_p = ProbVar(flood_p)
-            self.id = id
-    b = Blockage(1, 1, [True, True], [V(id=1), V(id=2)])
-    print(str(b))
-    b = Blockage(1, 1, [None, None], [V(id=1, flood_p=1.), V(id=2, flood_p=0.1)])
-    print(str(b))
+#
+# if __name__ == '__main__':
+#     class V:
+#         def __init__(self, flood_p=0., id=1):
+#             self.flood_p = ProbVar(flood_p)
+#             self.id = id
+#     b = Blockage(1, 1, [True, True], [V(id=1), V(id=2)])
+#     print(str(b))
+#     b = Blockage(1, 1, [None, None], [V(id=1, flood_p=1.), V(id=2, flood_p=0.1)])
+#     print(str(b))

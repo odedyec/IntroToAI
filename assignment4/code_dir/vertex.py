@@ -112,7 +112,7 @@ class Vertex:
         # s += self.print_prob_for_evacuees()
         return s
 
-
-if __name__ == '__main__':
-    v = Vertex(3, 2, 0.2)
-    print (str(v))
+#
+# if __name__ == '__main__':
+#     v = Vertex(3, 2, 0.2)
+#     print (str(v))

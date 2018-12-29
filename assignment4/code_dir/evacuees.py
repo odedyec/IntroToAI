@@ -36,8 +36,6 @@ class Evacuees(ProbVar):
             evidence = []
         parents = [None] * len(self.blockages)
         for (var, val) in evidence:
-            if var.get_name() == self.get_name():
-                return 1 if val else 0
             for i in range(len(self.blockages)):
                 if var.get_name() == self.blockages[i].get_name():
                     parents[i] = val
