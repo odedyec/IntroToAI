@@ -36,13 +36,11 @@ class Simulator(Graph):
 
     def get_blockages_state(self, new_loc, old_state=None):
         if old_state is None:
-            old_state = [None] * len(self.vertices_with_ev)
-        ans = []
+            old_state = [None] * len(self.potential_blockages)
+        ans = list(old_state)
         for i, e in enumerate(self.potential_blockages):
             if e.v1.id == new_loc or e.v2.id == new_loc or old_state[i] is not None:
-                ans.append(False)  #TODO change based on knowledge
-            else:
-                ans.append(None)
+                ans[i] = e.is_blocked()
         return tuple(ans)
 
     def is_state_terminal(self, state=None):
@@ -56,7 +54,9 @@ class Simulator(Graph):
         return state[self.STATE_SAVED] * LARGE_NUMBER
 
     def update_utility(self, new_table):
-        diff = 8  #sum(map(lambda x: abs(x[1] - x[0]), zip(new_table, self.utility)))
+        diff = 0.
+        for key in new_table:
+            diff += abs(new_table[key] - self.utility[key])
         self.utility = new_table
         return diff
 
@@ -91,16 +91,8 @@ class Simulator(Graph):
         return s
 
     def state_from_action(self, state, action):
-        for edge in self.get_edges():
-            if edge.id == action:
-                edge_to_cross = edge
-                break
-        if edge_to_cross.v2.id == state[self.STATE_LOC]:
-            v_to_move = edge_to_cross.v1.id
-        elif edge_to_cross.v1.id == state[self.STATE_LOC]:
-            v_to_move = edge_to_cross.v2.id
-        else:
-            raise Exception("Can't cross edge {}. I am at {}".format(edge_to_cross.id, state[self.STATE_LOC]))
+        edge_to_cross = self.get_edge_from_id(action)
+        v_to_move = self.vertex_to_move_from_loc(state[self.STATE_LOC], edge_to_cross)
 
         saved_now = state[self.STATE_IN_VEHICLE] if self.is_vertex_shelter(v_to_move) else 0
         picked_up_now = 0
@@ -121,38 +113,22 @@ class Simulator(Graph):
         best_utility = -10000
         best_action = None
         for action in self.get_all_actions(self._state):
+            if self.get_edge_from_id(action).is_blocked():
+                continue
             u = self.get_utility_for_action(self._state, action)
             if u > best_utility:
                 best_action = action
                 best_utility = u
+        # self.apply_action(best_action)
         self._state = self.state_from_action(self._state, best_action)
-
-    def apply_action(self, edge_to_cross):
-        for edge in self.get_edges():
-            if edge.id == edge_to_cross:
-                edge_to_cross = edge
-                break
-        if edge_to_cross.v2.id == self._state[0]:
-            v_to_move = edge_to_cross.v1.id
-        elif edge_to_cross.v1.id == self._state[0]:
-            v_to_move = edge_to_cross.v2.id
-        else:
-            raise Exception("Can't cross edge {}. I am at {}".format(edge_to_cross.id, self._state[0]))
-        self.set_loc(v_to_move)
-        self._state[0] = v_to_move
-        self._state[3] -= edge_to_cross.weight
-        if self.get_vertices()[v_to_move].evacuees:
-            self._in_v += self.get_vertices()[v_to_move].evacuees
-            self.get_vertices()[v_to_move].evacuees = 0
-        for e in self.get_vertices()[v_to_move].get_edges():
-            if e.blockage_unclear():
-                e.set_blockage_from_knowledge()
 
     def get_utility_for_action(self, state, action):
         new_state = self.state_from_action(state, action)
-        if self.check_feasible_state(new_state):
-            return self.utility[new_state]
-        return 0
+        if not self.check_feasible_state(new_state):
+            return 0
+        edge = self.get_edge_from_id(action)
+        prob = P(edge.blockage)
+        return self.utility[new_state] * (1 - prob)
 
     def check_feasible_state(self, state):
         if state[self.STATE_IN_VEHICLE] + state[self.STATE_SAVED] > self.sum_of_people:
@@ -160,3 +136,20 @@ class Simulator(Graph):
         return True
 
 
+
+
+#
+# def apply_action(self, edge_to_cross):
+#     for edge in self.get_edges():
+#         if edge.id == edge_to_cross:
+#             edge_to_cross = edge
+#             break
+#     if edge_to_cross.is_blocked():
+#         raise Exception("Trying to cross a blocked edge")
+#     if edge_to_cross.v2.id == self._state[0]:
+#         v_to_move = edge_to_cross.v1.id
+#     elif edge_to_cross.v1.id == self._state[0]:
+#         v_to_move = edge_to_cross.v2.id
+#     else:
+#         raise Exception("Can't cross edge {}. I am at {}".format(edge_to_cross.id, self._state[0]))
+#     self._state = self.state_from_action(self._state, edge_to_cross.id)

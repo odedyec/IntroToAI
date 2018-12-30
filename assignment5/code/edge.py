@@ -34,3 +34,6 @@ class Edge:
         if P(self.blockage) == 1.:
             return "E{}_c".format(self.id)
         return "E{}_u".format(self.id)
+
+    def is_blocked(self):
+        return self._is_blocked

@@ -61,5 +61,5 @@ def load_from_file(file_path=None, obj=Graph):
 
 if __name__ == '__main__':
     g = load_from_file()
-    print str(g)
+    print (str(g))
 

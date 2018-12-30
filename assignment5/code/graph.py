@@ -46,11 +46,11 @@ class Graph:
     def print_graph_as_string(self):
         s = ''
         for e in self._edges:
-            s += "Edge {}: V{}({}) <-> V{}({}) --- W={}, P_blockage={}\n".format(e.id,
+            s += "Edge {}: V{}({}) <-> V{}({}) --- W={}, P_blockage={}, Blocked={}\n".format(e.id,
                                                                                  e.v1.id, e.v1.evacuees,
                                                                                  e.v2.id, e.v2.evacuees,
-                                                                                 e.weight, P(e.blockage))
-        print s
+                                                                                 e.weight, P(e.blockage), e.is_blocked())
+        print(s)
 
     def get_edges(self):
         return self._edges
@@ -65,3 +65,38 @@ class Graph:
         for v in self._vertices:
             if v.id == vertex:
                 return [e.id for e in v.get_edges()]
+
+    def is_edge_blocked(self, edge_id):
+        for edge in self._edges:
+            if edge.id == edge_id:
+                return edge.is_blocked()
+
+    def get_action_success_prob(self, action):
+        return P(self.get_edge_from_id(action).blockage)
+
+    def get_edge_from_id(self, id):
+        for edge in self._edges:
+            if edge.id == id:
+                return edge
+        raise Exception("No Edge with ID {}".format(id))
+
+    def get_vertex_from_id(self, id):
+        for vertex in self._vertices:
+            if vertex.id == id:
+                return vertex
+        raise Exception("No vertex with ID {}".format(id))
+
+    def vertex_to_move_from_loc(self, loc, edge_to_cross):
+        if edge_to_cross.v2.id == loc:
+            v_to_move = edge_to_cross.v1.id
+        elif edge_to_cross.v1.id == loc:
+            v_to_move = edge_to_cross.v2.id
+        else:
+            raise Exception("Can't cross edge {}. I am at {}".format(edge_to_cross.id, loc))
+        return v_to_move
+
+    def find_edge_that_connects(self, v1, v2):
+        for edge in self._edges:
+            if edge.v1.id == v1 and edge.v2.id == v2:
+                return edge
+        raise Exception("No edge connects V{} and V{}".format(v1, v2))
