@@ -31,11 +31,11 @@ class UserInterface(BayesNetwork):
     def query(self):
         inp = reasoning_menu()
         if inp is 2:
-            self.print_flood_in_all_vertices()
+            self.print_floods()
         elif inp is 1:
-            self.print_evacuees_in_all_vertices()
+            self.print_vertices()
         elif inp is 3:
-            self.print_blocked_of_all_edges()
+            self.print_edges()
         elif inp is 4:
             path = str(input("Please insert the wanted path by the edges separated by white-space\n"))
             path = path.split(' ')
