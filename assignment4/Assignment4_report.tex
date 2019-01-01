@@ -1,0 +1,305 @@
+\documentclass{article}                     % onecolumn (standard format)
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{subfig}
+\usepackage{rotating}
+\usepackage[left=2.2cm, right=2.2cm]{geometry}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+%\floatstyle{ruled}
+\usepackage{hyperref}
+\usepackage{algpseudocode}
+
+\newfloat{algorithm}{tbp}{loa}
+\providecommand{\algorithmname}{Algorithm}
+\floatname{algorithm}{\protect\algorithmname}
+%
+% \usepackage{mathptmx}      % use Times fonts if available on your TeX system
+%
+% insert here the call for the packages your document requires
+%\usepackage{latexsym}
+% etc.
+%
+% please place your own definitions here and don't use \def but
+% \newcommand{}{}
+%
+
+%
+\begin{document}
+	
+\title{Introduction to AI - assignment 4}
+
+
+\author{Oded~Yechiel         \and
+	Matan~Rusanovsky
+}
+
+\date{3/1/19}
+
+\maketitle
+
+\section{Introduction}
+	In this assignment we provide a Bayesian Network for the hurricane problem from assignment 1.
+
+\section{Bayesian Network construction}
+We built our BN in the following manner. The nodes of the BN are as described in the assignment: \\
+3 types of variables (BN nodes): \textbf{blockages} (one for each edge) \textbf{flooding} (one for each vertex,) and \textbf{evacuees} present (one for each vertex). \\
+Each \textbf{flooding} node of vertex $v$ point to all \textbf{blockage} nodes of edges $\{\{v,u\} : u \in V\}$. \\
+All \textbf{blockage} nodes of edges $\{\{v,u\} : v,u \in V\}$ point to \textbf{evacuees} nodes of vertices $u$ and $v$.
+
+\section{Probabilistic reasoning algorithm}
+Our probability reasoning algorithm is the simple \textit{Enumeration Algorithm}. 
+
+\section{Run example}
+\subsection{First example - the setting that was given in the assignment}
+In this example we check that the following path is free of blocked edges: 1,2
+\subsubsection{Input}
+\begin{verbatim}
+file: "input_graph2.txt"
+
+
+#V 4          ; number of vertices n in graph (from 1 to n)
+
+#V 0 F 0.2    ; Vertex 0, probability flooding 0.2
+#V 1 F 0.4    ; Vertex 1, probability flooding 0.4
+
+
+#E0 0 1 1 ; Edge0 between vertices 0 and 1, weight 1
+#E1 1 2 3 ; Edge1 between vertices 1 and 2, weight 3
+#E2 2 3 3 ; Edge2 between vertices 2 and 3, weight 3
+#E3 1 3 4 ; Edge3 between vertices 1 and 3, weight 4
+\end{verbatim}
+
+\subsubsection{Output}
+
+\begin{verbatim}
+Vertex0
+---------
+P(Flood)=20.0%
+P(!Flood)=80.0%
+P(Evacuees|!Blockage0 )=0.1%
+P(Evacuees|Blockage0 )=40.0%
+P(!Evacuees|!Blockage0 )=99.9%
+P(!Evacuees|Blockage0 )=60.0%
+
+P(Evacuees 0 | []) = 0.13334032
+
+Vertex1
+---------
+P(Flood)=40.0%
+P(!Flood)=60.0%
+P(Evacuees|!Blockage0 !Blockage1 !Blockage3 )=0.1%
+P(Evacuees|!Blockage0 !Blockage1 Blockage3 )=40.0%
+P(Evacuees|!Blockage0 Blockage1 !Blockage3 )=40.0%
+P(Evacuees|!Blockage0 Blockage1 Blockage3 )=16.000000000000004%
+P(Evacuees|Blockage0 !Blockage1 !Blockage3 )=40.0%
+P(Evacuees|Blockage0 !Blockage1 Blockage3 )=16.000000000000004%
+P(Evacuees|Blockage0 Blockage1 !Blockage3 )=16.000000000000004%
+P(Evacuees|Blockage0 Blockage1 Blockage3 )=6.400000000000001%
+P(!Evacuees|!Blockage0 !Blockage1 !Blockage3 )=99.9%
+P(!Evacuees|!Blockage0 !Blockage1 Blockage3 )=60.0%
+P(!Evacuees|!Blockage0 Blockage1 !Blockage3 )=60.0%
+P(!Evacuees|!Blockage0 Blockage1 Blockage3 )=84.0%
+P(!Evacuees|Blockage0 !Blockage1 !Blockage3 )=60.0%
+P(!Evacuees|Blockage0 !Blockage1 Blockage3 )=84.0%
+P(!Evacuees|Blockage0 Blockage1 !Blockage3 )=84.0%
+P(!Evacuees|Blockage0 Blockage1 Blockage3 )=93.6%
+
+P(Evacuees 1 | []) = 0.13003669191184003
+
+Vertex2
+---------
+P(Flood)=0.0%
+P(!Flood)=100.0%
+P(Evacuees|!Blockage1 !Blockage2 )=0.1%
+P(Evacuees|!Blockage1 Blockage2 )=40.0%
+P(Evacuees|Blockage1 !Blockage2 )=40.0%
+P(Evacuees|Blockage1 Blockage2 )=16.000000000000004%
+P(!Evacuees|!Blockage1 !Blockage2 )=99.9%
+P(!Evacuees|!Blockage1 Blockage2 )=60.0%
+P(!Evacuees|Blockage1 !Blockage2 )=60.0%
+P(!Evacuees|Blockage1 Blockage2 )=84.0%
+
+P(Evacuees 2 | []) = 0.033506896599999995
+
+Vertex3
+---------
+P(Flood)=0.0%
+P(!Flood)=100.0%
+P(Evacuees|!Blockage2 !Blockage3 )=0.1%
+P(Evacuees|!Blockage2 Blockage3 )=40.0%
+P(Evacuees|Blockage2 !Blockage3 )=40.0%
+P(Evacuees|Blockage2 Blockage3 )=16.000000000000004%
+P(!Evacuees|!Blockage2 !Blockage3 )=99.9%
+P(!Evacuees|!Blockage2 Blockage3 )=60.0%
+P(!Evacuees|Blockage2 !Blockage3 )=60.0%
+P(!Evacuees|Blockage2 Blockage3 )=84.0%
+
+P(Evacuees 3 | []) = 0.0255396766
+
+Edge0
+----------
+P(Blockage 0|!flood0 !flood1)=0.001
+P(Blockage 0|!flood0 flood1)=0.6
+P(Blockage 0|flood0 !flood1)=0.6
+P(Blockage 0|flood0 flood1)=0.84
+
+P(Blockage 0 | []) = 0.33168
+
+Edge1
+----------
+P(Blockage 1|!flood1 !flood2)=0.001
+P(Blockage 1|!flood1 flood2)=0.19999999999999998
+P(Blockage 1|flood1 !flood2)=0.19999999999999998
+P(Blockage 1|flood1 flood2)=0.3599999999999999
+
+P(Blockage 1 | []) = 0.0806
+
+Edge2
+----------
+P(Blockage 2|!flood2 !flood3)=0.001
+P(Blockage 2|!flood2 flood3)=0.19999999999999998
+P(Blockage 2|flood2 !flood3)=0.19999999999999998
+P(Blockage 2|flood2 flood3)=0.3599999999999999
+
+P(Blockage 2 | []) = 0.0010000000000000002
+
+Edge3
+----------
+P(Blockage 3|!flood1 !flood3)=0.001
+P(Blockage 3|!flood1 flood3)=0.15
+P(Blockage 3|flood1 !flood3)=0.15
+P(Blockage 3|flood1 flood3)=0.2775000000000001
+
+P(Blockage 3 | []) = 0.06059999999999999
+
+
+------------
+The probability that the given path is free from blockages is 0.9184806000000001
+------------
+\end{verbatim}
+
+\subsubsection{Brief explanation}
+As we can see, since the probability of the flooding on the vertices of the path: $1,2,3$ is low, the probability that the given path is free of blockages is high.
+
+\subsection{Second example}
+In this example we check that the following path is free of blocked edges: 0,2
+\subsubsection{Input}
+\begin{verbatim}
+file: "input_graph1.txt"
+
+
+#V 4          ; number of vertices n in graph (from 1 to n)
+
+#V 0 F 0.8    ; Vertex 0, probability flooding 0.8
+#V 1 F 0.5    ; Vertex 1, probability flooding 0.5
+#V 2 F 0.5    ; Vertex 2, probability flooding 0.5
+#V 3 F 0.2    ; Vertex 3, probability flooding 0.2
+
+
+#E0 0 1 1 ; Edge0 between vertices 0 and 1, weight 1
+#E1 0 2 1 ; Edge1 between vertices 0 and 2, weight 3
+#E2 2 3 1 ; Edge2 between vertices 2 and 3, weight 3
+\end{verbatim}
+
+\subsubsection{Output}
+\begin{verbatim}
+Vertex0
+---------
+P(Flood)=80.0%
+P(!Flood)=19.999999999999996%
+P(Evacuees|!Blockage0 !Blockage1 )=0.1%
+P(Evacuees|!Blockage0 Blockage1 )=40.0%
+P(Evacuees|Blockage0 !Blockage1 )=40.0%
+P(Evacuees|Blockage0 Blockage1 )=16.000000000000004%
+P(!Evacuees|!Blockage0 !Blockage1 )=99.9%
+P(!Evacuees|!Blockage0 Blockage1 )=60.0%
+P(!Evacuees|Blockage0 !Blockage1 )=60.0%
+P(!Evacuees|Blockage0 Blockage1 )=84.0%
+
+P(Evacuees 0 | []) = 0.23206134805000003
+
+Vertex1
+---------
+P(Flood)=50.0%
+P(!Flood)=50.0%
+P(Evacuees|!Blockage0 )=0.1%
+P(Evacuees|Blockage0 )=40.0%
+P(!Evacuees|!Blockage0 )=99.9%
+P(!Evacuees|Blockage0 )=60.0%
+
+P(Evacuees 1 | []) = 0.2548039
+
+Vertex2
+---------
+P(Flood)=50.0%
+P(!Flood)=50.0%
+P(Evacuees|!Blockage1 !Blockage2 )=0.1%
+P(Evacuees|!Blockage1 Blockage2 )=40.0%
+P(Evacuees|Blockage1 !Blockage2 )=40.0%
+P(Evacuees|Blockage1 Blockage2 )=16.000000000000004%
+P(!Evacuees|!Blockage1 !Blockage2 )=99.9%
+P(!Evacuees|!Blockage1 Blockage2 )=60.0%
+P(!Evacuees|Blockage1 !Blockage2 )=60.0%
+P(!Evacuees|Blockage1 Blockage2 )=84.0%
+
+P(Evacuees 2 | []) = 0.22567338088000002
+
+Vertex3
+---------
+P(Flood)=20.0%
+P(!Flood)=80.0%
+P(Evacuees|!Blockage2 )=0.1%
+P(Evacuees|Blockage2 )=40.0%
+P(!Evacuees|!Blockage2 )=99.9%
+P(!Evacuees|Blockage2 )=60.0%
+
+P(Evacuees 3 | []) = 0.15437559999999997
+
+Edge0
+----------
+P(Blockage 0|!flood0 !flood1)=0.001
+P(Blockage 0|!flood0 flood1)=0.6
+P(Blockage 0|flood0 !flood1)=0.6
+P(Blockage 0|flood0 flood1)=0.84
+
+P(Blockage 0 | []) = 0.6361
+
+Edge1
+----------
+P(Blockage 1|!flood0 !flood2)=0.001
+P(Blockage 1|!flood0 flood2)=0.6
+P(Blockage 1|flood0 !flood2)=0.6
+P(Blockage 1|flood0 flood2)=0.84
+
+P(Blockage 1 | []) = 0.6361
+
+Edge2
+----------
+P(Blockage 2|!flood2 !flood3)=0.001
+P(Blockage 2|!flood2 flood3)=0.6
+P(Blockage 2|flood2 !flood3)=0.6
+P(Blockage 2|flood2 flood3)=0.84
+
+P(Blockage 2 | []) = 0.3844
+
+
+------------
+The probability that the given path is free from blockages is 0.22401684000000005
+------------
+\end{verbatim}
+
+\subsubsection{Brief explanation}
+As we can see, since the probability of the flooding on the vertices of the path: $0,2,3$ is high, the probability that the given path is free of blockages is low.
+
+\section{How to run}
+In order to run the program, you should run the file \textbf{main.py}. In order to change the path that is desired to be checked for being block-free: change the input list in the 7-th line in that file: \begin{verbatim}
+    ui.path_free_of_blockages(<input>))
+\end{verbatim}
+or just use the querying user-interface system.
+\end{document}
+
+
