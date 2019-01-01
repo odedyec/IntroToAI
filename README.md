@@ -9,6 +9,10 @@ Go to [assignment 2](https://github.com/odedyec/IntroToAI/blob/master/assignment
 
 Go to [assignment 3](https://github.com/odedyec/IntroToAI/tree/master/assignment%203)
 
+Go to [assignment B1](https://github.com/odedyec/IntroToAI/tree/master/assignmentB1)
+
 Go to [assignment 4](https://github.com/odedyec/IntroToAI/blob/master/assignment4)
 
 Go to [assignment 5](https://github.com/odedyec/IntroToAI/blob/master/assignment5)
+
+Go to [assignment 6](https://github.com/odedyec/IntroToAI/blob/master/assignment6)
