@@ -34,13 +34,13 @@ class Simulator(Graph):
                 ans.append(True)
         return tuple(ans)
 
-    def get_blockages_state(self, new_loc, old_state=None):
+    def get_blockages_state(self, new_loc, old_state=None, value_of_blockage=None):
         if old_state is None:
             old_state = [None] * len(self.potential_blockages)
         ans = list(old_state)
         for i, e in enumerate(self.potential_blockages):
             if e.v1.id == new_loc or e.v2.id == new_loc or old_state[i] is not None:
-                ans[i] = e.is_blocked()
+                ans[i] = e.is_blocked() if value_of_blockage is None else value_of_blockage
         return tuple(ans)
 
     def is_state_terminal(self, state=None):
@@ -60,8 +60,11 @@ class Simulator(Graph):
         self.utility = new_table
         return diff
 
-    def get_all_actions(self, state):
-        loc = state[self.STATE_LOC]
+    def get_all_actions(self, state=None):
+        if state == None:
+            loc = self._state[self.STATE_LOC]
+        else:
+            loc = state[self.STATE_LOC]
         return self.get_all_actions_for_vertex(loc)
 
     def build_state_when_finished_loading_graph(self):
@@ -77,7 +80,7 @@ class Simulator(Graph):
                        )
         self.utility = {}
         for loc in range(self._num_of_vertices):
-            for time in range(self.deadline):
+            for time in range(self.deadline+1):
                 for saved in range(1+sum([v.evacuees for v in self.vertices_with_ev])):
                     for in_v in range(1+sum([v.evacuees for v in self.vertices_with_ev])):
                         for ev_perm in itertools.product([True, False], repeat=len(self.vertices_with_ev)):
@@ -87,10 +90,14 @@ class Simulator(Graph):
                                     self.utility[state] = 0.
 
     def __str__(self):
-        s = "(@{}, {}IV, {}Sav,{}[T])".format(self._state[self.STATE_LOC], self._state[self.STATE_IN_VEHICLE], self._state[self.STATE_SAVED], self._state[self.STATE_TIME_LEFT])
+        s = "(@{}, {}IV, {}Sav, {}[T], {}[U])".format(self._state[self.STATE_LOC],
+                                                      self._state[self.STATE_IN_VEHICLE],
+                                                      self._state[self.STATE_SAVED],
+                                                      self._state[self.STATE_TIME_LEFT],
+                                                      self.utility[self._state])
         return s
 
-    def state_from_action(self, state, action):
+    def state_from_action(self, state, action, actually_moved=False):
         edge_to_cross = self.get_edge_from_id(action)
         v_to_move = self.vertex_to_move_from_loc(state[self.STATE_LOC], edge_to_cross)
 
@@ -99,15 +106,34 @@ class Simulator(Graph):
         for i, v in enumerate(self.vertices_with_ev):
             if v.id == v_to_move:
                 picked_up_now = v.evacuees if state[self.STATE_PEOPLE_LIST][i] else 0
-        new_state = (
-            v_to_move,
-            max(state[self.STATE_TIME_LEFT] - edge_to_cross.weight, 0),
-            state[self.STATE_SAVED] + saved_now,
-            0 if saved_now else state[self.STATE_IN_VEHICLE] + picked_up_now,
-            self.get_evacuees_state(v_to_move, state[self.STATE_PEOPLE_LIST]),
-            self.get_blockages_state(v_to_move, state[self.STATE_BLOCKAGE_LIST])
-        )
-        return new_state
+        if not actually_moved:
+            new_state1 = (
+                v_to_move,
+                max(state[self.STATE_TIME_LEFT] - edge_to_cross.weight, 0),
+                state[self.STATE_SAVED] + saved_now,
+                0 if saved_now else state[self.STATE_IN_VEHICLE] + picked_up_now,
+                self.get_evacuees_state(v_to_move, state[self.STATE_PEOPLE_LIST]),
+                self.get_blockages_state(v_to_move, state[self.STATE_BLOCKAGE_LIST], value_of_blockage=True)
+            )
+            new_state2 = (
+                v_to_move,
+                max(state[self.STATE_TIME_LEFT] - edge_to_cross.weight, 0),
+                state[self.STATE_SAVED] + saved_now,
+                0 if saved_now else state[self.STATE_IN_VEHICLE] + picked_up_now,
+                self.get_evacuees_state(v_to_move, state[self.STATE_PEOPLE_LIST]),
+                self.get_blockages_state(v_to_move, state[self.STATE_BLOCKAGE_LIST], value_of_blockage=False)
+            )
+            return new_state1, new_state2
+        else:
+            new_state = (
+                v_to_move,
+                max(state[self.STATE_TIME_LEFT] - edge_to_cross.weight, 0),
+                state[self.STATE_SAVED] + saved_now,
+                0 if saved_now else state[self.STATE_IN_VEHICLE] + picked_up_now,
+                self.get_evacuees_state(v_to_move, state[self.STATE_PEOPLE_LIST]),
+                self.get_blockages_state(v_to_move, state[self.STATE_BLOCKAGE_LIST])
+            )
+            return new_state
 
     def act_based_utility(self):
         best_utility = -10000
@@ -120,36 +146,30 @@ class Simulator(Graph):
                 best_action = action
                 best_utility = u
         # self.apply_action(best_action)
-        self._state = self.state_from_action(self._state, best_action)
+        self._state = self.state_from_action(self._state, best_action, actually_moved=True)
 
     def get_utility_for_action(self, state, action):
-        new_state = self.state_from_action(state, action)
-        if not self.check_feasible_state(new_state):
-            return 0
         edge = self.get_edge_from_id(action)
-        prob = P(edge.blockage)
-        return self.utility[new_state] * (1 - prob)
+        for i, edge_p in enumerate(self.potential_blockages):
+            if edge is edge_p:
+                if state[self.STATE_BLOCKAGE_LIST][i] is True:
+                    return 0.
+        new_state_true, new_state_false = self.state_from_action(state, action, actually_moved=False)
+        if not self.check_feasible_state(new_state_false):
+            return 0
+
+        prob = 0.
+        for i, edge_p in enumerate(self.potential_blockages):
+            if new_state_true[self.STATE_BLOCKAGE_LIST][i] is True and state[self.STATE_BLOCKAGE_LIST][i] is None:
+                prob = P(edge_p.blockage)
+
+        u_false = self.utility[new_state_false]
+        u_true = self.utility[new_state_true]
+        return u_false * (1 - prob) + u_true * prob
 
     def check_feasible_state(self, state):
         if state[self.STATE_IN_VEHICLE] + state[self.STATE_SAVED] > self.sum_of_people:
             return False
         return True
 
-
-
-
-#
-# def apply_action(self, edge_to_cross):
-#     for edge in self.get_edges():
-#         if edge.id == edge_to_cross:
-#             edge_to_cross = edge
-#             break
-#     if edge_to_cross.is_blocked():
-#         raise Exception("Trying to cross a blocked edge")
-#     if edge_to_cross.v2.id == self._state[0]:
-#         v_to_move = edge_to_cross.v1.id
-#     elif edge_to_cross.v1.id == self._state[0]:
-#         v_to_move = edge_to_cross.v2.id
-#     else:
-#         raise Exception("Can't cross edge {}. I am at {}".format(edge_to_cross.id, self._state[0]))
-#     self._state = self.state_from_action(self._state, edge_to_cross.id)
+_state = self.state_from_action(self._state, edge_to_cross.id)
