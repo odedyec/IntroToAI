@@ -64,7 +64,7 @@ class Graph:
     def get_all_actions_for_vertex(self, vertex):
         for v in self._vertices:
             if v.id == vertex:
-                return [e.id for e in v.get_edges()]
+                return [e for e in v.get_edges()]
 
     def is_edge_blocked(self, edge_id):
         for edge in self._edges:
@@ -100,3 +100,8 @@ class Graph:
             if edge.v1.id == v1 and edge.v2.id == v2:
                 return edge
         raise Exception("No edge connects V{} and V{}".format(v1, v2))
+
+    def get_num_of_people_at_vertex(self, vertex):
+        for v in self._vertices:
+            if v.id == vertex:
+                return v.evacuees

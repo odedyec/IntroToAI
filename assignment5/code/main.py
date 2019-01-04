@@ -9,8 +9,8 @@ if __name__ == '__main__':
     sim.build_state_when_finished_loading_graph()
     # print(sim.utility)
     sim.print_graph_as_string()
+    print(len(sim.utility))
     value_iteration(sim, 200)
-
 
     print(sim)
 
