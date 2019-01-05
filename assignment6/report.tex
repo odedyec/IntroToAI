@@ -27,6 +27,11 @@
 \titleformat{\section}
 {\normalfont\Large\bfseries}{Exercise~\thesection}{1em}{}
 
+\newcommand{\wrelation}[3][]
+{
+	% this needed to be modified somehow...
+	\path [draw=blue, -] (#2) -- (#3) node[midway, anchor=south]{#1};
+}
 
 
 \newcommand{\relation}[3][]
@@ -54,6 +59,7 @@
 	
 	\maketitle
 	\tableofcontents
+	\pagebreak
 	\section{}
 	\begin{verbatim}
 	I({A,B},{C,D}|{})
@@ -131,15 +137,21 @@
 	\subsection{Determine the truth of the following independence statements (using d-separation)}
 	\begin{enumerate}		
 		\item \begin{verbatim} I({D}, {E} | {    }) - False \end{verbatim}
+		Since A is not in evidence, D and G are dependent. Sine B is not in evidence, G and E are dependent. Thus, D and E are dependent.
 		\item \begin{verbatim} I({D}, {E} | {  A }) - True \end{verbatim}
+		Since A is in evidence, D and G are independent. Since C is not in evidence, there is no path between D and E, therefore they are dependent.
 		\item \begin{verbatim} I({D}, {E} | {A, C}) - False \end{verbatim}
+		Since C is in evidence, E and D are dependent. 
 		\item \begin{verbatim} I({B}, {F} | {  G }) - True \end{verbatim}
+		Since G is not in evidence, B and A are independent. Since C is not in evidence, E and D are independent. Therefore, there is no path between B and F, so they are independent.
 		\item \begin{verbatim} I({B}, {F} | {  D }) - True \end{verbatim}
+		Same as before.
 		\item \begin{verbatim} I({B}, {F} | {A, C}) - False \end{verbatim}
+		Since C is in evidence, there is a path between B and F so they are dependent.
 
 	\end{enumerate}
 
-	\subsection{Find P(E=true, A=True $ | $ B=true)}
+	\subsection{Find $P(E=true, A=True | B=true)$}
 	\begin{verbatim}
 	P(A=true) = 0.2, P(B=true)= 0.3
 	P(G=true|A=true,B=true) = 0.9, P(G=true|A=false,B=true) = 0.2
@@ -152,6 +164,120 @@
 	
 	$ P(E, A | B) =P(E|B)*P(A|B)=P(E|B)*P(A)=0.8 * 0.2 = 0.16 $
 	
+	\section{}
+	
+	\section{}
+	Im general, the utility value for a car is
+	\begin{equation}\label{eq:utility}
+	U[car] = -(PurchasePrice - SellingPrice +\sum_{year=1}^{3}\gamma^{year}*Kilometer/Year*PriceOfGas/Kilometeru)
+	\end{equation}
+	At first, the discount factor, $ \gamma $ is 1.
+	\subsection{what is your optimal decision?}
+	The mean expected price of gasoline (COG) is,
+	$$ COG = (0.5 * 1.5 + 0.5 * 3)[MU/liter] = 2.25[MU/liter] $$
+	Therefore, the utility, for H and G for the next 3 year of expected 150,000[km] and estimated retail values of the cars are,
+	$$ U[H] = -(40,000 [MU] - 20,000[MU] + 4/100[liter/km] * 150,000[km] * 2.25[MU/liter]) = -33.5[KMU] $$
+	$$ U[G] = -(25,000 [MU] - 12,500[MU] + 8/100[liter/km] * 150,000[km] * 2.25[MU/liter]) = -39.5[KMU] $$
+	Therefore, it would be wise to buy the hybrid car due to higher utility value.
+	\subsection{what is your optimal policy based on joining the rioting}
+	Based on joining the riot, there is a greater chance in canceling the tax, i.e., now the COG is
+	$$ COG = (0.6 * 1.5 + 0.4 * 3)[MU/liter] = 2.1[MU/liter] $$
+	In addition, there is a $ 1\% $ chance that riot will have a backfiring cause of 50KMU there fore the utility for buying the H and G when joining the riot is,
+		$$ U[H,R] = -(40,000 [MU] - 20,000[MU] + 4/100[liter/km] * 150,000[km] * 2.1[MU/liter] + 50KMU * 0.01) = -33.1[KMU] $$
+	$$ U[G,R] = -(25,000 [MU] - 12,500[MU] + 8/100[liter/km] * 150,000[km] * 2.1[MU/liter] + 50KMU * 0.01) = -38.2[KMU] $$
+	Therefore, it would be wise to buy the hybrid car and join the riot.
+	\subsection{maximum amount you should be willing to pay Picard for this information?}
+	Assuming that the riot will have a positive effect on the taxation, the utility for both vehicles will be,
+	$$ U[H] = -(40,000 [MU] - 20,000[MU] + 4/100[liter/km] * 150,000[km] * 1.5[MU/liter]) = -29.0[KMU] $$
+	$$ U[G] = -(25,000 [MU] - 12,500[MU] + 8/100[liter/km] * 150,000[km] * 1.5[MU/liter]) = -30.5[KMU] $$	
+	Therefore, in any scenario it would be wisest to choose to buy a Hybrid, therefore, information has no value if we end up with the same decision. 
+
+	This can also be seen directly from calculation,
+	\begin{equation}\label{key}
+	\begin{split}{cc}
+	VPI & = (TaxRaise * 0.5 + NoTaxRaise * 0.5) - ExpectedValueWithout\\ & = (-29*0.5 + -38 * 0.5) - (-33.5)=0
+	\end{split}
+	\end{equation}
+	
+	\subsection{Adding discount}
+	For $ \gamma = 0.1 $ using \eqref{eq:utility} will yield
+	\subsubsection{what is your optimal decision?}
+	$$ U[H] = -(40,000 - 20,000 + 4/100 * 50,000 * 2.25 * (1 + 0.1 + 0.01)) = −24,995$$
+	$$ U[G] = -(25,000 - 12,500 + 8/100 * 50,000 * 2.25 * (1 + 0.1 + 0.01)) = −22,490$$
+	Best choice now is Gasoline car.
+	\subsubsection{what is your optimal policy based on joining the rioting}
+	$$ U[H] = -(40,000 - 20,000 + 4/100 * 50,000 * 2.1 * (1 + 0.1 + 0.01)+ 50,000 * 0.01) = −25,162$$
+	$$ U[G] = -(25,000 - 12,500 + 8/100 * 50,000 * 2.1 * (1 + 0.1 + 0.01)+ 50,000 * 0.01) = −22,324$$	
+	Best choice now is Gasoline car.	
+	\subsubsection{maximum amount you should be willing to pay Picard for this information?}
+	Assuming that the riot will have a positive effect on the taxation, the utility for both vehicles will be,
+	$$ U[H] = -(40,000 - 20,000 + 4/100 * 50,000 * 1.5 * (1 + 0.1 + 0.01)) = −23,330$$
+	$$ U[G] = -(25,000 - 12,500 + 8/100 * 50,000 * 1.5 * (1 + 0.1 + 0.01)) = −19,160$$		
+	Once again, information has no impact on decision, therefore no value for information.
+	
+	\section{}
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}
+		\mynode[S]{3}{7}
+		\mynode[V1]{0}{5}
+		\mynode[P1]{5}{1}
+		\mynode[G]{2}{0}
+		\mynode[P2]{3}{5}
+		\mynode[V2]{6}{5}
+		
+		\wrelation[1]{S}{V1}
+		\wrelation[w=1,P=0.5]{V1}{P2}
+		\wrelation[2]{V1}{G}
+		\wrelation[2]{S}{V2}
+		\wrelation[w=1,P=0.01]{V2}{P2}
+		\wrelation[3]{P1}{G}
+		\wrelation[3]{P1}{P2}
+		\wrelation[5]{G}{P2}		
+		\end{tikzpicture}
+		\caption{Hurricane graph.}
+		\label{fig:hurricane}
+	\end{figure}
+
+	\subsection{Formalize the above problem as a MDP}
+	\subsubsection{States}
+	The states should hold the entire information of the realm. Therefore, a state would be a tuple with the following structure:
+	\begin{equation}\label{eq:state}
+	 state = (l, T, PIV, R, P1, P2, B(V2, P2), B(V1, P2)) 
+	\end{equation}
+	where, $ l $ is the current vertex the agent is at, $ T $ is the remaining time, $ PIV $ is the amount of people in the vehicle, $ R $ is the amount of people rescued, $ P_i $ is a Boolean representing the presence of people at the vertex, and $ B(x, y) $ is a triple valued variable stating if the edge between x and y is blocked / unblocked or unknown.
+	
+	\subsubsection{Reward}
+	The only reward of interest in this scenario is the amount of people saved. Therefore, each person that was rescued will provide 1 reward, and rewards are given when the agent reaches shelter (G vertex in this example). All other transitions are 0 reward. 
+	\begin{equation}\label{key}
+	Reward = \left\{ \begin{array}{c}
+	PIV \quad if(l==shelter) \\
+	0 \quad otherwise
+	\end{array} \right.
+	\end{equation}
+	
+	\subsubsection{transition}
+	Moving from state to state reduces the time, changes the amount of people saved or picked up and reviles if edges  are blocked or not. When planning a route, the probability of blockages are taken into account. For example, the utility for the transition from state $ S(x, ...) $ to $ S(y, ...)^\prime` $
+	\begin{equation}\label{eq:transition}
+	U[S^\prime] = U[S] * (1 -P(B(x, y))+Reward
+	\end{equation} 
+	
+	\subsection{Find the optimal policy}
+	From S there are two options: going to V1 and going to V2. If the agent will go to V2 and the edge (V2, P2) is blocked, the agent will have to go back to S and there will not be enough time to save people. However, if  the edge is unblocked, the agent will be able to save all three people (i.e. $ S\rightarrow V2\rightarrow P2\rightarrow P1\rightarrow G $).
+	Since the probability of blockage is $ 1\% $ the utility of going to V2 is:
+	\begin{equation}\label{uv2}
+	U[S\rightarrow V2]  = 3 * 99\% + 0 * 1\% = 2.97
+	\end{equation}
+	
+	However, if the agent will go to V1, there is a $ 50\% $ chance that the edge (V1, P2) is blocked. If it is blocked the agent would still save P1. If it is unblocked, the agent will save all 3 people. Therefore, the utility for going to V1 will be,
+	\begin{equation}\label{key}
+	U[S\rightarrow V1] = 3 * 50\% + 1 * 50\% = 2
+	\end{equation}
+	
+	Therefore, the best policy would be to go to V2 as there is higher chance to save all 3 people.
+	
+	
+	\section{}
 	
 	\section{}
 	\subsection{Can this be done without hidden units?}

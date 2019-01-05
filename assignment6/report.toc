@@ -1,11 +1,27 @@
-\contentsline {section}{\numberline {1}}{1}{section.1}
-\contentsline {subsection}{\numberline {1.1}Construct a Bayes network that is consistent with the above set of independence statements}{1}{subsection.1.1}
+\contentsline {section}{\numberline {1}}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Construct a Bayes network that is consistent with the above set of independence statements}{2}{subsection.1.1}
 \contentsline {subsection}{\numberline {1.2}Is the answer above unique?}{2}{subsection.1.2}
-\contentsline {section}{\numberline {2}}{2}{section.2}
-\contentsline {subsection}{\numberline {2.1}Is this network a poly-tree?}{2}{subsection.2.1}
-\contentsline {subsection}{\numberline {2.2}Is this network (directed-path) singly connected?}{2}{subsection.2.2}
-\contentsline {subsection}{\numberline {2.3}Determine the truth of the following independence statements (using d-separation)}{2}{subsection.2.3}
-\contentsline {subsection}{\numberline {2.4}Find P(E=true, A=True $ | $ B=true)}{3}{subsection.2.4}
-\contentsline {section}{\numberline {3}}{3}{section.3}
-\contentsline {subsection}{\numberline {3.1}Can this be done without hidden units?}{3}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Show a network using threshold elements that performs the required computation}{3}{subsection.3.2}
+\contentsline {section}{\numberline {2}}{3}{section.2}
+\contentsline {subsection}{\numberline {2.1}Is this network a poly-tree?}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Is this network (directed-path) singly connected?}{3}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Determine the truth of the following independence statements (using d-separation)}{3}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Find $P(E=true, A=True | B=true)$}{3}{subsection.2.4}
+\contentsline {section}{\numberline {3}}{4}{section.3}
+\contentsline {section}{\numberline {4}}{4}{section.4}
+\contentsline {subsection}{\numberline {4.1}what is your optimal decision?}{4}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}what is your optimal policy based on joining the rioting}{4}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}maximum amount you should be willing to pay Picard for this information?}{5}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Adding discount}{5}{subsection.4.4}
+\contentsline {subsubsection}{\numberline {4.4.1}what is your optimal decision?}{5}{subsubsection.4.4.1}
+\contentsline {subsubsection}{\numberline {4.4.2}what is your optimal policy based on joining the rioting}{5}{subsubsection.4.4.2}
+\contentsline {subsubsection}{\numberline {4.4.3}maximum amount you should be willing to pay Picard for this information?}{5}{subsubsection.4.4.3}
+\contentsline {section}{\numberline {5}}{6}{section.5}
+\contentsline {subsection}{\numberline {5.1}Formalize the above problem as a MDP}{6}{subsection.5.1}
+\contentsline {subsubsection}{\numberline {5.1.1}States}{6}{subsubsection.5.1.1}
+\contentsline {subsubsection}{\numberline {5.1.2}Reward}{6}{subsubsection.5.1.2}
+\contentsline {subsubsection}{\numberline {5.1.3}transition}{6}{subsubsection.5.1.3}
+\contentsline {subsection}{\numberline {5.2}Find the optimal policy}{7}{subsection.5.2}
+\contentsline {section}{\numberline {6}}{7}{section.6}
+\contentsline {section}{\numberline {7}}{7}{section.7}
+\contentsline {subsection}{\numberline {7.1}Can this be done without hidden units?}{7}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Show a network using threshold elements that performs the required computation}{7}{subsection.7.2}
